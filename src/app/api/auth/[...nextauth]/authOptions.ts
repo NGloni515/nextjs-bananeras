@@ -2,10 +2,10 @@
 import { NextAuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { BACKEND_URL } from '@/lib/constants';
+import { env } from '@/lib/env';
 
 async function refreshToken(token: JWT): Promise<JWT> {
-  const res = await fetch(BACKEND_URL + '/auth/exporter/refresh', {
+  const res = await fetch(env.NEXT_PUBLIC_API_URL + '/auth/exporter/refresh', {
     method: 'POST',
     headers: {
       authorization: `Bearer ${token.refreshToken}`,
@@ -38,16 +38,19 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         if (!credentials?.username || !credentials?.password) return null;
         const { username, password } = credentials;
-        const res = await fetch(BACKEND_URL + '/auth/exporter/login', {
-          method: 'POST',
-          body: JSON.stringify({
-            email: username,
-            password,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        const res = await fetch(
+          env.NEXT_PUBLIC_API_URL + '/auth/exporter/login',
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              email: username,
+              password,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
         console.log('res.status: ', res.status);
         // console.log('res: ', res);
 

@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldPassword from '../ui/form/InputFieldPassword';
 import InputFieldText from '../ui/form/InputFieldText';
+import { env } from '../../lib/env';
 
 interface ValuesProps {
   email: string;
@@ -32,11 +33,12 @@ const validationSchema = Yup.object({
 export default function SignInForm(props: Props): React.JSX.Element {
   const signin = async (values: ValuesProps): Promise<void> => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    console.log(`=========> ${env.NEXT_PORTAL_URL}/dashboard`);
     const res = await signIn('credentials', {
       username: values.email,
       password: values.password,
       redirect: true,
-      callbackUrl: props.callbackUrl ?? 'http://localhost:3000/dashboard',
+      callbackUrl: props.callbackUrl ?? `${env.NEXT_PORTAL_URL}/dashboard`,
     });
   };
 

@@ -4,7 +4,7 @@ import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import { BACKEND_URL } from '../../lib/constants';
+import { env } from '../../lib/env';
 import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldPassword from '../ui/form/InputFieldPassword';
 import InputFieldText from '../ui/form/InputFieldText';
@@ -53,17 +53,20 @@ export default function SignUpForm(): React.JSX.Element {
   const signUp = async (values: ValuesProps): Promise<void> => {
     setIsLoading(true);
     try {
-      const res = await fetch(BACKEND_URL + '/auth/exporter/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          businessName: values.exportName,
-          businessId: values.exportId,
-          email: values.email,
-          name: values.name,
-          password: values.password,
-        }),
-      });
+      const res = await fetch(
+        env.NEXT_PUBLIC_API_URL + '/auth/exporter/register',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            businessName: values.exportName,
+            businessId: values.exportId,
+            email: values.email,
+            name: values.name,
+            password: values.password,
+          }),
+        }
+      );
 
       if (!res.ok) {
         const errorData = await res.json();

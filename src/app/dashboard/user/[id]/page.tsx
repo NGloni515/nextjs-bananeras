@@ -8,18 +8,21 @@ import {
   Image,
 } from '@chakra-ui/react';
 import { getServerSession } from 'next-auth';
-import { BACKEND_URL } from '../../../../lib/constants';
+import { env } from '../../../../lib/env';
 import { authOptions } from '../../../api/auth/[...nextauth]/authOptions';
 
 const ProfilePage = async (): Promise<JSX.Element> => {
   const session = await getServerSession(authOptions);
-  const response = await fetch(BACKEND_URL + `/auth/exporter/profile`, {
-    method: 'GET',
-    headers: {
-      authorization: `Bearer ${session?.refreshToken}`,
-      'Content-Type': 'application/json',
-    },
-  });
+  const response = await fetch(
+    env.NEXT_PUBLIC_API_URL + `/auth/exporter/profile`,
+    {
+      method: 'GET',
+      headers: {
+        authorization: `Bearer ${session?.refreshToken}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
   const user = await response.json();
 
   return (
