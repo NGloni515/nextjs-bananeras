@@ -8,7 +8,7 @@ import {
   Center,
   Heading,
 } from '@chakra-ui/react';
-import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useLayoutEffect } from 'react';
 import PendingPaymentForm from '../../../../../components/export/export-payments/PendingPaymentForm';
 import IsOnboarding from '../../../../../components/ui/IsOnboarding';
@@ -40,10 +40,10 @@ function ExportPaymentPage(): React.JSX.Element {
   useLayoutEffect(() => {
     if (!isLoading) {
       if (!pendingPayment || !pendingPayment.pendingProducerPayment) {
-        return redirect(pathname.replace(/\/\d+$/, ''));
+        router.push(pathname.replace(/\/\d+$/, ''));
       }
     }
-  }, [isLoading, pendingPayment, pathname]);
+  }, [isLoading, pendingPayment, pathname, router]);
 
   if (isLoading) {
     return (

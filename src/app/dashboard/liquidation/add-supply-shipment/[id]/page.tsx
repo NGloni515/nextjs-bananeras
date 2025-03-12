@@ -8,7 +8,7 @@ import {
   Center,
   Heading,
 } from '@chakra-ui/react';
-import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useLayoutEffect } from 'react';
 import SentMaterialsExportForm from '../../../../../components/export/SentMaterialsExportForm';
 import IsOnboarding from '../../../../../components/ui/IsOnboarding';
@@ -41,10 +41,10 @@ const PendingExportPage = (): React.JSX.Element => {
     if (!isLoading) {
       // console.log('PendingExportPage pendingExport', pendingExport);
       if (!pendingExport || !pendingExport.pendingExportSent) {
-        return redirect(pathname.replace(/\/\d+$/, ''));
+        router.push(pathname.replace(/\/\d+$/, ''));
       }
     }
-  }, [isLoading, pendingExport, pathname]);
+  }, [isLoading, pendingExport, pathname, router]);
 
   if (isLoading) {
     return (

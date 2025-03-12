@@ -8,7 +8,7 @@ import {
   Center,
   Heading,
 } from '@chakra-ui/react';
-import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useLayoutEffect } from 'react';
 import CuttingSheetForm from '../../../../../components/export/cutting-sheet/CuttingSheetForm';
 import { useExport } from '../../../../../hooks/export/getExport';
@@ -39,10 +39,10 @@ const CuttingSheetPage = (): React.JSX.Element => {
   useLayoutEffect(() => {
     if (!isLoading) {
       if (!pendingCuttingSheet || pendingCuttingSheet.pendingCuttingSheet) {
-        return redirect(pathname.replace(/\/\d+$/, ''));
+        router.push(pathname.replace(/\/\d+$/, ''));
       }
     }
-  }, [isLoading, pendingCuttingSheet, pathname]);
+  }, [isLoading, pendingCuttingSheet, pathname, router]);
 
   if (isLoading) {
     return (
