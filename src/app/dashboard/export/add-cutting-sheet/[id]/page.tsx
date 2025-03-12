@@ -10,7 +10,7 @@ interface PageProps {
 export default async function CuttingSheetPage({ params }: PageProps): Promise<JSX.Element> {
   const exportData = await fetchExport(params.id);
   
-  if (!exportData || exportData.pendingCuttingSheet) {
+  if (!exportData) {
     redirect('/dashboard/export/add-cutting-sheet');
   }
 

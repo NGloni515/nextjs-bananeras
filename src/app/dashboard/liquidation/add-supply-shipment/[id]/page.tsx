@@ -10,7 +10,7 @@ interface PageProps {
 export default async function PendingExportPage({ params }: PageProps): Promise<JSX.Element> {
   const exportData = await fetchExport(params.id);
   
-  if (!exportData || !exportData.pendingExportSent) {
+  if (!exportData) {
     redirect('/dashboard/liquidation/add-supply-shipment');
   }
 
