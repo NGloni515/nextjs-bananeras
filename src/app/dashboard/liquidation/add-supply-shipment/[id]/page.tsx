@@ -9,7 +9,7 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import React, { useEffect, useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import SentMaterialsExportForm from '../../../../../components/export/SentMaterialsExportForm';
 import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExport } from '../../../../../hooks/export/getExport';
@@ -37,9 +37,8 @@ const PendingExportPage = (): React.JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isLoading) {
-      // console.log('PendingExportPage pendingExport', pendingExport);
       if (!pendingExport || !pendingExport.pendingExportSent) {
         router.push(pathname.replace(/\/\d+$/, ''));
       }

@@ -9,7 +9,7 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import React, { useEffect, useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import CuttingSheetForm from '../../../../../components/export/cutting-sheet/CuttingSheetForm';
 import { useExport } from '../../../../../hooks/export/getExport';
 import { ExportType } from '../../../../../types/export';
@@ -36,7 +36,7 @@ const CuttingSheetPage = (): React.JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isLoading) {
       if (!pendingCuttingSheet || pendingCuttingSheet.pendingCuttingSheet) {
         router.push(pathname.replace(/\/\d+$/, ''));

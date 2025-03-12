@@ -9,7 +9,7 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import React, { useEffect, useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import PendingPaymentForm from '../../../../../components/export/export-payments/PendingPaymentForm';
 import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExportSent } from '../../../../../hooks/export/export-sent/getExportSent';
@@ -37,7 +37,7 @@ function ExportPaymentPage(): React.JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isLoading) {
       if (!pendingPayment || !pendingPayment.pendingProducerPayment) {
         router.push(pathname.replace(/\/\d+$/, ''));
