@@ -1,58 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
-import {
-  Box,
-  Card,
-  CardBody,
-  CardHeader,
-  Center,
-  Heading,
-} from '@chakra-ui/react';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { Box, Card, CardBody, CardHeader, Center, Heading } from '@chakra-ui/react';
+import { redirect } from 'next/navigation';
 import PendingPaymentForm from '../../../../../components/export/export-payments/PendingPaymentForm';
-import IsOnboarding from '../../../../../components/ui/IsOnboarding';
-import { useExportSent } from '../../../../../hooks/export/export-sent/getExportSent';
-import { ExportSentType } from '../../../../../types/exportSent';
+import { fetchExport } from '../../../../../lib/export/export';
 
-function ExportPaymentPage(): React.JSX.Element {
-  const params = useParams<{ id: string }>();
-  const { data, isLoading, error } = useExportSent({
-    exportSentId: params.id,
-  });
-  const pendingPayment = data as Partial<ExportSentType>;
-  const pathname = usePathname();
-  const router = useRouter();
+interface PageProps {
+  params: { id: string };
+}
 
-  useEffect(() => {
-    if (!!error) {
-      const { response } = error as any;
-      const { data: dataRes } = response;
-      const { statusCode } = dataRes;
-
-      if (statusCode === 401) {
-        router.push('/api/auth/signout');
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (!pendingPayment || !pendingPayment.pendingProducerPayment) {
-        router.push(pathname.replace(/\/\d+$/, ''));
-      }
-    }
-  }, [isLoading, pendingPayment, pathname, router]);
-
-  if (isLoading) {
-    return (
-      <Box mx={'auto'} my={'200px'}>
-        <Center>
-          <Heading>Cargando...</Heading>
-        </Center>
-      </Box>
-    );
+export default async function  ExportPaymentPage({ params }: PageProps): Promise<JSX.Element> {
+  const exportData = await fetchExport(params.id, true);
+  
+  if ( !exportData ) {
+    redirect('/dashboard/liquidation/producer-pending-payments');
   }
 
   return (
@@ -73,8 +32,7 @@ function ExportPaymentPage(): React.JSX.Element {
           </CardHeader>
           <CardBody w='100%'>
             <PendingPaymentForm
-              paymentSelected={pendingPayment}
-              pathname={pathname}
+              paymentSelected={exportData}
             />
           </CardBody>
         </Card>
@@ -82,5 +40,3 @@ function ExportPaymentPage(): React.JSX.Element {
     </Box>
   );
 }
-
-export default IsOnboarding(ExportPaymentPage);

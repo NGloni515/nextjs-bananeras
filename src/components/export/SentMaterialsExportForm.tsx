@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+'use client'
 import {
   Box,
   Button,
@@ -14,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import InputFieldSentInsecticides from './ui/InputFieldSentInsecticides';
@@ -247,7 +248,6 @@ const SentMaterialsExportForm = ({
   exportSelected,
 }: {
   exportSelected: Partial<ExportType>;
-  pathname: string;
 }): React.JSX.Element => {
   const [initialValuesExport, setInitialValuesExport] =
     useState<ValuesProps>(initialValues);

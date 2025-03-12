@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client'
 import {
   Box,
   Button,
@@ -199,7 +200,6 @@ const CuttingSheetForm = ({
   cuttingSheetSelected,
 }: {
   cuttingSheetSelected: Partial<ExportType>;
-  pathname: string;
 }): React.JSX.Element => {
   const [initialValuesCuttingSheet, setInitialValuesCuttingSheet] =
     useState<ValuesProps>(initialValues);
@@ -409,7 +409,7 @@ const CuttingSheetForm = ({
       onSubmit={handleSubmit}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting, values, errors }) => {
+      {({ values }) => {
         return (
           <Form>
             <Flex flexDirection='column' gap={3}>

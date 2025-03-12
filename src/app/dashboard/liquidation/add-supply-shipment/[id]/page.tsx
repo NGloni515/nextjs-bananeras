@@ -1,58 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
-import {
-  Box,
-  Card,
-  CardBody,
-  CardHeader,
-  Center,
-  Heading,
-} from '@chakra-ui/react';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { Box, Card, CardBody, CardHeader, Center, Heading } from '@chakra-ui/react';
+import { redirect } from 'next/navigation';
 import SentMaterialsExportForm from '../../../../../components/export/SentMaterialsExportForm';
-import IsOnboarding from '../../../../../components/ui/IsOnboarding';
-import { useExport } from '../../../../../hooks/export/getExport';
-import { ExportType } from '../../../../../types/export';
+import { fetchExport } from '../../../../../lib/export/export';
 
-const PendingExportPage = (): React.JSX.Element => {
-  const params = useParams<{ id: string }>();
-  const { data, isLoading, error } = useExport({
-    exportId: params.id,
-  });
-  const pendingExport = data as Partial<ExportType>;
-  const pathname = usePathname();
-  const router = useRouter();
+interface PageProps {
+  params: { id: string };
+}
 
-  useEffect(() => {
-    if (!!error) {
-      const { response } = error as any;
-      const { data: dataRes } = response;
-      const { statusCode } = dataRes;
-
-      if (statusCode === 401) {
-        router.push('/api/auth/signout');
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (!pendingExport || !pendingExport.pendingExportSent) {
-        router.push(pathname.replace(/\/\d+$/, ''));
-      }
-    }
-  }, [isLoading, pendingExport, pathname, router]);
-
-  if (isLoading) {
-    return (
-      <Box mx={'auto'} my={'200px'}>
-        <Center>
-          <Heading>Cargando...</Heading>
-        </Center>
-      </Box>
-    );
+export default async function PendingExportPage({ params }: PageProps): Promise<JSX.Element> {
+  const exportData = await fetchExport(params.id);
+  
+  if (!exportData || !exportData.pendingExportSent) {
+    redirect('/dashboard/liquidation/add-supply-shipment');
   }
 
   return (
@@ -73,8 +32,7 @@ const PendingExportPage = (): React.JSX.Element => {
           </CardHeader>
           <CardBody w={'100%'}>
             <SentMaterialsExportForm
-              exportSelected={pendingExport}
-              pathname={pathname}
+              exportSelected={exportData}
             />
           </CardBody>
         </Card>
@@ -83,4 +41,3 @@ const PendingExportPage = (): React.JSX.Element => {
   );
 };
 
-export default IsOnboarding(PendingExportPage);
