@@ -54,7 +54,7 @@ interface PackagingProps {
 
 interface MaterialsProps {
   packagingPattern: string;
-  pallets: number | '';
+  pallets: string | '';
   plasticCorners: number | '';
   reinforcements: number | '';
   plasticStraps: string;
@@ -247,8 +247,8 @@ const CuttingSheetForm = ({
           boxQuantity: cuttingSheetSelected.boxQuantity || 0,
           boxBrand: cuttingSheetSelected.boxBrand?.name || '',
           shipmentType:
-            cuttingSheetSelected.boxBrand?.palletsTypeId ||
-            cuttingSheetSelected.boxBrand?.miniPalletsTypeId
+            cuttingSheetSelected.boxBrand?.palletsType?.name ||
+            cuttingSheetSelected.boxBrand?.miniPalletsType?.name
               ? 'PALETIZADO'
               : 'GRANEL',
           boxType: cuttingSheetSelected.boxBrand?.brand?.name || '',
@@ -295,7 +295,7 @@ const CuttingSheetForm = ({
           ...prevValues.materials,
           packagingPattern:
             cuttingSheetSelected.cuttingType?.packagingPattern || '',
-          pallets: cuttingSheetSelected.boxBrand?.palletsTypeId || '',
+          pallets: cuttingSheetSelected.boxBrand?.palletsType?.name || '',
           palletsQuantity:
             cuttingSheetSelected.boxBrand?.palletsTypeQuantity || 0,
           palletsDetail: cuttingSheetSelected.cuttingType?.palletDetail || '',

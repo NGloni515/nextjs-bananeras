@@ -1,5 +1,4 @@
 import { BusinessCodeType } from './businessCode';
-import { CertificateType } from './certificate';
 import { ContactType } from './contact';
 
 export type BusinessType = {
@@ -12,7 +11,7 @@ export type BusinessType = {
   latitude: number | '';
   longitude: number | '';
   codeMAGAP: string;
-  certificates: Partial<CertificateType>[];
+  certificates: number[];
   businessCodes: Partial<BusinessCodeType>[];
   contacts: Partial<ContactType>[];
   merchant: number | '';
