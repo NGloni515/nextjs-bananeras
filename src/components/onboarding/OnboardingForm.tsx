@@ -78,7 +78,7 @@ export default function OnboardingForm(): React.JSX.Element {
 
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4}>
               <InputFieldText name={'businesses[0].name'} label={'Nombre'} />
-              <InputFieldNumber name={'businesses[0].area'} label={'Área'} unit='KM' />
+              <InputFieldNumber name={'businesses[0].area'} label={'Área'} unit='m²' />
               <InputFieldText
                 name={'businesses[0].codeMAGAP'}
                 label={'Código MAGAP'}

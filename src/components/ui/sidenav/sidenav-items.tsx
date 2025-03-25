@@ -32,6 +32,7 @@ export interface SidenavMenuItem {
   label: string;
   to: string;
   count?: number;
+  submenu?: SidenavMenuItem[];
 }
 
 export interface SidenavItemsProps {
@@ -94,7 +95,7 @@ export function SidenavItems({
                   _activeLink={{ bg: 'orange.500', color: 'white' }}
                   w='full'
                   borderRadius='md'
-                  // color={'green.800'}
+                // color={'green.800'}
                 >
                   <Flex alignItems='center' p={2}>
                     <Text ml={2}>{item.label}</Text>
