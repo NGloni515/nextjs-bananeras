@@ -15,7 +15,7 @@ export interface BusinessesProps {
     name: string;
     countryId: number | '';
     provinceId: number | '';
-    cityId: string;
+    cityId: number | '';
     address: string;
     fruitType: string;
     area: number;
@@ -33,11 +33,12 @@ export interface ValuesProps {
     businessId: string;
     countryId: number | '';
     provinceId: number | '';
-    cityId: string;
+    cityId: number | '';
     address: string;
     email: string;
     contractType: '' | 'FOB' | 'FAS' | 'SPOT';
     businesses: BusinessesProps[];
+    dataReviewed: boolean;
 }
 
 export const initialValues: ValuesProps = {
@@ -67,6 +68,7 @@ export const initialValues: ValuesProps = {
             contacts: [{ name: '', role: '', email: '', phone: '' }],
         },
     ],
+    dataReviewed: false,
 };
 
 const contactSchema = Yup.object().shape({
@@ -77,7 +79,7 @@ const contactSchema = Yup.object().shape({
         .transform((value) => value.trim())
         .required('Requerido'),
     role: Yup.string().max(100).min(2).transform((v) => v.trim()).required('Requerido'),
-    email: Yup.string().email().max(50).transform((v) => v.trim()),
+    email: Yup.string().email().max(50).transform((v) => v.trim()).required('Requerido'),
     phone: Yup.string()
         .matches(/^(\+593|0)9\d{8}$/, 'Debe comenzar con +593 o 09')
         .transform((v) => v.trim())
@@ -103,13 +105,35 @@ const businessSchema = Yup.object().shape({
     address: Yup.string()
         .max(100)
         .matches(/^[a-zA-Z0-9\s.,'-]+$/)
-        .transform((v) => v.trim()),
+        .transform((v) => v.trim()).required('Requerido'),
     fruitType: Yup.string()
         .oneOf(['Orgánica', 'Convencional'])
         .required('Requerido'),
     area: Yup.number().moreThan(0).required('Requerido'),
     latitude: Yup.number().min(-90).max(90).notRequired(),
     longitude: Yup.number().min(-180).max(180).notRequired(),
+    provinceId: Yup.number()
+        .transform((value, originalValue) => {
+            if (originalValue === '' || originalValue === null || Number.isNaN(value)) {
+                return undefined;
+            }
+            return value;
+        })
+        .when('countryId', {
+            is: (val: number) => !!val,
+            then: (schema) =>
+                schema
+                    .typeError('Provincia es requerida')
+                    .required('Provincia es requerida'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
+    cityId: Yup.number()
+        .typeError('Ciudad es requerida')
+        .required('Ciudad es requerida'),
+    certificates: Yup.array()
+        .of(Yup.number().typeError('Certificado inválido'))
+        .min(1, 'Debe seleccionar al menos un certificado')
+        .required('Los certificados son requeridos'),
     codeMAGAP: Yup.string()
         .min(5)
         .max(50)
@@ -141,10 +165,31 @@ export const validationSchema = Yup.object({
     address: Yup.string()
         .max(100)
         .matches(/^[a-zA-Z0-9\s.,'-]+$/)
-        .transform((v) => v.trim()),
-    email: Yup.string().email().max(50).transform((v) => v.trim()),
+        .transform((v) => v.trim()).required('Requerido'),
+    provinceId: Yup.number()
+        .transform((value, originalValue) => {
+            if (originalValue === '' || originalValue === null || Number.isNaN(value)) {
+                return undefined;
+            }
+            return value;
+        })
+        .when('countryId', {
+            is: (val: number) => !!val,
+            then: (schema) =>
+                schema
+                    .typeError('Provincia es requerida')
+                    .required('Provincia es requerida'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
+    cityId: Yup.number()
+        .typeError('Ciudad es requerida')
+        .required('Ciudad es requerida'),
+    email: Yup.string().email().max(50).transform((v) => v.trim()).required('Requerido'),
     contractType: Yup.string()
         .oneOf(['FOB', 'FAS', 'SPOT'])
         .required('Requerido'),
     businesses: Yup.array().of(businessSchema).min(1),
+    dataReviewed: Yup.boolean()
+        .oneOf([true], 'Debes revisar los datos antes de enviar')
+        .required('Requerido'),
 });

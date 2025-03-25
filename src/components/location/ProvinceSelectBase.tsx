@@ -57,10 +57,14 @@ const ProvinceSelectBase: React.FC<ProvinceSelectBaseProps> = ({
     const [internalValue, setInternalValue] = useState<Province | null>(null);
 
     useEffect(() => {
-        if (resetOnParentChange) {
-            setInternalValue(null);
-            onChange?.(null);
-        }
+        if (!resetOnParentChange) return;
+        setInternalValue(null);
+        field?.onChange({
+            target: {
+                name,
+                value: '',
+            },
+        });
     }, [countryId]);
 
     const handleChange = (newValue: SingleValue<Province>): void => {
