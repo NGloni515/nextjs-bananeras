@@ -1,9 +1,9 @@
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
+import AddCertificateModal from './AddCertificateModal';
 import CertificateMultiSelectBase from './CertificateMultiSelectBase';
 import { Certificate } from '../../types/utils/certificate';
-import AddCertificateModal from '../box-brands/specifications/requiredCertificate/AddRequiredCertificateModal';
 
 interface InputFieldCertificateMultiSelectProps {
     name: string;

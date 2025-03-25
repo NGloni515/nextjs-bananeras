@@ -17,7 +17,7 @@ export function useCertificates(): {
     refetch: () => void;
 } {
     const result: UseQueryResult<AxiosResponse<CertificateResponse>> = useQuery(
-        ['cities'],
+        ['certificates'],
         () => axios.get(`/certificate`),
     );
 
