@@ -72,31 +72,33 @@ const DetailProducers = ({
           ))}
         </AccordionPanel>
       </AccordionItem>
-      <AccordionItem>
-        <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{ sm: `${width.sm}px`, md: `${width.md}px` }}
-          >
-            <Box flex='1' textAlign='left' fontSize='md' fontWeight='bold'>
-              Cuentas Bancarias
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
-        </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          {business.bankAccounts.map((acc, i) => (
-            <Box key={i} mt={4}>
-              <Text><strong>Banco:</strong> {acc.bank}</Text>
-              <Text><strong>Propietario:</strong> {acc.owner}</Text>
-              <Text><strong>ID Propietario:</strong> {acc.ownerID}</Text>
-              <Text><strong>Número de Cuenta:</strong> {acc.accountNumber}</Text>
-              <Text><strong>Tipo de Cuenta:</strong> {acc.type}</Text>
-              <Text><strong>Email:</strong> {acc.email}</Text>
-            </Box>
-          ))}
-        </AccordionPanel>
-      </AccordionItem>
+      {business.bankAccounts.length > 0 && (
+        <AccordionItem>
+          <Heading>
+            <AccordionButton
+              pl='60px'
+              width={{ sm: `${width.sm}px`, md: `${width.md}px` }}
+            >
+              <Box flex='1' textAlign='left' fontSize='md' fontWeight='bold'>
+                Cuentas Bancarias
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </Heading>
+          <AccordionPanel pb={4} pl='60px'>
+            {business.bankAccounts.map((acc, i) => (
+              <Box key={i} mt={4}>
+                <Text><strong>Banco:</strong> {acc.bank}</Text>
+                <Text><strong>Propietario:</strong> {acc.owner}</Text>
+                <Text><strong>ID Propietario:</strong> {acc.ownerID}</Text>
+                <Text><strong>Número de Cuenta:</strong> {acc.accountNumber}</Text>
+                <Text><strong>Tipo de Cuenta:</strong> {acc.type}</Text>
+                <Text><strong>Email:</strong> {acc.email}</Text>
+              </Box>
+            ))}
+          </AccordionPanel>
+        </AccordionItem>)
+      }
     </Accordion>
   );
 };
