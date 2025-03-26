@@ -14,20 +14,20 @@ import { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
 import { useMerchants } from '../../hooks/merchants/getMerchants';
 import { usePagination } from '../../hooks/usePagination';
-import { MerchantType } from '../../types/merchant/merchant';
+import { MerchantResponse } from '../../types/merchant/merchant.response';
 
 interface ProducerSelectBaseProps {
   name?: string;
   field?: FieldInputProps<unknown>;
   placeholder: string;
-  setProducer?: (producer: Partial<MerchantType>) => void;
-  onChange?: (newValue: Partial<MerchantType>) => void;
+  setProducer?: (producer: Partial<MerchantResponse>) => void;
+  onChange?: (newValue: Partial<MerchantResponse>) => void;
 }
 
 const chakraStyles: ChakraStylesConfig<
-  Partial<MerchantType>,
+  Partial<MerchantResponse>,
   false,
-  GroupBase<Partial<MerchantType>>
+  GroupBase<Partial<MerchantResponse>>
 > = {
   container: (provided) => ({
     ...provided,
@@ -49,14 +49,13 @@ const chakraStyles: ChakraStylesConfig<
 };
 
 const producerComponents = {
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   DropdownIndicator: (
     props: DropdownIndicatorProps<
-      Partial<MerchantType>,
+      Partial<MerchantResponse>,
       false,
-      GroupBase<Partial<MerchantType>>
+      GroupBase<Partial<MerchantResponse>>
     >
-  ) => (
+  ): JSX.Element => (
     <chakraComponents.DropdownIndicator {...props}>
       <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
     </chakraComponents.DropdownIndicator>
@@ -89,13 +88,13 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
   }, [error]);
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleChange = (newValue: SingleValue<Partial<MerchantType>>) => {
+  const handleChange = (newValue: SingleValue<Partial<MerchantResponse>>) => {
     if (setProducer) {
-      setProducer(newValue as Partial<MerchantType>);
+      setProducer(newValue as Partial<MerchantResponse>);
     }
 
     if (onChange) {
-      onChange(newValue as Partial<MerchantType>);
+      onChange(newValue as Partial<MerchantResponse>);
     }
   };
 
@@ -113,19 +112,19 @@ const ProducerSelectBase: React.FC<ProducerSelectBaseProps> = ({
       noOptionsMessage={() =>
         !!error
           ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (error as any).response.data.message
+          (error as any).response.data.message
           : 'Ya no hay productor/es disponible/s'
       }
       isLoading={isLoading}
       options={data}
-      getOptionLabel={(opt: Partial<MerchantType>) => `${opt.businessName}`}
-      getOptionValue={(opt: Partial<MerchantType>) =>
+      getOptionLabel={(opt: Partial<MerchantResponse>) => `${opt.businessName}`}
+      getOptionValue={(opt: Partial<MerchantResponse>) =>
         opt.id ? opt.id.toString() : ''
       }
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: Partial<MerchantType>) => opt.id === field?.value)
+          ? data.find((opt: Partial<MerchantResponse>) => opt.id === field?.value)
           : null
       }
       placeholder={placeholder}

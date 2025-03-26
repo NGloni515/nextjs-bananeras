@@ -10,7 +10,7 @@ import {
     ValuesProps,
     validationSchema,
     initialValues,
-} from '../schema/producer.schema';
+} from '../schemas/producer.schema';
 
 export function useSubmitProducer(): {
     onSubmit: (values: ValuesProps, formikHelpers: FormikHelpers<ValuesProps>) => Promise<void>;
