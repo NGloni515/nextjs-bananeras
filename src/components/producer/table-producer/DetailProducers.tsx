@@ -65,7 +65,8 @@ const DetailProducers = ({
               <Text><strong>Provincia:</strong> {biz.province.name}</Text>
               <Text><strong>Ciudad:</strong> {biz.city.name}</Text>
               <Text><strong>Dirección:</strong> {biz.address}</Text>
-              <Text><strong>Latitud/Longitud:</strong> {biz.latitude}/{biz.longitude}</Text>
+              {biz.latitude && biz.longitude && (
+                <Text><strong>Latitud/Longitud:</strong> {biz.latitude}/{biz.longitude}</Text>)}
               <Text><strong>Código MAGAP:</strong> {biz.codeMAGAP}</Text>
               <Text><strong>Código AGROCALIDAD:</strong> {biz.codeAGROCALIDAD}</Text>
             </Box>

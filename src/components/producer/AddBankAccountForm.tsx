@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Button,
   Divider,
@@ -8,6 +6,7 @@ import {
   SimpleGrid,
   useToast,
 } from '@chakra-ui/react';
+import { AxiosError } from 'axios';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -16,7 +15,8 @@ import * as Yup from 'yup';
 import SelectProducer from './SelectProducer';
 import { useCreateBankAccount } from '../../hooks/bank-account/createBankAccount';
 import { ClientType } from '../../types/client';
-import { MerchantType } from '../../types/merchant/merchant';
+import { ServerErrorResponse } from '../../types/errorResponse';
+import { MerchantResponse } from '../../types/merchant/merchant.response';
 import SelectClient from '../client/SelectClient';
 import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
@@ -117,7 +117,7 @@ const typesOpt = [
 
 const AddBankAccountForm = (): React.JSX.Element => {
   const pathname = usePathname();
-  const [producer, setProducer] = useState<Partial<MerchantType> | null>(null);
+  const [producer, setProducer] = useState<Partial<MerchantResponse> | null>(null);
   const isProducerPath = pathname === '/dashboard/producer/add-bank-account';
   const [client, setClient] = useState<Partial<ClientType> | null>(null);
   const isClientPath = pathname === '/dashboard/client/add-bank-account';
@@ -125,7 +125,7 @@ const AddBankAccountForm = (): React.JSX.Element => {
   const [initialValuesBankAccount, setInitialValuesBankAccount] =
     useState<ValuesProps>(initialValues);
 
-  const { createBankAccount, isLoading } = useCreateBankAccount();
+  const { mutate: createBankAccount, isLoading } = useCreateBankAccount();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -138,6 +138,7 @@ const AddBankAccountForm = (): React.JSX.Element => {
         clientId: 0,
         owner: producer.businessName!,
         ownerID: producer.businessId!,
+        email: producer.email!,
         isProducer: isProducerPath,
         isClient: isClientPath,
       }));
@@ -180,7 +181,7 @@ const AddBankAccountForm = (): React.JSX.Element => {
       clientId,
       ...accountValues
     } = values;
-
+    void dataReviewed;
     createBankAccount(
       {
         ...accountValues,
@@ -188,10 +189,10 @@ const AddBankAccountForm = (): React.JSX.Element => {
         clientId: !!isClient ? clientId : undefined,
       },
       {
-        onError: (error: any) => {
-          const { response } = error;
-          const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
+        onError: (error: AxiosError<ServerErrorResponse>) => {
+          const data = error.response?.data;
+          if (!data) return;
+          const { statusCode, message, errors: errorTitle, model, prop } = data;
 
           toast({
             title: `Error ${statusCode}: ${errorTitle} `,
@@ -220,7 +221,7 @@ const AddBankAccountForm = (): React.JSX.Element => {
             isClosable: true,
           });
 
-          queryClient.invalidateQueries('bankAccountsByMerchantId');
+          queryClient.invalidateQueries('merchants');
           formikHelpers.resetForm();
           setProducer(null);
           setClient(null);
@@ -241,7 +242,7 @@ const AddBankAccountForm = (): React.JSX.Element => {
       onSubmit={addBankAccount}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting, errors, values }) => (
+      {({ errors, values }) => (
         <Form>
           <Flex flexDirection='column' gap={3}>
             {isProducerPath && (
