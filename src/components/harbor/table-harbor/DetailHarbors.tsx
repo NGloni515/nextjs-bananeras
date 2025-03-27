@@ -6,122 +6,160 @@ import {
   AccordionPanel,
   Box,
   Heading,
+  Text,
 } from '@chakra-ui/react';
 import React from 'react';
-
-const DetailHarbors = ({
-  business,
-  width,
-}: {
-  business: {
-    name: string;
-    country: string;
-    city: string;
-    type: string;
-    latitude: number;
-    longitude: number;
-    clients: {
-      id: number;
-      businessName: string;
-      businessId: string;
-      type: string;
-      email: string;
-      phone: string;
-    }[];
-  };
+import { HarborResponse } from '../../../types/harbor.response';
+interface DetailHarborsProps {
+  business: HarborResponse;
   width: { sm: number; md: number };
-}): React.JSX.Element => {
+}
+
+const DetailHarbors: React.FC<DetailHarborsProps> = ({ business, width }) => {
   return (
     <Accordion defaultIndex={[0]} allowMultiple>
       <AccordionItem>
         <Heading>
           <AccordionButton
-            pl='60px'
+            pl="60px"
             width={{
               sm: Number(width.sm),
               md: Number(width.md),
             }}
           >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
+            <Box as="span" flex="1" textAlign="left" fontSize="md" fontWeight="bold">
               Detalles del Puerto
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl='60px'>
+        <AccordionPanel pb={4} pl="60px">
           <Box>
-            <p>
+            <Text>
               <strong>Nombre:</strong> {business.name}
-            </p>
-            <p>
-              <strong>País:</strong> {business.country}
-            </p>
-            <p>
-              <strong>Ciudad:</strong> {business.city}
-            </p>
-            <p>
+            </Text>
+            <Text>
+              <strong>Código:</strong> {business.code}
+            </Text>
+            <Text>
+              <strong>Dirección:</strong> {business.address}
+            </Text>
+            <Text>
+              <strong>Ubicación:</strong> {business.location}
+            </Text>
+            <Text>
+              <strong>País:</strong> {business.country.name}
+            </Text>
+            <Text>
+              <strong>Provincia:</strong> {business.province.name}
+            </Text>
+            <Text>
+              <strong>Ciudad:</strong> {business.city.name}
+            </Text>
+            <Text>
               <strong>Tipo:</strong> {business.type}
-            </p>
-            <p>
-              <strong>Latitud:</strong> {business.latitude}
-            </p>
-            <p>
-              <strong>Longitud:</strong> {business.longitude}
-            </p>
+            </Text>
+            {business.latitude && business.longitude && (
+              <>
+                <Text>
+                  <strong>Latitud:</strong> {business.latitude ?? 'N/A'}
+                </Text>
+                <Text>
+                  <strong>Longitud:</strong> {business.longitude ?? 'N/A'}
+                </Text>
+              </>
+            )}
+            <Text>
+              <strong>Horario de Apertura:</strong> {business.openTime}
+            </Text>
+            <Text>
+              <strong>Horario de Cierre:</strong> {business.closeTime}
+            </Text>
+            <Text>
+              <strong>Días de Operación:</strong> {business.daysOfOperation.join(', ')}
+            </Text>
           </Box>
         </AccordionPanel>
       </AccordionItem>
-      <AccordionItem>
-        <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
+      {business.clients.length > 0 && (
+        <AccordionItem>
+          <Heading>
+            <AccordionButton
+              pl="60px"
+              width={{
+                sm: Number(width.sm),
+                md: Number(width.md),
+              }}
             >
-              Clientes
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
-        </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            {business.clients.map((client) => (
-              <Box key={client.id} mb={4}>
-                <p>
-                  <strong>Nombre:</strong> {client.businessName}
-                </p>
-                <p>
-                  <strong>RUC:</strong> {client.businessId}
-                </p>
-                <p>
-                  <strong>Tipo:</strong> {client.type}
-                </p>
-                <p>
-                  <strong>Correo Electrónico:</strong> {client.email}
-                </p>
-                <p>
-                  <strong>Teléfono:</strong> {client.phone}
-                </p>
+              <Box as="span" flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+                Clientes
               </Box>
-            ))}
-          </Box>
-        </AccordionPanel>
-      </AccordionItem>
+              <AccordionIcon />
+            </AccordionButton>
+          </Heading>
+          <AccordionPanel pb={4} pl="60px">
+            <Box>
+              {business.clients.map((client) => (
+                <Box key={client.id} mb={4}>
+                  <Text>
+                    <strong>Nombre:</strong> {client.businessName}
+                  </Text>
+                  <Text>
+                    <strong>RUC:</strong> {client.businessId}
+                  </Text>
+                  <Text>
+                    <strong>Tipo:</strong> {client.type}
+                  </Text>
+                  <Text>
+                    <strong>Correo Electrónico:</strong> {client.email}
+                  </Text>
+                  <Text>
+                    <strong>Teléfono:</strong> {client.phone}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+          </AccordionPanel>
+        </AccordionItem>
+      )}
+      {business.contacts.length > 0 && (
+        <AccordionItem>
+          <Heading>
+            <AccordionButton
+              pl="60px"
+              width={{
+                sm: Number(width.sm),
+                md: Number(width.md),
+              }}
+            >
+              <Box as="span" flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+                Contactos
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </Heading>
+          <AccordionPanel pb={4} pl="60px">
+            <Box>
+              {business.contacts.map((contact) => (
+                <Box key={contact.id} mb={4}>
+                  <Text>
+                    <strong>Nombre:</strong> {contact.name}
+                  </Text>
+                  <Text>
+                    <strong>Web:</strong> {contact.web}
+                  </Text>
+                  <Text>
+                    <strong>Correo Electrónico:</strong> {contact.email}
+                  </Text>
+                  <Text>
+                    <strong>Teléfono:</strong> {contact.phone}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+          </AccordionPanel>
+        </AccordionItem>
+      )}
     </Accordion>
   );
 };
