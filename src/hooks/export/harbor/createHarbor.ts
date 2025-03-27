@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { useMutation } from 'react-query';
+import { AxiosError } from 'axios';
+import { useMutation, UseMutationOptions, UseMutationResult } from 'react-query';
 import axios from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
-import { HarborType } from '@/types/harbor';
+import { ServerErrorResponse } from '../../../types/errorResponse';
+import { HarborType } from '../../../types/harbor';
 
 interface CreateHarborResponse {
-  exportId: string;
+  harborId: string;
 }
 
 export const createHarbor = (
@@ -15,15 +14,16 @@ export const createHarbor = (
   return axios.post('/harbor', data);
 };
 
-type UseCreateHarborOptions = {
-  config?: MutationConfig<typeof createHarbor>;
-};
-
-export const useCreateHarbor = ({ config }: UseCreateHarborOptions = {}) => {
-  const mutation = useMutation({
-    ...config,
-    mutationFn: createHarbor,
-  });
-
-  return { ...mutation, createHarbor: mutation.mutate };
+export const useCreateHarbor = (
+  config?: UseMutationOptions<
+    CreateHarborResponse,
+    AxiosError<ServerErrorResponse>,
+    Partial<HarborType>
+  >
+): UseMutationResult<
+  CreateHarborResponse,
+  AxiosError<ServerErrorResponse>,
+  Partial<HarborType>
+> => {
+  return useMutation(createHarbor, config);
 };
