@@ -91,7 +91,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       submenu: [
         {
           label: 'Consultar Transporte',
-          to: '/dashboard/client/harbors',
+          to: '/dashboard/client/transports',
         },
       ],
     },
