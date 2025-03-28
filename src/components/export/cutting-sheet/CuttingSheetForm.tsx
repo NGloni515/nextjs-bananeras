@@ -237,7 +237,7 @@ const CuttingSheetForm = ({
           business: {
             ...prevValues.producer.business,
             name: cuttingSheetSelected.business?.name || '',
-            city: cuttingSheetSelected.business?.city || '',
+            city: cuttingSheetSelected.business?.city?.name || '',
             codeMAGAP: cuttingSheetSelected.business?.codeMAGAP || '',
             quality: cuttingSheetSelected.cuttingType?.quality || '',
           },
@@ -248,7 +248,7 @@ const CuttingSheetForm = ({
           boxBrand: cuttingSheetSelected.boxBrand?.name || '',
           shipmentType:
             cuttingSheetSelected.boxBrand?.palletsType?.name ||
-            cuttingSheetSelected.boxBrand?.miniPalletsType?.name
+              cuttingSheetSelected.boxBrand?.miniPalletsType?.name
               ? 'PALETIZADO'
               : 'GRANEL',
           boxType: cuttingSheetSelected.boxBrand?.brand?.name || '',
@@ -328,9 +328,6 @@ const CuttingSheetForm = ({
             cuttingSheetSelected.boxBrand?.thermographQuantity || 0,
           thermometerDetail:
             cuttingSheetSelected.cuttingType?.transportDetail || '',
-          authorizedTransport:
-            cuttingSheetSelected.cuttingType?.authorizedTransport || '',
-          aliquot: cuttingSheetSelected.cuttingType?.aliquot || '',
           generalObservations:
             cuttingSheetSelected.cuttingType?.generalObservations || '',
         },
@@ -956,18 +953,6 @@ const CuttingSheetForm = ({
                     flexDirection={'column'}
                   />
                 </Flex>
-                <InputFieldText
-                  name={'materials.authorizedTransport'}
-                  label={'Transportes Autorizados: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'materials.aliquot'}
-                  label={'Alicuota: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
               </SimpleGrid>
               <InputFieldTextArea
                 name={'materials.generalObservations'}

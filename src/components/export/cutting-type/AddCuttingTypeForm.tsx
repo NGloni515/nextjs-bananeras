@@ -42,8 +42,6 @@ interface ValuesProps {
   thirdLine?: string;
   fourthLine?: string;
   packagingPattern: string;
-  authorizedTransport: string;
-  aliquot: string;
   palletDetail: string;
   cornerProtectorsDetail: string;
   reinforcementsDetail: string;
@@ -72,8 +70,6 @@ const initialValues: ValuesProps = {
   thirdLine: '',
   fourthLine: '',
   packagingPattern: '',
-  authorizedTransport: '',
-  aliquot: '',
   palletDetail: '',
   cornerProtectorsDetail: '',
   reinforcementsDetail: '',
@@ -113,8 +109,6 @@ const validationSchema = Yup.object({
   thirdLine: Yup.string(),
   fourthLine: Yup.string(),
   packagingPattern: Yup.string().required('Requerido'),
-  authorizedTransport: Yup.string().required('Requerido'),
-  aliquot: Yup.string().required('Requerido'),
   palletDetail: Yup.string().required('Requerido'),
   cornerProtectorsDetail: Yup.string().required('Requerido'),
   reinforcementsDetail: Yup.string().required('Requerido'),
@@ -510,37 +504,6 @@ const AddCuttingTypeForm = (): React.JSX.Element => {
                 label='Detalle del Termografo'
                 placeholder='Indique el Uso o Ubicación del Termografo'
               />
-
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4}>
-                <InputFieldSelector
-                  name={'authorizedTransport'}
-                  label={'Transporte Autorizado'}
-                  placeholder='Seleccione el Transporte Autorizado'
-                  flexDirection='column'
-                  alignItems='flex-end'
-                  options={[
-                    {
-                      id: 'CAMIONES Y/O FURGONES A PUERTO',
-                      name: 'CAMIONES Y/O FURGONES A PUERTO',
-                    },
-                    { id: 'N/A', name: 'N/A' },
-                  ]}
-                />
-                <InputFieldSelector
-                  name={'aliquot'}
-                  label={'Alícuota'}
-                  placeholder='Seleccione el Porcentaje de la Alícuota'
-                  flexDirection='column'
-                  alignItems='flex-end'
-                  options={[
-                    {
-                      id: '1%',
-                      name: '1%',
-                    },
-                    { id: '2%', name: '2%' },
-                  ]}
-                />
-              </SimpleGrid>
               <InputFieldTextArea
                 name='generalObservations'
                 label='Observaciones Generales'

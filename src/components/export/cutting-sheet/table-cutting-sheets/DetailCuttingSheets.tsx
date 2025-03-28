@@ -40,8 +40,6 @@ const DetailCuttingSheets = ({
         clusterDetail: string;
         labelDetail: string;
         packagingPattern: string;
-        authorizedTransport: string;
-        aliquot: string;
         palletDetail: string;
         cornerProtectorsDetail: string;
         reinforcementsDetail: string;
@@ -123,10 +121,6 @@ const DetailCuttingSheets = ({
             <p>
               <strong>Patrón de Empaquetado:</strong>{' '}
               {ex.cuttingType.packagingPattern}
-            </p>
-            <p>
-              <strong>Transporte Autorizado:</strong>{' '}
-              {ex.cuttingType.authorizedTransport}
             </p>
           </Box>
         </AccordionPanel>

@@ -18,8 +18,6 @@ export type CuttingType = {
   thirdLine: string;
   fourthLine: string;
   packagingPattern: string;
-  authorizedTransport: string;
-  aliquot: string;
   palletDetail: string;
   cornerProtectorsDetail: string;
   reinforcementsDetail: string;
