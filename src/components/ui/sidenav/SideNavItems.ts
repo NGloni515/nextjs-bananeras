@@ -161,7 +161,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
     },
     {
       label: 'Agregar Verificadora',
-      to: '/dashboard/box-brands/add-cutting-type',
+      to: '/dashboard/box-brands/add-verifier',
       submenu: [
         {
           label: 'Consultar Verificadora',
