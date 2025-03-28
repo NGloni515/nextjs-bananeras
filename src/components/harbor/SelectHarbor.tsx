@@ -40,13 +40,9 @@ const SelectHarbor: React.FC<SelectHarborProps> = ({
           setHarbor={setHarbor}
           type={type}
         />
-        {/* <Box>
-              <FormLabel>Tiempo de transporte</FormLabel>
-              <Input isReadOnly={true} value={harbor?.transportTime || ''} />
-            </Box> */}
         <Box>
           <FormLabel>País</FormLabel>
-          <Input isReadOnly={true} value={harbor?.country || ''} />
+          <Input isReadOnly={true} value={harbor?.country?.name || ''} />
         </Box>
         <Box>
           <FormLabel>Latitud</FormLabel>
@@ -66,7 +62,7 @@ const SelectHarbor: React.FC<SelectHarborProps> = ({
         </Box>
         <Box>
           <FormLabel>Ciudad</FormLabel>
-          <Input isReadOnly={true} value={harbor?.city || ''} />
+          <Input isReadOnly={true} value={harbor?.city?.name || ''} />
         </Box>
         <Box>
           <FormLabel>Longitud</FormLabel>
