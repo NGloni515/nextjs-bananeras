@@ -77,7 +77,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
     },
     {
       label: 'Agregar Deposito',
-      to: '/dashboard/client/add-harbor',
+      to: '/dashboard/client/add-deposit',
       submenu: [
         {
           label: 'Consultar Deposito',
