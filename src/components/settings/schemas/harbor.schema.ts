@@ -63,8 +63,8 @@ const contactSchema = Yup.object().shape({
         .required('Requerido'),
     phone: Yup.string()
         .matches(
-            /^(\+593)?\d{9}$/,
-            'Formato inválido. Ejemplo: +593987654321 o 0987654321'
+            /^\+\d{7,15}$/,
+            'Debes incluir el codigo del País. Ejemplo: +593987654321 (Ecuador)'
         )
         .trim()
         .required('Requerido'),

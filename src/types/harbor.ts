@@ -4,6 +4,9 @@ export type HarborType = {
   id: number | '';
   type: string;
   name: string;
+  country: { id: number; name: string };
+  province: { id: number; name: string };
+  city: { id: number; name: string };
   countryId: number | '';
   provinceId: number | '';
   cityId: number | '';
