@@ -1,0 +1,40 @@
+import { AxiosResponse } from 'axios';
+import { useQuery } from 'react-query';
+import axios from '@/lib/axios';
+import { PaginationParams } from '@/types/paginationParams';
+import { serializeQueryResult } from '@/utils/serializeQueryResult';
+import { DepositResponse } from '../../types/deposit/deposit.response';
+
+type Params = PaginationParams;
+
+function listDeposits(params: Params): Promise<AxiosResponse<DepositResponse[]>> {
+    return axios
+        .get('/deposit', { params })
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            if (error.response?.status === 404) {
+                return {
+                    data: [],
+                    status: 404,
+                    statusText: 'Not Found',
+                    headers: {},
+                    config: error.config,
+                } as AxiosResponse;
+            }
+            throw error;
+        });
+}
+
+export function useDeposits({ search = '', page = 1, limit = 10 }: Params): ReturnType<typeof serializeQueryResult> {
+    const result = useQuery(
+        ['deposits', search, page, limit],
+        () => listDeposits({ search, page, limit }),
+        {
+            keepPreviousData: true,
+        }
+    );
+
+    return serializeQueryResult(result);
+}
