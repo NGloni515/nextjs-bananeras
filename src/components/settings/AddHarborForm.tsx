@@ -52,8 +52,8 @@ const AddHarborForm: React.FC = () => {
               <InputFieldText name="address" label="Dirección" />
               <InputFieldNumber name="latitude" label="Latitud" isGeo unit="°" />
               <InputFieldNumber name="longitude" label="Longitud" isGeo unit="°" />
-              <InputFieldText name="openTime" label="Hora de apertura" />
-              <InputFieldText name="closeTime" label="Hora de cierre" />
+              <InputFieldText name="openTime" label="Hora de apertura" unit="HH:mm" />
+              <InputFieldText name="closeTime" label="Hora de cierre" unit="HH:mm" />
               <Box>
                 <CheckboxForm
                   name="is24Hours"
