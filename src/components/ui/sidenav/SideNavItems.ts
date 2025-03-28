@@ -165,7 +165,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       submenu: [
         {
           label: 'Consultar Verificadora',
-          to: '/dashboard/box-brands/cutting-types',
+          to: '/dashboard/box-brands/verifiers',
         },
       ],
     },
