@@ -252,12 +252,10 @@ const CuttingSheetForm = ({
               ? 'PALETIZADO'
               : 'GRANEL',
           boxType: cuttingSheetSelected.boxBrand?.brand?.name || '',
-          steam: cuttingSheetSelected.shipSteam || '',
           harborDeparture: cuttingSheetSelected.harborDeparture?.name || '',
           highPallets:
             prevValues.container.shipmentType === 'GRANEL' ? 'N/A' : '',
           cluster: cuttingSheetSelected.boxBrand?.clusterBag?.name || '',
-          fileCode: cuttingSheetSelected.shippingLineSeal || '',
           clusterQuantity:
             cuttingSheetSelected.boxBrand?.clusterBagQuantity || '',
           containerPositioning: prevValues.container.containerPositioning,

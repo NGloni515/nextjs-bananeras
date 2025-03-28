@@ -1,3 +1,5 @@
+import { HarborType } from "./harbor";
+
 export type HarborInfo = {
   harborId: number | '';
   estDuration: string;
@@ -11,13 +13,14 @@ export type ContactType = {
 };
 
 export type ShippingCompanyType = {
+  id: number;
   name: string;
   code: string;
   countryId: number | '';
   frequencies: string;
   cargoType: string;
   trackingPlatform: string;
-  departureHarbors: Partial<HarborInfo>[];
-  destinationHarbors: Partial<HarborInfo>[];
+  departureHarbors: Array<{ harbor: HarborType; estDuration: string; cost: number }>;
+  destinationHarbors: Array<{ harbor: HarborType; estDuration: string; cost: number }>;
   contacts: Partial<ContactType>[];
 };

@@ -1,374 +1,153 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Heading,
-  SimpleGrid,
-  useToast,
-  Text,
-} from '@chakra-ui/react';
-import { Form, Formik, FormikHelpers } from 'formik';
-import { useRouter } from 'next/navigation';
-import React from 'react';
-import { useQueryClient } from 'react-query';
-import * as Yup from 'yup';
-import DateGrid from './cutting-sheet/DateGrid';
-import SelectCuttingType from './cutting-type/SelectCuttingType';
-import { useCreateExport } from '../../hooks/export/createExport';
-import { getWeekInfo } from '../../utils/getWeekInfo';
-import SelectBoxBrand from '../box-brands/SelectBoxBrand';
-import SelectBusiness from '../business/SelectBusiness';
-import SelectClient from '../client/SelectClient';
-import SelectHarbor from '../harbor/SelectHarbor';
-import SelectProducer from '../producer/SelectProducer';
-import CheckboxForm from '../ui/form/CheckboxForm';
-import InputFieldDate from '../ui/form/InputFieldDate';
+import { Button, Divider, Flex, Heading, SimpleGrid, Box, Text } from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
+import React, { useState } from 'react';
 import InputFieldText from '../ui/form/InputFieldText';
+import InputFieldNumber from '../ui/form/InputFieldNumber';
+import InputFieldDate from '../ui/form/InputFieldDate';
+import SelectProducer from '../producer/SelectProducer';
+import SelectBusiness from '../business/SelectBusiness';
+import SelectBoxBrand from '../box-brands/SelectBoxBrand';
+import SelectClient from '../client/SelectClient';
+import DateGrid from './cutting-sheet/DateGrid';
+import { useSubmitExport } from './hooks/useSubmitExport';
+import CheckboxForm from '../ui/form/CheckboxForm';
+import { getWeekInfo } from '../../utils/getWeekInfo';
+import InputFieldShippingCompanySelect from '../shipping-company/InputFieldShippingCompanySelect';
+import InputFieldHarborShippingCompany from '../shipping-company/InputFieldHarborShippingCompany';
+import { ShippingCompanyType } from '../../types/shippingCompany';
+import InputFieldDepositSelect from '../deposit/InputFieldDepositSelect';
+import InputFieldTransportSelect from '../transport/InputFiledTransportSelect';
+import InputFieldVerifierSelect from '../verifier/InputFieldVerifierSelect';
 
-interface WeekCuttingProps {
-  description: string;
-  daysOfWeek: string[];
-  boxesOfDay: number[];
-  total: number;
-}
-
-interface ValuesProps {
-  cuttingDate: Date | '';
-  weekCutting: WeekCuttingProps;
-  boxBrandId: number | '';
-  boxQuantity: number | '';
-  merchantId: number | '';
-  businessId: number | '';
-  // harborId: number | '';
-  cuttingTypeId: number | '';
-  departureHarborId: number | '';
-  destinationHarborId: number | '';
-  clientId: number | '';
-  shipSteam: string;
-  shippingLineSeal: string;
-  extraSeal: string;
-  dataReviewed: boolean;
-}
-
-const initialValues: ValuesProps = {
-  boxBrandId: '',
-  boxQuantity: 0,
-  merchantId: '',
-  businessId: '',
-  cuttingDate: '',
-  weekCutting: {
-    description: '',
-    daysOfWeek: ['', '', '', '', '', '', ''],
-    boxesOfDay: [0, 0, 0, 0, 0, 0, 0],
-    total: 0,
-  },
-  // harborId: '',
-  cuttingTypeId: '',
-  departureHarborId: '',
-  destinationHarborId: '',
-  clientId: '',
-  shipSteam: '',
-  shippingLineSeal: '',
-  extraSeal: '',
-  dataReviewed: false,
-};
-
-const weekCuttingSchema = Yup.object().shape({
-  description: Yup.string().required('La descripción es requerida'),
-  daysOfWeek: Yup.array()
-    .of(Yup.string().required('La fecha es requerida'))
-    .length(7, 'Debe contener exactamente 7 elementos')
-    .required('Los días de la semana son requeridos'),
-  boxesOfDay: Yup.array()
-    .of(Yup.number().required('La cantidad de cajas es requerida'))
-    .length(7, 'Debe contener exactamente 7 elementos')
-    .required('La cantidad de cajas por día es requerida'),
-});
-
-const validationSchema = Yup.object({
-  boxBrandId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  boxQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .lessThan(10000, 'Debe ser menor que 10000 cajas')
-    .required('Requerido'),
-  cuttingDate: Yup.date().required('Requerido'),
-  weekCutting: weekCuttingSchema.test(
-    'boxesOfDay-sum',
-    'La sumatoria de cajas por día debe ser igual al total de cajas',
-    function (value) {
-      if (!value) return false;
-      const { boxesOfDay } = value;
-      const boxQuantity = this.parent.boxQuantity;
-      const totalBoxes = boxesOfDay.reduce((acc, curr) => acc + curr, 0);
-      return totalBoxes === boxQuantity;
-    }
-  ),
-  cuttingTypeId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  merchantId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  businessId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  departureHarborId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  destinationHarborId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  clientId: Yup.number()
-    .integer('Debe ser un número entero')
-    .moreThan(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  shipSteam: Yup.string()
-    .max(20, 'Debe tener 10 caracteres o menos')
-    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
-    .transform((value) => value.trim())
-    .required('Requerido'),
-  shippingLineSeal: Yup.string()
-    .max(20, 'Debe tener 10 caracteres o menos')
-    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
-    .transform((value) => value.trim())
-    .required('Requerido'),
-  extraSeal: Yup.string()
-    .max(20, 'Debe tener 10 caracteres o menos')
-    .matches(/^[a-zA-Z0-9]+$/, 'Solo debe contener letras y números')
-    .transform((value) => value.trim())
-    .required('Requerido'),
-  dataReviewed: Yup.boolean()
-    .oneOf([true], 'Debes revisar los datos antes de enviar')
-    .required('Requerido'),
-});
-
-const AddExportForm = (): React.JSX.Element => {
-  const { createExport, isLoading } = useCreateExport();
-  const router = useRouter();
-  const toast = useToast();
-  const queryClient = useQueryClient();
-
-  const handleSubmit = async (
-    values: ValuesProps,
-    formikHelpers: FormikHelpers<ValuesProps>
-  ): Promise<void> => {
-    const {
-      weekCutting,
-      cuttingDate,
-      boxQuantity,
-      dataReviewed,
-      ...restExportData
-    } = values;
-
-    const exportData = {
-      ...restExportData,
-      cuttingDate,
-      weekDescription: weekCutting.description,
-      weekDaysOfWeek: weekCutting.daysOfWeek,
-      weekBoxesOfDay: weekCutting.boxesOfDay,
-      weekTotal: Number(boxQuantity),
-      boxQuantity: Number(boxQuantity),
-    };
-
-    createExport(exportData, {
-      onError: (error: any) => {
-        const { response } = error;
-        const { data } = response;
-        const { statusCode, message, error: errorTitle, model, prop } = data;
-
-        toast({
-          title: `Error ${statusCode}: ${errorTitle} `,
-          description: `${message}`,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
-
-        if (statusCode === 401) {
-          router.push('/api/auth/signout');
-        }
-
-        if (model && prop) {
-          formikHelpers.setFieldError(`${prop}`, message);
-        }
-      },
-      onSuccess: () => {
-        toast({
-          title: 'Exportación creada con éxito',
-          description: 'La exportación ha sido registrada correctamente.',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
-
-        queryClient.invalidateQueries('exports');
-        queryClient.invalidateQueries('exportsPending');
-        queryClient.invalidateQueries('cuttingSheets');
-        queryClient.invalidateQueries('cuttingSheetsPending');
-
-        formikHelpers.resetForm();
-        router.push('/dashboard/export/search');
-      },
-    });
-  };
+const AddExportForm: React.FC = () => {
+  const { onSubmit, initialValues, validationSchema, isLoading } = useSubmitExport();
+  const [selectedShippingCompany, setSelectedShippingCompany] = useState<Partial<ShippingCompanyType> | null>(null);
 
   return (
-    <>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-        validationSchema={validationSchema}
-      >
-        {({ isSubmitting, values, errors }) => (
-          <Form>
-            <Flex flexDirection='column' gap={3}>
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Productor
-              </Heading>
-              <Divider mb={'16px'} />
-              <SelectProducer name={'merchantId'} />
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Finca
-              </Heading>
-              <Divider mb={'16px'} />
-              <SelectBusiness
-                name={'businessId'}
-                merchant={
-                  values?.merchantId ? Number(values.merchantId) : undefined
-                }
+    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+      {({ values, errors, setFieldValue }) => (
+        <Form>
+          <Flex flexDirection="column" gap={3}>
+            <Heading fontSize="2xl" p="12px">
+              Productor
+            </Heading>
+            <Divider mb="16px" />
+            <SelectProducer name="merchantId" />
+            <Heading fontSize="2xl" p="12px">
+              Finca
+            </Heading>
+            <Divider mb="16px" />
+            <SelectBusiness name="businessId" merchant={values.merchantId || undefined} />
+            <Heading fontSize="2xl" p="12px">
+              Marca de Caja
+            </Heading>
+            <Divider mb="16px" />
+            <SelectBoxBrand name="boxBrandId" />
+            <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <InputFieldNumber name="boxQuantity" label="Cantidad de Cajas" unit="cajas" /><Box />
+            </SimpleGrid>
+            <Heading fontSize={'2xl'} p={'12px'}>
+              Fecha de Corte
+            </Heading>
+            <Divider mb={'16px'} />
+            <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <InputFieldDate
+                name={'cuttingDate'}
+                label={'Fecha de Corte'}
+                flexDirection='row'
               />
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Marca de Caja
-              </Heading>
-              <Divider mb={'16px'} />
-
-              <SelectBoxBrand name={'boxBrandId'} name2={'boxQuantity'} />
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Fecha de Corte
-              </Heading>
-              <Divider mb={'16px'} />
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-                <InputFieldDate
-                  name={'cuttingDate'}
-                  label={'Fecha de Corte'}
-                  flexDirection='row'
-                />
-                {values.cuttingDate && (
-                  <Box w={{ base: '98%' }}>
-                    <InputFieldText
-                      name={'weekCutting.description'}
-                      isReadOnly
-                      defaultValue={
-                        getWeekInfo({ date: values.cuttingDate }).week
-                      }
-                    />
-                  </Box>
-                )}
-              </SimpleGrid>
-              {values.cuttingDate && values.weekCutting && (
-                <DateGrid
-                  nameWeek={'weekCutting.daysOfWeek'}
-                  nameBoxes={'weekCutting.boxesOfDay'}
-                  boxQuantity={Number(values.boxQuantity)}
-                  dateSelected={values.cuttingDate}
-                  startDate={
-                    getWeekInfo({ date: values.cuttingDate }).startDate
-                  }
-                />
+              {values.cuttingDate && (
+                <Box w={{ base: '98%' }}>
+                  <InputFieldText
+                    name={'weekCutting.description'}
+                    isReadOnly
+                    defaultValue={
+                      getWeekInfo({ date: values.cuttingDate }).week
+                    }
+                  />
+                </Box>
               )}
-              {!errors.weekCutting?.description &&
-                !!values.cuttingDate &&
-                !!values.weekCutting &&
-                !!errors.weekCutting && (
-                  <Text color={'#E53E3E'} fontSize={'14px'}>
-                    {errors.weekCutting ? (errors.weekCutting as string) : ''}
-                  </Text>
-                )}
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Tipo de Corte
-              </Heading>
-              <Divider mb={'16px'} />
-              <SelectCuttingType name={'cuttingTypeId'} />
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Puerto Salida
-              </Heading>
-              <Divider mb={'16px'} />
-              <SelectHarbor name={'departureHarborId'} type={'Nacional'} />
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Puerto Destino
-              </Heading>
-              <Divider mb={'16px'} />
-              <SelectHarbor
-                name={'destinationHarborId'}
-                type={'Internacional'}
-              />
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Cliente
-              </Heading>
-              <Divider mb={'16px'} />
-              <SelectClient
-                name={'clientId'}
-                harbor={
-                  values?.destinationHarborId
-                    ? Number(values.destinationHarborId)
-                    : undefined
+            </SimpleGrid>
+            {values.cuttingDate && values.weekCutting && (
+              <DateGrid
+                nameWeek={'weekCutting.daysOfWeek'}
+                nameBoxes={'weekCutting.boxesOfDay'}
+                boxQuantity={Number(values.boxQuantity)}
+                dateSelected={values.cuttingDate}
+                startDate={
+                  getWeekInfo({ date: values.cuttingDate }).startDate
                 }
-                isHarbor
               />
+            )}
+            {values.cuttingDate && errors.weekCutting && typeof errors.weekCutting === 'string' && (
+              <Text color={'#E53E3E'} fontSize={'14px'}>
+                {errors.weekCutting ? (errors.weekCutting as string) : ''}
+              </Text>
+            )}
+            <Heading fontSize="2xl" p="12px">
+              Cliente
+            </Heading>
+            <Divider mb="16px" />
+            <SelectClient name={'clientId'} />
+            <Heading fontSize={'2xl'} p={'12px'}>
+              Naviera
+            </Heading>
+            <Divider mb={'16px'} />
+            <InputFieldShippingCompanySelect
+              name="shippingCompanyId"
+              label="Naviera"
+              placeholder="Seleccione una Naviera"
+              onSelect={(company) => {
+                setSelectedShippingCompany(company);
+                setFieldValue('departureHarborId', '');
+                setFieldValue('destinationHarborId', '');
+              }}
+            />
+            <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <InputFieldHarborShippingCompany
+                key={`departure-${selectedShippingCompany?.id || 'none'}`}
+                name="departureHarborId"
+                label="Puerto de Salida"
+                type="departure"
+                placeholder="Selecciona un puerto de Salida"
+                shippingCompany={selectedShippingCompany}
+              />
+              <InputFieldHarborShippingCompany
+                key={`destination-${selectedShippingCompany?.id || 'none'}`}
+                name="destinationHarborId"
+                label="Puerto de Destino"
+                type="destination"
+                placeholder="Selecciona un puerto de Destino"
+                shippingCompany={selectedShippingCompany}
+              />
+            </SimpleGrid>
 
-              <Heading fontSize={'2xl'} p={'12px'}>
-                Logística
-              </Heading>
-              <Divider mb={'16px'} />
-              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-                <InputFieldText name={'shipSteam'} label={'Vapor del buque'} />
-                <InputFieldText
-                  name={'shippingLineSeal'}
-                  label={'Sello de Naviera'}
-                />
-                <InputFieldText name={'extraSeal'} label={'Sellos extra'} />
-              </SimpleGrid>
+            <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <InputFieldText name="shipName" label="Nombre de la Nave" />
+              <InputFieldText name="estimatedTravelTime" label="Tiempo estimado de viaje" />
+            </SimpleGrid>
 
-              <SimpleGrid columns={{ base: 1, sm: 1 }}>
-                <CheckboxForm
-                  name='dataReviewed'
-                  label='He revisado los datos agregados'
-                />
-                <Button
-                  mt='12px'
-                  py='8px'
-                  px='16px'
-                  type='submit'
-                  colorScheme='teal'
-                  isLoading={isLoading}
-                >
-                  Enviar
-                </Button>
-              </SimpleGrid>
-            </Flex>
-          </Form>
-        )}
-      </Formik>
-    </>
+            <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+              <InputFieldText name="bookingNumber" label="Número de Booking" />
+              <InputFieldText name="cutOffTime" label="Hora de Corte" unit='HH:mm' />
+            </SimpleGrid>
+
+            <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={5}>
+              <InputFieldDepositSelect name="depositId" label="Depósito" placeholder='Selecciona un Deposito' />
+              <InputFieldTransportSelect name="transportId" label="Transporte" placeholder='Selecciona un Transporte' />
+              <InputFieldVerifierSelect name="verifierId" label="Verificadora" placeholder='Selecciona una Verificadora' />
+            </SimpleGrid>
+
+            <Divider my="16px" />
+            <CheckboxForm name="dataReviewed" label="He revisado los datos agregados" />
+            <Button mt="12px" py="8px" px="16px" type="submit" colorScheme="teal" isLoading={isLoading}>
+              Enviar
+            </Button>
+          </Flex>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
