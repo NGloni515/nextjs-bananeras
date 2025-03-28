@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { useMutation } from 'react-query';
+import { AxiosError } from 'axios';
+import { useMutation, UseMutationOptions, UseMutationResult } from 'react-query';
 import axios from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
-import { ShippingCompanyType } from '@/types/shippingCompany';
+import { ServerErrorResponse } from '../../../types/errorResponse';
+import { ShippingCompanyType } from '../../../types/shippingCompany';
 
 interface CreateShippingCompanyResponse {
   shippingCompanyId: string;
@@ -15,17 +14,16 @@ export const createShippingCompany = (
   return axios.post('harbor/shipping-company', data);
 };
 
-type UseCreateShippingCompanyOptions = {
-  config?: MutationConfig<typeof createShippingCompany>;
-};
-
-export const useCreateShippingCompany = ({
-  config,
-}: UseCreateShippingCompanyOptions = {}) => {
-  const mutation = useMutation({
-    ...config,
-    mutationFn: createShippingCompany,
-  });
-
-  return { ...mutation, createShippingCompany: mutation.mutate };
+export const useCreateShippingCompany = (
+  config?: UseMutationOptions<
+    CreateShippingCompanyResponse,
+    AxiosError<ServerErrorResponse>,
+    Partial<ShippingCompanyType>
+  >
+): UseMutationResult<
+  CreateShippingCompanyResponse,
+  AxiosError<ServerErrorResponse>,
+  Partial<ShippingCompanyType>
+> => {
+  return useMutation(createShippingCompany, config);
 };

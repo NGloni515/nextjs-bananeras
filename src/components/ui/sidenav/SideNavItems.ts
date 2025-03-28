@@ -67,7 +67,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
     },
     {
       label: 'Agregar Naviera',
-      to: '/dashboard/client/add-harbor',
+      to: '/dashboard/client/add-shipping-company',
       submenu: [
         {
           label: 'Consultar Naviera',
