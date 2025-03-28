@@ -71,7 +71,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       submenu: [
         {
           label: 'Consultar Naviera',
-          to: '/dashboard/client/harbors',
+          to: '/dashboard/client/shipping-companies',
         },
       ],
     },

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
 import axios from '@/lib/axios';
@@ -32,7 +30,7 @@ export function useShippingCompanies({
   search = '',
   page = 1,
   limit = 10,
-}: Params) {
+}: Params): ReturnType<typeof serializeQueryResult> {
   const result = useQuery(
     ['shipping-companies', search, page, limit],
     () => listShippingCompany({ search, page, limit }),
