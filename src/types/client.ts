@@ -1,6 +1,7 @@
 import { ContactType } from "./merchant/contact";
 
 export type ClientType = {
+  id: number;
   businessName: string;
   businessId: string;
   address: string;

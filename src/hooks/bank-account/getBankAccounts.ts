@@ -26,8 +26,7 @@ function listBankAccount(params: Params): Promise<AxiosResponse> {
     });
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export function useBankAccounts({ search = '', page = 1, limit = 10 }: Params) {
+export function useBankAccounts({ search = '', page = 1, limit = 10 }: Params): ReturnType<typeof serializeQueryResult> {
   const result = useQuery(
     ['bankAccounts', search, page, limit],
     () => listBankAccount({ search, page, limit }),

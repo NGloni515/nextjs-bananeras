@@ -46,23 +46,23 @@ const SelectClient: React.FC<SelectClientProps> = ({
 
         <Box>
           <FormLabel>RUC</FormLabel>
-          <Input isReadOnly={true} value={client?.businessId || ''} />
+          <Input isReadOnly={true} value={client?.businessId || ''} placeholder='Ruc del Cliente' />
         </Box>
         <Box>
           <FormLabel>Tipo</FormLabel>
-          <Input isReadOnly={true} value={client?.type || ''} />
+          <Input isReadOnly={true} value={client?.type || ''} placeholder='Tipo' />
         </Box>
         <Box>
           <FormLabel>Correo</FormLabel>
           <Input
             isReadOnly={true}
             value={client?.email || ''}
-            placeholder={client ? 'No se ha agregado información' : ''}
+            placeholder='Correo del Cliente'
           />
         </Box>
         <Box>
           <FormLabel>Teléfono</FormLabel>
-          <Input isReadOnly={true} value={client?.phone || ''} />
+          <Input isReadOnly={true} value={client?.phone || ''} placeholder='Teléfono del Cliente' />
         </Box>
       </SimpleGrid>
     </>

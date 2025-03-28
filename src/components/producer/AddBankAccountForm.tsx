@@ -73,10 +73,6 @@ const validationSchema = Yup.object({
   owner: Yup.string()
     .max(50, 'Debe tener 50 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
-    .matches(
-      /^[a-zA-Z0-9\s]+$/,
-      'Solo debe contener letras, números y espacios'
-    )
     .transform((value) => value.trim())
     .required('Requerido'),
   ownerID: Yup.string()
@@ -151,6 +147,7 @@ const AddBankAccountForm = (): React.JSX.Element => {
         clientId: Number(client.id!),
         owner: client.businessName!,
         ownerID: client.businessId!,
+        email: client.email!,
         isProducer: isProducerPath,
         isClient: isClientPath,
       }));
@@ -274,8 +271,8 @@ const AddBankAccountForm = (): React.JSX.Element => {
             <Divider mb={'16px'} />
 
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-              <InputFieldText name={'bank'} label={'Banco'} />
-              <InputFieldText name={'owner'} label={'Propietario'} />
+              <InputFieldText name={'bank'} label={'Banco'} placeholder='Nombre del Banco' />
+              <InputFieldText name={'owner'} label={'Propietario'} placeholder='Propietario de la Cuenta' />
               <InputFieldText name={'ownerID'} label={'Identificación'} />
               <InputFieldText name={'accountNumber'} label={'N° de Cuenta'} />
               <InputFieldSelector
