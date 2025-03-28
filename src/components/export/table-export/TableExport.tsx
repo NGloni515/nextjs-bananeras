@@ -14,6 +14,7 @@ import DetailExport from './DetailExport';
 import { useExports } from '../../../hooks/export/getExports';
 import { usePagination } from '../../../hooks/usePagination';
 import { ExportType } from '../../../types/export';
+import { ExportResponse } from '../../../types/export.response';
 
 const TableExport = ({
   width,
@@ -39,147 +40,64 @@ const TableExport = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const columns = useMemo<MRT_ColumnDef<Partial<ExportType>>[]>(
-    () => [
-      {
-        id: 'boxes',
-        header: 'Cajas',
-        size: 50,
-        columns: [
-          {
-            id: 'boxQuantity',
-            header: '📦',
-            accessorKey: 'boxQuantity',
-            size: 50,
-            enableColumnActions: false,
-          },
-        ],
-      },
-      {
-        id: 'boxBrand',
-        header: 'Exportación',
-        columns: [
-          {
-            accessorKey: 'boxBrand.name',
-            header: 'Nombre',
-          },
-          {
-            accessorKey: 'boxBrand.brand.name',
-            header: 'Marca',
-          },
-          {
-            accessorKey: 'boxBrand.brandCode',
-            header: 'Código',
-          },
-        ],
-      },
-      {
-        id: 'producer',
-        header: 'Productor',
-        columns: [
-          {
-            accessorKey: 'merchant.businessName',
-            header: 'Razon Social',
-          },
-          {
-            accessorKey: 'merchant.businessId',
-            header: 'RUC',
-          },
-          {
-            accessorKey: 'business.name',
-            header: 'Finca',
-          },
-        ],
-      },
-      {
-        id: 'harborDeparture',
-        header: 'Puerto Salida',
-        columns: [
-          {
-            accessorKey: 'harborDeparture.name',
-            header: 'Nombre',
-          },
-          {
-            accessorKey: 'harborDeparture.city',
-            header: 'Ciudad',
-          },
-        ],
-      },
-      {
-        id: 'harborDestination',
-        header: 'Puerto Destino',
-        columns: [
-          {
-            accessorKey: 'harborDestination.name',
-            header: 'Nombre',
-          },
-          {
-            accessorKey: 'harborDestination.country',
-            header: 'Ciudad',
-          },
-          {
-            accessorKey: 'harborDestination.city',
-            header: 'Ciudad',
-          },
-        ],
-      },
-      {
-        id: 'client',
-        header: 'Cliente',
-        columns: [
-          {
-            accessorKey: 'client.businessName',
-            header: 'Razon Social',
-          },
-          {
-            accessorKey: 'client.type',
-            header: 'Tipo',
-          },
-          {
-            accessorKey: 'client.businessId',
-            header: 'ID',
-          },
-          {
-            accessorKey: 'client.email',
-            header: 'Email',
-            enableClickToCopy: true,
-          },
-          {
-            accessorKey: 'client.phone',
-            header: 'Telefono',
-            enableClickToCopy: true,
-          },
-        ],
-      },
-      {
-        header: 'Enviado',
-        size: 50,
-        columns: [
-          {
-            accessorFn: (row) => `${row.pendingExportSent}`,
-            id: 'pendingExportSent',
-            header: '🚛',
-            enableColumnActions: false,
-            size: 50,
-            Cell: ({ renderedCellValue }) => (
-              <span>
-                {renderedCellValue === 'false' ? (
-                  <Center>
-                    <BsFillSendCheckFill color='green' />
-                  </Center>
-                ) : (
-                  <Center>
-                    <BsFillSendDashFill color='orange' />
-                  </Center>
-                )}
-              </span>
-            ),
-          },
-        ],
-      },
-    ],
-    []
-  );
+  const columns = useMemo<MRT_ColumnDef<ExportResponse>[]>(() => [
+    {
+      header: 'Exportación',
+      columns: [
+        { accessorKey: 'boxQuantity', header: 'Cajas' },
+        { accessorKey: 'boxBrand.name', header: 'Caja' },
+        { accessorKey: 'boxBrand.brand.name', header: 'Marca' },
+        { accessorKey: 'boxBrand.brandCode', header: 'Código Marca' },
+        { accessorKey: 'shipName', header: 'Barco' },
+        { accessorKey: 'bookingNumber', header: 'Booking' },
+        { accessorKey: 'cutOffTime', header: 'Cut-Off' },
+      ],
+    },
+    {
+      header: 'Productor/Finca',
+      columns: [
+        { accessorKey: 'merchant.businessName', header: 'Productor' },
+        { accessorKey: 'merchant.businessId', header: 'RUC' },
+        { accessorKey: 'business.name', header: 'Finca' },
+        { accessorKey: 'business.city.name', header: 'Ciudad Finca' },
+      ],
+    },
+    {
+      header: 'Cliente',
+      columns: [
+        { accessorKey: 'client.businessName', header: 'Razón Social' },
+        { accessorKey: 'client.businessId', header: 'RUC' },
+        { accessorKey: 'client.email', header: 'Email', enableClickToCopy: true },
+        { accessorKey: 'client.phone', header: 'Teléfono', enableClickToCopy: true },
+      ],
+    },
+    {
+      header: 'Puertos',
+      columns: [
+        { accessorKey: 'harborDeparture.name', header: 'Salida' },
+        { accessorKey: 'harborDestination.name', header: 'Destino' },
+      ],
+    },
+    {
+      header: 'Envío',
+      columns: [
+        {
+          id: 'enviado',
+          header: 'Enviado',
+          accessorFn: (row) => `${row.pendingExportSent}`,
+          Cell: ({ renderedCellValue }) => (
+            <Center>
+              {renderedCellValue === 'false' ? (
+                <BsFillSendCheckFill color="green" />
+              ) : (
+                <BsFillSendDashFill color="orange" />
+              )}
+            </Center>
+          ),
+        },
+      ],
+    },
+  ], []);
 
   const table = useMaterialReactTable({
     columns,
@@ -229,14 +147,7 @@ const TableExport = ({
           width: '100%',
         }}
       >
-        <DetailExport
-          boxBrand={row.original.boxBrand!}
-          supply={row.original.exportSent!}
-          businessContacts={row.original.business?.contacts || []}
-          pendingSent={row.original.pendingExportSent!}
-          width={width}
-          windowSize={windowSize}
-        />
+        <DetailExport data={row.original} width={width} />
       </Box>
     ),
     localization: MRT_Localization_ES,
