@@ -1,208 +1,244 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Heading,
-  SimpleGrid,
-  useToast,
-} from '@chakra-ui/react';
+'use client';
+import { Box, Button, Divider, Flex, Heading, SimpleGrid, useToast } from '@chakra-ui/react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
-import DateGrid from './DateGrid';
+import DisplayField from './DisplayField';
+import ReadOnlyDateGrid from './ReadOnlyDateGrid';
 import { useCreateCuttingSheet } from '../../../hooks/export/cuttingSheet/createCuttingSheet';
 import { CuttingSheetType } from '../../../types/cuttingSheet';
-import { ExportType } from '../../../types/export';
-import { getWeekInfo } from '../../../utils/getWeekInfo';
+import { ExportResponse } from '../../../types/export.response';
 import CheckboxForm from '../../ui/form/CheckboxForm';
-import InputFieldDate from '../../ui/form/InputFieldDate';
-import InputFieldQuantity from '../../ui/form/InputFieldQuantity';
 import InputFieldSelector from '../../ui/form/InputFieldSelector';
 import InputFieldText from '../../ui/form/InputFieldText';
-import InputFieldTextArea from '../../ui/form/InputFieldTextArea';
-import InputFieldSentInsecticides from '../ui/InputFieldSentInsecticides';
-import InputFieldSentPesticides from '../ui/InputFieldSentPesticides';
+import SelectCuttingType from '../cutting-type/SelectCuttingType';
 
-interface ContainerProps {
-  boxBrand: string;
-  shipmentType: string;
-  boxType: string;
-  steam: string;
-  harborDeparture: string;
-  boxQuantity: number | '';
+
+const emptyExportData: ExportResponse = {
+  id: 0,
+  boxQuantity: 0,
+  boxBrand: {
+    id: 0,
+    name: '',
+    brandCode: '',
+    netWeightBox: 0,
+    grossWeightBox: 0,
+    brand: { id: 0, name: '' },
+    bottomType: { id: 0, name: '', code: '', exporterId: 0 },
+    bottomTypeQuantity: 0,
+    lidType: { id: 0, name: '', code: '', exporterId: 0 },
+    lidTypeQuantity: 0,
+    coverType: { id: 0, name: '', code: '', exporterId: 0 },
+    coverTypeQuantity: 0,
+    cardboardType: { id: 0, name: '', code: '', exporterId: 0 },
+    cardboardTypeQuantity: 0,
+    parasealType: { id: 0, name: '', code: '', exporterId: 0 },
+    parasealTypeQuantity: 0,
+    padType: { id: 0, name: '', code: '', exporterId: 0 },
+    padTypeQuantity: 0,
+    spongeType: { id: 0, name: '', code: '', exporterId: 0 },
+    spongeTypeQuantity: 0,
+    label: { id: 0, name: '' },
+    labelQuantity: 0,
+    band: { id: 0, name: '' },
+    bandQuantity: 0,
+    sachet: { id: 0, name: '' },
+    sachetQuantity: 0,
+    rubber: { id: 0, name: '' },
+    rubberQuantity: 0,
+    protector: { id: 0, name: '' },
+    protectorQuantity: 0,
+    clusterBag: { id: 0, name: '' },
+    clusterBagQuantity: 0,
+    pesticideCocktail: [],
+    palletsType: { id: 0, name: '', code: '', exporterId: 0 },
+    palletsTypeQuantity: 0,
+    miniPalletsType: { id: 0, name: '', code: '', exporterId: 0 },
+    miniPalletsTypeQuantity: 0,
+    cornerType: { id: 0, name: '', code: '', exporterId: 0 },
+    cornerTypeQuantity: 0,
+    reinforcementType: { id: 0, name: '', code: '', exporterId: 0 },
+    reinforcementTypeQuantity: 0,
+    staple: { id: 0, name: '' },
+    stapleQuantity: 0,
+    stripping: { id: 0, name: '' },
+    strippingQuantity: 0,
+    thermograph: { id: 0, name: '' },
+    thermographQuantity: 0,
+    seal: { id: 0, name: '' },
+    sealQuantity: 0,
+    mettoLabel: { id: 0, name: '' },
+    mettoLabelQuantity: 0,
+    packingTapeType: { id: 0, name: '', code: '', exporterId: 0 },
+    packingTapeTypeQuantity: 0,
+    latexRemover: { id: 0, name: '' },
+    latexRemoverQuantity: 0,
+    insecticideCocktail: [],
+    blockingSheet: { id: 0, name: '' },
+    blockingSheetQuantity: 0,
+  },
+  merchant: {
+    id: 0,
+    businessName: '',
+    businessId: '',
+    city: { id: 0, name: '', code: '', provinceId: 0 },
+    address: '',
+  },
+  business: {
+    id: 0,
+    name: '',
+    address: '',
+    area: 0,
+    city: { id: 0, name: '', code: '', provinceId: 0 },
+    latitude: null,
+    longitude: null,
+    contacts: [],
+  },
+  harborDeparture: {
+    id: 0,
+    name: '',
+    country: { id: 0, name: '', code: '' },
+    city: { id: 0, name: '', code: '', provinceId: 0 },
+    latitude: null,
+    longitude: null,
+  },
+  harborDestination: {
+    id: 0,
+    name: '',
+    country: { id: 0, name: '', code: '' },
+    city: { id: 0, name: '', code: '', provinceId: 0 },
+    latitude: null,
+    longitude: null,
+  },
+  client: {
+    id: 0,
+    businessName: '',
+    businessId: '',
+    commercialType: '',
+    email: '',
+    phone: '',
+  },
+  exportSent: false,
+  pendingExportSent: false,
+  pendingCuttingSheet: false,
+  cuttingDate: '',
+  weekDescription: '',
+  weekDaysOfWeek: ['', '', '', '', '', '', ''],
+  weekBoxesOfDay: [0, 0, 0, 0, 0, 0, 0],
+  weekTotal: 0,
+  shipName: '',
+  estimatedTravelTime: '',
+  bookingNumber: '',
+  cutOffTime: '',
+  shippingCompany: { id: 0, name: '', code: '', contacts: [] },
+  deposit: { id: 0, name: '', address: '', city: { id: 0, name: '' }, contacts: [] },
+  transport: { id: 0, name: '', ruc: '', address: '', satelliteTracking: false, contacts: [] },
+  verifier: { id: 0, name: '', ruc: '', address: '', contacts: [] },
+};
+
+interface FinalFormValues {
+  exportData: ExportResponse;
+  cuttingTypeId: string;
+  palletsHeight: string;
   containerPositioning: string;
   belowDeck: string;
-  highPallets: string;
-  cluster: string;
-  fileCode: string;
-}
-
-interface PackagingProps {
-  bag: string;
-  sachet: string;
-  pad: number | '';
-  firstLine: string;
-  secondLine: string;
-  thirdLine: string;
-  fourthLine: string;
-}
-
-interface MaterialsProps {
-  packagingPattern: string;
-  pallets: string | '';
-  plasticCorners: number | '';
-  reinforcements: number | '';
-  plasticStraps: string;
-  staples: string;
-  cardboardSheets: number | '';
-  authorizedTransport: string;
-  thermometer: string;
-  generalObservations: string;
-}
-interface BusinessProps {
-  name: string;
-  quality: string;
-  city: string;
-  codeMAGAP: string;
-}
-
-interface ProducerProps {
-  businessName: string | '';
-  business: BusinessProps;
-}
-
-interface WeekCuttingProps {
-  description: string;
-  daysOfWeek: string[];
-  boxesOfDay: number[];
-}
-
-interface CutSpecificationsProps {
-  leaves: number | '';
-  ageCutting: number | '';
-  netWeight: number | '';
-  grossWeight: number | '';
-  caliberMin: number | '';
-  caliberMax: number | '';
-  fingerLength: string;
-  saneos: string;
-  cunas: string;
-  labels: string;
-}
-
-interface ValuesProps {
-  cuttingDate: Date | '';
-  weekCutting: WeekCuttingProps;
-  producer: ProducerProps;
-  container: ContainerProps;
-  cutSpecifications: CutSpecificationsProps;
-  packaging: PackagingProps;
-  materials: MaterialsProps;
   dataReviewed: boolean;
 }
 
-const initialValues: ValuesProps = {
-  cuttingDate: '',
-  weekCutting: {
-    description: '',
-    daysOfWeek: ['', '', '', '', '', '', ''],
-    boxesOfDay: [0, 0, 0, 0, 0, 0, 0],
-  },
-  producer: {
-    businessName: '',
-    business: {
-      name: '',
-      quality: '',
-      city: '',
-      codeMAGAP: '',
-    },
-  },
-  container: {
-    boxBrand: '',
-    shipmentType: '',
-    boxType: '',
-    steam: '',
-    harborDeparture: '',
-    boxQuantity: '',
-    containerPositioning: '',
-    belowDeck: '',
-    highPallets: '',
-    cluster: '',
-    fileCode: '',
-  },
-  cutSpecifications: {
-    leaves: '',
-    ageCutting: '',
-    netWeight: '',
-    grossWeight: '',
-    caliberMin: '',
-    caliberMax: '',
-    fingerLength: '',
-    saneos: '',
-    cunas: '',
-    labels: '',
-  },
-  packaging: {
-    bag: '',
-    sachet: '',
-    pad: '',
-    firstLine: '',
-    secondLine: '',
-    thirdLine: '',
-    fourthLine: '',
-  },
-  materials: {
-    packagingPattern: '',
-    pallets: '',
-    plasticCorners: '',
-    reinforcements: '',
-    plasticStraps: '',
-    staples: '',
-    cardboardSheets: '',
-    authorizedTransport: '',
-    thermometer: '',
-    generalObservations: '',
-  },
+const initialFinalFormValues: FinalFormValues = {
+  exportData: emptyExportData,
+  cuttingTypeId: '',
+  palletsHeight: '',
+  containerPositioning: '',
+  belowDeck: '',
   dataReviewed: false,
 };
 
-const containerSchema = Yup.object().shape({
-  containerPositioning: Yup.string()
-    .required('La posición del contenedor es requerida')
-    .oneOf(['CAMPO', 'ACOPIO', 'N/A'], 'Valor no válido'),
-  belowDeck: Yup.string()
-    .required('Debajo de la cubierta es requerido')
-    .oneOf(['NO', 'SI'], 'Valor no válido'),
-  highPallets: Yup.string()
-    .required('Palets altos es requerido')
-    .oneOf(
-      ['PALETS 8 DE ALTO', 'PALETS 9 DE ALTO', 'PALETS 10 DE ALTO', 'N/A'],
-      'Valor no válido'
-    ),
-});
+const mapExportToFormValues = (exportData: Partial<ExportResponse>): FinalFormValues => {
+  return {
+    exportData: {
+      ...emptyExportData,
+      ...exportData,
+      boxBrand: {
+        ...emptyExportData.boxBrand,
+        ...exportData.boxBrand,
+        brand: {
+          ...emptyExportData.boxBrand.brand,
+          ...exportData.boxBrand?.brand,
+        },
+      },
+      merchant: {
+        ...emptyExportData.merchant,
+        ...exportData.merchant,
+        city: {
+          ...emptyExportData.merchant.city,
+          ...exportData.merchant?.city,
+        },
+      },
+      business: {
+        ...emptyExportData.business,
+        ...exportData.business,
+        city: {
+          ...emptyExportData.business.city,
+          ...exportData.business?.city,
+        },
+      },
+      harborDeparture: {
+        ...emptyExportData.harborDeparture,
+        ...exportData.harborDeparture,
+      },
+      harborDestination: {
+        ...emptyExportData.harborDestination,
+        ...exportData.harborDestination,
+      },
+      shippingCompany: {
+        ...emptyExportData.shippingCompany,
+        ...exportData.shippingCompany,
+      },
+      deposit: {
+        ...emptyExportData.deposit,
+        ...exportData.deposit,
+      },
+      transport: {
+        ...emptyExportData.transport,
+        ...exportData.transport,
+      },
+      verifier: {
+        ...emptyExportData.verifier,
+        ...exportData.verifier,
+      },
+    },
+    cuttingTypeId: '',
+    palletsHeight: '',
+    containerPositioning: '',
+    belowDeck: '',
+    dataReviewed: false,
+  };
+};
 
-const validationSchema = Yup.object({
-  container: containerSchema.required(
-    'La información del contenedor es requerida'
-  ),
+
+const finalValidationSchema = Yup.object({
+  exportData: Yup.mixed().required('Datos de exportación requeridos'),
+  cuttingTypeId: Yup.number()
+    .typeError('El tipo de corte debe ser un número')
+    .required('Tipo de corte es requerido'),
+  palletsHeight: Yup.string().required('Altura de palets es requerida'),
+  containerPositioning: Yup.string().required('Posición del contenedor es requerida'),
+  belowDeck: Yup.string().required('Bajo cubierta es requerido'),
   dataReviewed: Yup.boolean()
     .oneOf([true], 'Debes revisar los datos antes de enviar')
     .required('Requerido'),
 });
 
-const CuttingSheetForm = ({
-  cuttingSheetSelected,
-}: {
-  cuttingSheetSelected: Partial<ExportType>;
-  pathname: string;
-}): React.JSX.Element => {
-  const [initialValuesCuttingSheet, setInitialValuesCuttingSheet] =
-    useState<ValuesProps>(initialValues);
+interface CuttingSheetFormProps {
+  cuttingSheetSelected: Partial<ExportResponse>;
+}
+
+const CuttingSheetForm = ({ cuttingSheetSelected }: CuttingSheetFormProps): React.JSX.Element => {
+  const [finalValues, setFinalValues] = useState<FinalFormValues>(initialFinalFormValues);
 
   const { createCuttingSheet, isLoading } = useCreateCuttingSheet();
   const router = useRouter();
@@ -210,174 +246,34 @@ const CuttingSheetForm = ({
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!cuttingSheetSelected) return;
-
-    setInitialValuesCuttingSheet((prevValues) => {
-      return {
-        ...prevValues,
-        exportId: cuttingSheetSelected.id,
-        cuttingDate: cuttingSheetSelected.cuttingDate || '',
-        weekCutting: {
-          description: cuttingSheetSelected.weekDescription || '',
-          daysOfWeek: cuttingSheetSelected.weekDaysOfWeek || [
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-          ],
-          boxesOfDay: cuttingSheetSelected.weekBoxesOfDay || [
-            0, 0, 0, 0, 0, 0, 0,
-          ],
-        },
-        producer: {
-          businessName: cuttingSheetSelected.merchant?.businessName || '',
-          business: {
-            ...prevValues.producer.business,
-            name: cuttingSheetSelected.business?.name || '',
-            city: cuttingSheetSelected.business?.city?.name || '',
-            codeMAGAP: cuttingSheetSelected.business?.codeMAGAP || '',
-            quality: cuttingSheetSelected.cuttingType?.quality || '',
-          },
-        },
-        container: {
-          ...prevValues.container,
-          boxQuantity: cuttingSheetSelected.boxQuantity || 0,
-          boxBrand: cuttingSheetSelected.boxBrand?.name || '',
-          shipmentType:
-            cuttingSheetSelected.boxBrand?.palletsType?.name ||
-              cuttingSheetSelected.boxBrand?.miniPalletsType?.name
-              ? 'PALETIZADO'
-              : 'GRANEL',
-          boxType: cuttingSheetSelected.boxBrand?.brand?.name || '',
-          harborDeparture: cuttingSheetSelected.harborDeparture?.name || '',
-          highPallets:
-            prevValues.container.shipmentType === 'GRANEL' ? 'N/A' : '',
-          cluster: cuttingSheetSelected.boxBrand?.clusterBag?.name || '',
-          clusterQuantity:
-            cuttingSheetSelected.boxBrand?.clusterBagQuantity || '',
-          containerPositioning: prevValues.container.containerPositioning,
-          belowDeck: prevValues.container.belowDeck,
-        },
-        cutSpecifications: {
-          ...prevValues.cutSpecifications,
-          netWeight: cuttingSheetSelected.boxBrand?.netWeightBox || '',
-          grossWeight: cuttingSheetSelected.boxBrand?.grossWeightBox || '',
-          labels: cuttingSheetSelected.boxBrand?.label?.name || '',
-          leaves: cuttingSheetSelected.cuttingType?.leavesAtHarvest || '',
-          ageCutting: cuttingSheetSelected.cuttingType?.maxAgeAtCut || '',
-          caliberMin: cuttingSheetSelected.cuttingType?.minCaliber || '',
-          caliberMax: cuttingSheetSelected.cuttingType?.maxCaliber || '',
-          fingerLength: cuttingSheetSelected.cuttingType?.fingerLength || '',
-          saneos: cuttingSheetSelected.cuttingType?.saneos || '',
-          cunas: cuttingSheetSelected.cuttingType?.cunas || '',
-          labelsQuantity: cuttingSheetSelected.boxBrand?.labelQuantity || '',
-          clusterDetail: cuttingSheetSelected.cuttingType?.clusterDetail || '',
-          labelDetail: cuttingSheetSelected.cuttingType?.labelDetail || '',
-        },
-        packaging: {
-          ...prevValues.packaging,
-          bag: cuttingSheetSelected.boxBrand?.clusterBag?.name || '',
-          sachet: cuttingSheetSelected.boxBrand?.sachet?.name || '',
-          sachetQuantity: cuttingSheetSelected.boxBrand?.sachetQuantity || 0,
-          pad: cuttingSheetSelected.boxBrand?.padTypeId || 0,
-          padQuantity: cuttingSheetSelected.boxBrand?.padTypeQuantity || 0,
-          firstLine: cuttingSheetSelected.cuttingType?.firstLine || '',
-          secondLine: cuttingSheetSelected.cuttingType?.secondLine || '',
-          thirdLine: cuttingSheetSelected.cuttingType?.thirdLine || '',
-          fourthLine: cuttingSheetSelected.cuttingType?.fourthLine || '',
-        },
-        materials: {
-          ...prevValues.materials,
-          packagingPattern:
-            cuttingSheetSelected.cuttingType?.packagingPattern || '',
-          pallets: cuttingSheetSelected.boxBrand?.palletsType?.name || '',
-          palletsQuantity:
-            cuttingSheetSelected.boxBrand?.palletsTypeQuantity || 0,
-          palletsDetail: cuttingSheetSelected.cuttingType?.palletDetail || '',
-          plasticCorners: cuttingSheetSelected.boxBrand?.cornerTypeId || '',
-          plasticCornersQuantity:
-            cuttingSheetSelected.boxBrand?.cornerTypeQuantity || 0,
-          plasticCornersDetail:
-            cuttingSheetSelected.cuttingType?.cornerProtectorsDetail || '',
-          reinforcements:
-            cuttingSheetSelected.boxBrand?.reinforcementTypeId || '',
-          reinforcementsQuantity:
-            cuttingSheetSelected.boxBrand?.reinforcementTypeQuantity || 0,
-          reinforcementsDetail:
-            cuttingSheetSelected.cuttingType?.reinforcementsDetail || '',
-          plasticStraps: cuttingSheetSelected.boxBrand?.stripping?.name || '',
-          plasticStrapsQuantity:
-            cuttingSheetSelected.boxBrand?.strippingQuantity || 0,
-          plasticStrapsDetail:
-            cuttingSheetSelected.cuttingType?.plasticStrapsDetail || '',
-          staples: cuttingSheetSelected.boxBrand?.staple?.name || '',
-          staplesQuantity: cuttingSheetSelected.boxBrand?.stapleQuantity || 0,
-          staplesDetail: cuttingSheetSelected.cuttingType?.staplesDetail || '',
-          cardboardSheets: cuttingSheetSelected.boxBrand?.cardboardTypeId || '',
-          cardboardSheetsQuantity:
-            cuttingSheetSelected.boxBrand?.cardboardTypeQuantity || 0,
-          cardboardSheetsDetail:
-            cuttingSheetSelected.cuttingType?.blockingSheetsDetail || '',
-          thermometer: cuttingSheetSelected.boxBrand?.thermograph?.name || '',
-          thermometerQuantity:
-            cuttingSheetSelected.boxBrand?.thermographQuantity || 0,
-          thermometerDetail:
-            cuttingSheetSelected.cuttingType?.transportDetail || '',
-          generalObservations:
-            cuttingSheetSelected.cuttingType?.generalObservations || '',
-        },
-        pesticideSent:
-          cuttingSheetSelected.boxBrand?.pesticideCocktail?.map(
-            (pesticide) => ({
-              pesticideId: pesticide.pesticide?.id || '',
-              quantity: pesticide.quantity || 0,
-            })
-          ) || [],
-        insecticideSent:
-          cuttingSheetSelected.boxBrand?.insecticideCocktail?.map(
-            (insecticide) => ({
-              insecticideId: insecticide.insecticide?.id || '',
-              quantity: insecticide.quantity || 0,
-            })
-          ) || [],
-      };
-    });
+    if (cuttingSheetSelected) {
+      setFinalValues(mapExportToFormValues(cuttingSheetSelected));
+    }
   }, [cuttingSheetSelected]);
 
   const handleSubmit = async (
-    values: ValuesProps,
-    formikHelpers: FormikHelpers<ValuesProps>
+    values: FinalFormValues,
+    formikHelpers: FormikHelpers<FinalFormValues>
   ): Promise<void> => {
-    const { dataReviewed, container, ...rest } = values;
-
-    const cuttingSheetData: CuttingSheetType = {
-      exportId: cuttingSheetSelected.id || 0,
-      palletsHeight: container.highPallets,
-      containerPositioning: container.containerPositioning,
-      belowDeck: container.belowDeck,
+    const payload: CuttingSheetType = {
+      exportId: values.exportData.id,
+      cuttingTypeId: Number(values.cuttingTypeId),
+      palletsHeight: values.palletsHeight,
+      containerPositioning: values.containerPositioning,
+      belowDeck: values.belowDeck,
     };
 
-    createCuttingSheet(cuttingSheetData, {
+    createCuttingSheet(payload, {
       onError: (error: any) => {
         const { response } = error;
         const { data } = response;
-        const { statusCode, message, error: errorTitle, model, prop } = data;
-
         toast({
-          title: `Error ${statusCode}: ${errorTitle}`,
-          description: `${message}`,
+          title: `Error ${data.statusCode}: ${data.error}`,
+          description: data.message,
           status: 'error',
           duration: 5000,
           isClosable: true,
         });
-
-        if (model === 'CuttingSheet' && prop) {
-          formikHelpers.setFieldTouched(`${prop}`, true, false);
-          formikHelpers.setFieldError(`${prop}`, message);
-        }
       },
       onSuccess: (response) => {
         toast({
@@ -388,7 +284,6 @@ const CuttingSheetForm = ({
           isClosable: true,
           onCloseComplete: () => window.open(response.pdfUrl, '_blank'),
         });
-
         queryClient.invalidateQueries('cuttingSheets');
         queryClient.invalidateQueries('cuttingSheetsPending');
         formikHelpers.resetForm();
@@ -396,144 +291,359 @@ const CuttingSheetForm = ({
       },
     });
   };
+  const palletsOptions =
+    finalValues.exportData.boxBrand?.palletsType?.name && finalValues.exportData.boxBrand?.palletsTypeQuantity !== 0
+      ? [
+        { id: 'PALETS 8 DE ALTO', name: 'PALETS 8 DE ALTO' },
+        { id: 'PALETS 9 DE ALTO', name: 'PALETS 9 DE ALTO' },
+        { id: 'PALETS 10 DE ALTO', name: 'PALETS 10 DE ALTO' },
+      ]
+      : [{ id: 'N/A', name: 'N/A' }];
 
   return (
-    <Formik
-      initialValues={initialValuesCuttingSheet}
-      enableReinitialize={true}
-      onSubmit={handleSubmit}
-      validationSchema={validationSchema}
-    >
-      {({ isSubmitting, values, errors }) => {
-        return (
+    <Box>
+      <Heading mb="4" size="lg">
+        Información de la Exportación
+      </Heading>
+      <Box mb="6" p="4" borderWidth="1px" borderRadius="md">
+        <Heading size="md" mb="4">Información General</Heading>
+        <Divider mb={'16px'} />
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2">
+          <DisplayField label="Cantidad de Cajas" value={finalValues.exportData?.boxQuantity.toString()} />
+          <DisplayField label="Envío de Insumos Pendiente" value={finalValues.exportData?.pendingExportSent ? "Sí" : "No"} />
+          <DisplayField label="Fecha de Corte" value={new Date(finalValues.exportData.cuttingDate).toLocaleDateString()} />
+          <DisplayField label="Descripción de la Semana" value={finalValues.exportData.weekDescription} />
+        </SimpleGrid>
+        <ReadOnlyDateGrid
+          weekDaysOfWeek={finalValues.exportData.weekDaysOfWeek}
+          weekBoxesOfDay={finalValues.exportData.weekBoxesOfDay}
+          weekTotal={finalValues.exportData.weekTotal}
+        />
+
+        <Heading size="md" mt="4" mb="4">Información de Envío</Heading>
+        <Divider mb={'16px'} />
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2" pb={4}>
+          <DisplayField label="Nombre de la Nave" value={finalValues.exportData?.shipName} />
+          <DisplayField label="Tiempo Estimado de Viaje" value={finalValues.exportData?.estimatedTravelTime} />
+          <DisplayField label="Numero de Booking" value={finalValues.exportData?.bookingNumber} />
+          <DisplayField label="Cut Off Time" value={finalValues.exportData?.cutOffTime} />
+        </SimpleGrid>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2" pb={4}>
+          <DisplayField label="Puerto de Salida" value={finalValues.exportData?.harborDeparture.name} />
+          <DisplayField label="País" value={finalValues.exportData?.harborDeparture.country.name} />
+          <DisplayField label="Ciudad" value={finalValues.exportData?.harborDeparture.city.name} />
+        </SimpleGrid>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2" pb={4}>
+          <DisplayField label="Puerto de Llegada" value={finalValues.exportData?.harborDestination.name} />
+          <DisplayField label="País" value={finalValues.exportData?.harborDestination.country.name} />
+          <DisplayField label="Ciudad" value={finalValues.exportData?.harborDestination.city.name} />
+        </SimpleGrid>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2" pb={4}>
+          <DisplayField label="Naviera" value={finalValues.exportData?.shippingCompany.name} />
+          <DisplayField label="Código" value={finalValues.exportData?.shippingCompany.code} />
+        </SimpleGrid>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2" pb={4}>
+          <DisplayField label="Deposito" value={finalValues.exportData?.deposit.name} />
+          <DisplayField label="Dirección" value={finalValues.exportData?.deposit.address} />
+          <DisplayField label="Ciudad" value={finalValues.exportData?.deposit.city.name} />
+        </SimpleGrid>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2" pb={4}>
+          <DisplayField label="Transporte" value={finalValues.exportData?.transport.name} />
+          <DisplayField label="RUC" value={finalValues.exportData?.transport.ruc} />
+          <DisplayField label="Dirección" value={finalValues.exportData?.transport.address} />
+          <DisplayField label="Tracking Satelital" value={finalValues.exportData?.transport.satelliteTracking ? "Sí" : "No"} />
+        </SimpleGrid>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2" pb={4}>
+          <DisplayField label="Verificadora" value={finalValues.exportData?.verifier.name} />
+          <DisplayField label="RUC" value={finalValues.exportData?.verifier.ruc} />
+          <DisplayField label="Dirección" value={finalValues.exportData?.verifier.address} />
+        </SimpleGrid>
+        <Heading size="md" mt="4" mb="4">Información del Cliente</Heading>
+        <Divider mb={'16px'} />
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2" >
+          <DisplayField label="Nombre" value={finalValues.exportData?.client.businessName} />
+          <DisplayField label="RUC" value={finalValues.exportData?.client.businessId} />
+          <DisplayField label="Tipo Comercial" value={finalValues.exportData?.client.commercialType} />
+          <DisplayField label="Email" value={finalValues.exportData?.client.email} />
+          <DisplayField label="Teléfono" value={finalValues.exportData?.client.phone} />
+        </SimpleGrid>
+        <Heading size="md" mt="4" mb="4">Información del Productor</Heading>
+        <Divider mb={'16px'} />
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2">
+          <DisplayField label="Nombre" value={finalValues.exportData?.merchant.businessName} />
+          <DisplayField label="RUC" value={finalValues.exportData?.merchant.businessId} />
+          <DisplayField label="Ciudad" value={finalValues.exportData?.merchant.city.name} />
+          <DisplayField label="Dirección" value={finalValues.exportData?.merchant.address} />
+        </SimpleGrid>
+        <Heading size="md" mt="4" mb="4">Información de la Finca</Heading>
+        <Divider mb={'16px'} />
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2">
+          <DisplayField label="Nombre" value={finalValues.exportData?.business.name} />
+          <DisplayField label="Área" value={finalValues.exportData?.business.area.toString()} />
+          <DisplayField label="Ciudad" value={finalValues.exportData?.business.city.name} />
+          <DisplayField label="Dirección" value={finalValues.exportData?.business.address} />
+        </SimpleGrid>
+        <Heading size="md" mt="4" mb="4">
+          Marca de Caja y Embalaje
+        </Heading>
+        <Divider mb={'16px'} />
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2">
+          <DisplayField label="Marca" value={finalValues.exportData?.boxBrand?.name || ''} />
+          <DisplayField
+            label="Marca de Caja"
+            value={finalValues.exportData?.boxBrand?.brand?.name || ''}
+          />
+          <DisplayField
+            label="Código de Marca"
+            value={finalValues.exportData?.boxBrand?.brandCode || ''}
+          />
+          <DisplayField
+            label="Peso Neto"
+            value={finalValues.exportData?.boxBrand?.netWeightBox?.toString() || 'N/A'}
+          />
+          <DisplayField
+            label="Peso Bruto"
+            value={finalValues.exportData?.boxBrand?.grossWeightBox?.toString() || 'N/A'}
+          />
+        </SimpleGrid>
+
+        <Heading size="sm" mt="4" mb="2">
+          Materiales de Caja
+        </Heading>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2">
+          <DisplayField label="Fondo" value={finalValues.exportData?.boxBrand?.bottomType.name || ''} />
+          <DisplayField
+            label="Cant. Fondo"
+            value={finalValues.exportData?.boxBrand?.bottomTypeQuantity.toString() || '0'}
+          />
+          <DisplayField label="Tapa" value={finalValues.exportData?.boxBrand?.lidType.name || ''} />
+          <DisplayField
+            label="Cant. Tapa"
+            value={finalValues.exportData?.boxBrand?.lidTypeQuantity.toString() || '0'}
+          />
+          <DisplayField label="Funda" value={finalValues.exportData?.boxBrand?.coverType.name || ''} />
+          <DisplayField
+            label="Cant. Funda"
+            value={finalValues.exportData?.boxBrand?.coverTypeQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Cartulina"
+            value={finalValues.exportData?.boxBrand?.cardboardType.name || ''}
+          />
+          <DisplayField
+            label="Cant. Cartulina"
+            value={finalValues.exportData?.boxBrand?.cardboardTypeQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="ParaSeal"
+            value={finalValues.exportData?.boxBrand?.parasealType.name || ''}
+          />
+          <DisplayField
+            label="Cant. ParaSeal"
+            value={finalValues.exportData?.boxBrand?.parasealTypeQuantity.toString() || '0'}
+          />
+          <DisplayField label="Pad" value={finalValues.exportData?.boxBrand?.padType.name || ''} />
+          <DisplayField
+            label="Cant. Pad"
+            value={finalValues.exportData?.boxBrand?.padTypeQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Esponja"
+            value={finalValues.exportData?.boxBrand?.spongeType.name || ''}
+          />
+          <DisplayField
+            label="Cant. Esponja"
+            value={finalValues.exportData?.boxBrand?.spongeTypeQuantity.toString() || '0'}
+          />
+          <DisplayField label="Etiqueta" value={finalValues.exportData?.boxBrand?.label.name || ''} />
+          <DisplayField
+            label="Cant. Etiqueta"
+            value={finalValues.exportData?.boxBrand?.labelQuantity.toString() || '0'}
+          />
+          <DisplayField label="Banda" value={finalValues.exportData?.boxBrand?.band.name || ''} />
+          <DisplayField
+            label="Cant. Banda"
+            value={finalValues.exportData?.boxBrand?.bandQuantity.toString() || '0'}
+          />
+          <DisplayField label="Sachet" value={finalValues.exportData?.boxBrand?.sachet.name || ''} />
+          <DisplayField
+            label="Cant. Sachet"
+            value={finalValues.exportData?.boxBrand?.sachetQuantity.toString() || '0'}
+          />
+          <DisplayField label="Liga" value={finalValues.exportData?.boxBrand?.rubber.name || ''} />
+          <DisplayField
+            label="Cant. Liga"
+            value={finalValues.exportData?.boxBrand?.rubberQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Protector"
+            value={finalValues.exportData?.boxBrand?.protector.name || ''}
+          />
+          <DisplayField
+            label="Cant. Protector"
+            value={finalValues.exportData?.boxBrand?.protectorQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Cluster Bag"
+            value={finalValues.exportData?.boxBrand?.clusterBag.name || ''}
+          />
+          <DisplayField
+            label="Cant. Cluster Bag"
+            value={finalValues.exportData?.boxBrand?.clusterBagQuantity.toString() || '0'}
+          />
+        </SimpleGrid>
+        <Heading size="sm" mt="4" mb="2">
+          Materiales por Contenedor
+        </Heading>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2">
+          <DisplayField
+            label="Pallets"
+            value={finalValues.exportData?.boxBrand?.palletsType.name || ''}
+          />
+          <DisplayField
+            label="Cant. Pallets"
+            value={finalValues.exportData?.boxBrand?.palletsTypeQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Mini Pallets"
+            value={finalValues.exportData?.boxBrand?.miniPalletsType.name || ''}
+          />
+          <DisplayField
+            label="Cant. Mini Pallets"
+            value={finalValues.exportData?.boxBrand?.miniPalletsTypeQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Esquinero"
+            value={finalValues.exportData?.boxBrand?.cornerType.name || ''}
+          />
+          <DisplayField
+            label="Cant. Esquinero"
+            value={finalValues.exportData?.boxBrand?.cornerTypeQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Refuerzo"
+            value={finalValues.exportData?.boxBrand?.reinforcementType.name || ''}
+          />
+          <DisplayField
+            label="Cant. Refuerzo"
+            value={finalValues.exportData?.boxBrand?.reinforcementTypeQuantity.toString() || '0'}
+          />
+          <DisplayField label="Grapa" value={finalValues.exportData?.boxBrand?.staple.name || ''} />
+          <DisplayField
+            label="Cant. Grapa"
+            value={finalValues.exportData?.boxBrand?.stapleQuantity.toString() || '0'}
+          />
+          <DisplayField label="Zuncho" value={finalValues.exportData?.boxBrand?.stripping.name || ''} />
+          <DisplayField
+            label="Cant. Zuncho"
+            value={finalValues.exportData?.boxBrand?.strippingQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Termógrafo"
+            value={finalValues.exportData?.boxBrand?.thermograph.name || ''}
+          />
+          <DisplayField
+            label="Cant. Termógrafo"
+            value={finalValues.exportData?.boxBrand?.thermographQuantity.toString() || '0'}
+          />
+          <DisplayField label="Sello" value={finalValues.exportData?.boxBrand?.seal.name || ''} />
+          <DisplayField
+            label="Cant. Sello"
+            value={finalValues.exportData?.boxBrand?.sealQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Etiqueta Metto"
+            value={finalValues.exportData?.boxBrand?.mettoLabel.name || ''}
+          />
+          <DisplayField
+            label="Cant. Etiqueta Metto"
+            value={finalValues.exportData?.boxBrand?.mettoLabelQuantity.toString() || '0'}
+          />
+        </SimpleGrid>
+
+        <Heading size="sm" mt="4" mb="2">
+          Adicionales
+        </Heading>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2">
+
+          <DisplayField
+            label="Cinta"
+            value={finalValues.exportData?.boxBrand?.packingTapeType.name || ''}
+          />
+          <DisplayField
+            label="Cant. Cinta"
+            value={finalValues.exportData?.boxBrand?.packingTapeTypeQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Removedor"
+            value={finalValues.exportData?.boxBrand?.latexRemover.name || ''}
+          />
+          <DisplayField
+            label="Cant. Removedor"
+            value={finalValues.exportData?.boxBrand?.latexRemoverQuantity.toString() || '0'}
+          />
+          <DisplayField
+            label="Lámina"
+            value={finalValues.exportData?.boxBrand?.blockingSheet.name || ''}
+          />
+          <DisplayField
+            label="Cant. Lámina"
+            value={finalValues.exportData?.boxBrand?.blockingSheetQuantity.toString() || '0'}
+          />
+        </SimpleGrid>
+        <Heading size="sm" mt="4" mb="2">
+          Insumos Post Cosecha        </Heading>
+        <Heading size="sm" mt="4" mb="2">
+          Pesticide Cocktail
+        </Heading>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2">
+          {finalValues.exportData?.boxBrand?.pesticideCocktail.map((item, index) => (
+            <DisplayField
+              key={index}
+              label={`Pesticida ${index + 1}`}
+              value={`${item.pesticide.name} (Cant: ${item.quantity})`}
+            />
+          ))}
+        </SimpleGrid>
+        <Heading size="sm" mt="4" mb="2">
+          Insecticide Cocktail
+        </Heading>
+        <SimpleGrid columns={{ base: 1, md: 4 }} spacing="2">
+          {finalValues.exportData?.boxBrand?.insecticideCocktail.map((item, index) => (
+            <DisplayField
+              key={index}
+              label={`Insecticida ${index + 1}`}
+              value={`${item.insecticide.name} (Cant: ${item.quantity})`}
+            />
+          ))}
+        </SimpleGrid>
+      </Box>
+
+      <Formik
+        initialValues={finalValues}
+        enableReinitialize
+        onSubmit={handleSubmit}
+        validationSchema={finalValidationSchema}
+      >
+        {({ values }) => (
           <Form>
-            <Flex flexDirection='column' gap={3}>
-              <Box mx={'auto'} w={{ base: '98%', sm: '400px' }}>
-                <InputFieldDate
-                  name={'cuttingDate'}
-                  label={'Fecha de Corte'}
-                  isReadOnly
-                  flexDirection='row'
-                />
-              </Box>
-              {values.cuttingDate && (
-                <Box mx={'auto'} w={{ base: '98%', sm: '400px' }}>
-                  <InputFieldText
-                    name={'weekCutting.description'}
-                    isReadOnly
-                    defaultValue={
-                      getWeekInfo({ date: values.cuttingDate }).week
-                    }
-                  />
-                </Box>
-              )}
-              <Heading fontSize={'2xl'} p={'12px'}>
-                DATOS DEL PRODUCTOR Y DESTINO
-              </Heading>
+            <Flex direction="column" gap="4">
+              <Heading size="md">Datos para la Hoja de Corte</Heading>
               <Divider mb={'16px'} />
-
-              <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={2}>
-                <InputFieldText
-                  name={'producer.businessName'}
-                  label={'Productor: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-
-                <InputFieldText
-                  name={'producer.business.name'}
-                  label={'Hacienda: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-
-                <InputFieldText
-                  name={'producer.business.quality'}
-                  label={'Calidad: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-
-                <InputFieldText
-                  name={'producer.business.city'}
-                  label={'Ciudad: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-
-                <InputFieldText
-                  name={'producer.business.codeMAGAP'}
-                  label={'Código MAG: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-              </SimpleGrid>
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                DATOS Y DIAS DE CORTE Y CONTENEDOR
-              </Heading>
-              <Divider mb={'16px'} />
-
-              <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={2}>
-                <InputFieldText
-                  name={'container.boxBrand'}
-                  label={'Marca: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-
-                <InputFieldText
-                  name={'container.shipmentType'}
-                  label={'Tipo de embarque: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-
-                <InputFieldText
-                  name={'container.boxType'}
-                  label={'Tipo de Caja: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-
-                <InputFieldText
-                  name={'container.steam'}
-                  label={'Vapor: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-
-                <InputFieldText
-                  name={'container.harborDeparture'}
-                  label={'Puerto de Ingreso: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
-
-                <Box></Box>
-
-                <InputFieldText
-                  name={'container.boxQuantity'}
-                  label={'Cajas en Contenedor: '}
-                  isReadOnly
-                  flexDirection='row'
-                  alignItems='flex-end'
-                />
+              <SelectCuttingType
+                name="cuttingTypeId"
+              />
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing="4">
 
                 <InputFieldSelector
-                  name={'container.containerPositioning'}
-                  label={'Posicion del Contenedor: '}
-                  flexDirection='row'
+                  name={'palletsHeight'}
+                  label={'Altura de Palets '}
+                  alignItems='flex-end'
+                  options={palletsOptions}
+                />
+                <InputFieldSelector
+                  name={'containerPositioning'}
+                  label={'Posicion del Contenedor '}
                   alignItems='flex-end'
                   options={[
                     { id: 'N/A', name: 'N/A' },
@@ -541,442 +651,30 @@ const CuttingSheetForm = ({
                     { id: 'ACOPIO', name: 'ACOPIO' },
                   ]}
                 />
-
                 <InputFieldText
-                  name={'container.belowDeck'}
-                  label={'Bajo Cubierta: '}
+                  name={'belowDeck'}
+                  label={'Bajo Cubierta '}
                   isReadOnly
                   defaultValue={
-                    values.container.containerPositioning === 'CAMPO'
+                    values.containerPositioning === 'CAMPO'
                       ? 'NO'
-                      : values.container.containerPositioning === 'ACOPIO'
+                      : values.containerPositioning === 'ACOPIO'
                         ? 'SI'
                         : 'N/A'
                   }
                   placeholder='Bajo cubierta'
-                  flexDirection='row'
                   alignItems='flex-end'
                 />
-
-                <InputFieldSelector
-                  name={'container.highPallets'}
-                  label={'Altura de Palets: '}
-                  flexDirection='row'
-                  alignItems='flex-end'
-                  isDisabled={values.container.shipmentType === 'GRANEL'}
-                  options={[
-                    { id: 'PALETS 8 DE ALTO', name: 'PALETS 8 DE ALTO' },
-                    { id: 'PALETS 9 DE ALTO', name: 'PALETS 9 DE ALTO' },
-                    { id: 'PALETS 10 DE ALTO', name: 'PALETS 10 DE ALTO' },
-                  ]}
-                />
               </SimpleGrid>
-
-              {values.cuttingDate && values.weekCutting && (
-                <DateGrid
-                  nameWeek={'weekCutting.daysOfWeek'}
-                  nameBoxes={'weekCutting.boxesOfDay'}
-                  boxQuantity={Number(values.container.boxQuantity)}
-                  dateSelected={values.cuttingDate}
-                  startDate={
-                    getWeekInfo({ date: values.cuttingDate }).startDate
-                  }
-                />
-              )}
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                ESPECIFICACIONES DEL CORTE
-              </Heading>
-              <Divider mb={'16px'} />
-
-              <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={2}>
-                <InputFieldQuantity
-                  name={'cutSpecifications.leaves'}
-                  label={'Hojas a la cosecha: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                  min={4}
-                  max={8}
-                />
-                <InputFieldQuantity
-                  name={'cutSpecifications.ageCutting'}
-                  label={'Edad al corte: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                  min={10}
-                  max={14}
-                  unit='SEM'
-                />
-                <InputFieldQuantity
-                  name={'cutSpecifications.netWeight'}
-                  label={'Peso neto: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                  unit='LBS'
-                />
-                <InputFieldQuantity
-                  name={'cutSpecifications.grossWeight'}
-                  label={'Peso Bruto: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                  unit='LBS'
-                />
-                <InputFieldQuantity
-                  name={'cutSpecifications.caliberMin'}
-                  label={'Calibre Mínimo: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                  unit='MM'
-                />
-                <InputFieldQuantity
-                  name={'cutSpecifications.caliberMax'}
-                  label={'Calibre Máximo: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                  unit='MM'
-                />
-                <InputFieldQuantity
-                  name={'cutSpecifications.fingerLength'}
-                  label={'Largo dedo: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldQuantity
-                  name={'cutSpecifications.saneos'}
-                  label={'Saneos: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'cutSpecifications.cunas'}
-                  label={'Cuñas: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'container.fileCode'}
-                  label={'Código Fichero: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'cutSpecifications.labels'}
-                  label={'Etiquetas: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'cutSpecifications.labelsQuantity'}
-                  label={'Cantidad de Etiquetas: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
-                  <InputFieldText
-                    name={'cutSpecifications.labelDetail'}
-                    label={'Detalle de Etiquetas: '}
-                    isReadOnly
-                    flexDirection={'column'}
-                  />
-                </Flex>
-                <InputFieldText
-                  name={'container.cluster'}
-                  label={'Cluster: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'container.clusterQuantity'}
-                  label={'Cantidad de Cluster: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
-                  <InputFieldText
-                    name={'cutSpecifications.clusterDetail'}
-                    label={'Detalle de Cluster: '}
-                    isReadOnly
-                    flexDirection={'column'}
-                  />
-                </Flex>
-              </SimpleGrid>
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                EMPAQUE Y MATERIALES
-              </Heading>
-              <Divider mb={'16px'} />
-
-              <SimpleGrid
-                columns={{ base: 1, lg: 2 }}
-                spacing={2}
-                alignItems='end'
-              >
-                <InputFieldText
-                  name={'packaging.bag'}
-                  label={'Funda: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Box />
-                <InputFieldText
-                  name={'packaging.sachet'}
-                  label={'Sachet: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'packaging.sachetQuantity'}
-                  label={'Cantidad de Sachet: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'packaging.pad'}
-                  label={'Pad: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'packaging.padQuantity'}
-                  label={'Cantidad de Pad: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-              </SimpleGrid>
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                QUÍMICOS Y PROCESO DE FUMIGACIÓN
-              </Heading>
-              <Divider mb={'16px'} />
-
-              <SimpleGrid columns={1} spacing={2}>
-                <InputFieldSentPesticides
-                  name={'pesticideSent'}
-                  pesticideCocktailSelected={
-                    cuttingSheetSelected.boxBrand?.pesticideCocktail || []
-                  }
-                  showNumberInput={false}
-                />
-                <InputFieldSentInsecticides
-                  name={'insecticideSent'}
-                  insecticideCocktailSelected={
-                    cuttingSheetSelected.boxBrand?.insecticideCocktail || []
-                  }
-                  showNumberInput={false}
-                />
-              </SimpleGrid>
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                DETALLES DEL EMPAQUE
-              </Heading>
-              <Divider mb={'16px'} />
-
-              <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={2}>
-                <InputFieldText
-                  name={'packaging.firstLine'}
-                  label={'Primera línea: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'packaging.secondLine'}
-                  label={'Segunda línea: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'packaging.thirdLine'}
-                  label={'Tercera línea: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'packaging.fourthLine'}
-                  label={'Cuarta línea: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-              </SimpleGrid>
-
-              <Heading fontSize={'2xl'} p={'12px'}>
-                NOTAS Y REQUISITOS ADICIONALES
-              </Heading>
-              <Divider mb={'16px'} />
-
-              <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={2}>
-                <InputFieldText
-                  name={'materials.packagingPattern'}
-                  label={'Patrón de empaque: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Box />
-                <InputFieldText
-                  name={'materials.pallets'}
-                  label={'Pallets: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'materials.palletsQuantity'}
-                  label={'Cantidad de Pallets: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
-                  <InputFieldText
-                    name={'materials.palletsDetail'}
-                    label={'Detalle de los Pallets: '}
-                    isReadOnly
-                    flexDirection={'column'}
-                  />
-                </Flex>
-                <InputFieldText
-                  name={'materials.plasticCorners'}
-                  label={'Esquineros Plásticos: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'materials.plasticCornersQuantity'}
-                  label={'Cantidad de Esquineros Plásticos: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
-                  <InputFieldText
-                    name={'materials.plasticCornersDetail'}
-                    label={'Detalle de los Esquineros Plásticos: '}
-                    isReadOnly
-                    flexDirection={'column'}
-                  />
-                </Flex>
-                <InputFieldText
-                  name={'materials.reinforcements'}
-                  label={'Refuerzos: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'materials.reinforcementsQuantity'}
-                  label={'Cantidad de Refuerzos: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
-                  <InputFieldText
-                    name={'materials.reinforcementsDetail'}
-                    label={'Detalle de los Refuerzos: '}
-                    isReadOnly
-                    flexDirection={'column'}
-                  />
-                </Flex>
-                <InputFieldText
-                  name={'materials.plasticStraps'}
-                  label={'Zuncho Plásticos: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'materials.plasticStrapsQuantity'}
-                  label={'Cantidad de Zuncho Plásticos: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
-                  <InputFieldText
-                    name={'materials.plasticStrapsDetail'}
-                    label={'Detalle del Zuncho Plásticos: '}
-                    isReadOnly
-                    flexDirection={'column'}
-                  />
-                </Flex>
-                <InputFieldText
-                  name={'materials.staples'}
-                  label={'Grapas: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'materials.staplesQuantity'}
-                  label={'Cantidad de Grapas: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
-                  <InputFieldText
-                    name={'materials.staplesDetail'}
-                    label={'Detalle de las Grapas: '}
-                    isReadOnly
-                    flexDirection={'column'}
-                  />
-                </Flex>
-                <InputFieldText
-                  name={'materials.cardboardSheets'}
-                  label={'Láminas de cartón: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'materials.cardboardSheetsQuantity'}
-                  label={'Cantidad de Láminas de cartón: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
-                  <InputFieldText
-                    name={'materials.cardboardSheetsDetail'}
-                    label={'Detalle de las Láminas de cartón: '}
-                    isReadOnly
-                    flexDirection={'column'}
-                  />
-                </Flex>
-                <InputFieldText
-                  name={'materials.thermometer'}
-                  label={'Termógrafo: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <InputFieldText
-                  name={'materials.thermometerQuantity'}
-                  label={'Cantidad de Termógrafos: '}
-                  isReadOnly
-                  flexDirection={'row'}
-                />
-                <Flex gridColumn={{ base: 'span 1', lg: 'span 2' }}>
-                  <InputFieldText
-                    name={'materials.thermometerDetail'}
-                    label={'Detalle del Termógrafo: '}
-                    isReadOnly
-                    flexDirection={'column'}
-                  />
-                </Flex>
-              </SimpleGrid>
-              <InputFieldTextArea
-                name={'materials.generalObservations'}
-                label={'Observaciones Generales: '}
-              />
-              <SimpleGrid columns={{ base: 1, sm: 1 }}>
-                <CheckboxForm
-                  name='dataReviewed'
-                  label='He revisado los datos agregados'
-                />
-                <Button
-                  mt='12px'
-                  py='8px'
-                  px='16px'
-                  type='submit'
-                  colorScheme='teal'
-                  isLoading={isLoading}
-                >
-                  Enviar
-                </Button>
-              </SimpleGrid>
+              <CheckboxForm name="dataReviewed" label="He revisado los datos agregados" />
+              <Button type="submit" colorScheme="teal" isLoading={isLoading}>
+                Enviar
+              </Button>
             </Flex>
           </Form>
-        );
-      }}
-    </Formik>
+        )}
+      </Formik>
+    </Box>
   );
 };
 

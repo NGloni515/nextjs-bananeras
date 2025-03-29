@@ -12,14 +12,14 @@ import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useLayoutEffect } from 'react';
 import CuttingSheetForm from '../../../../../components/export/cutting-sheet/CuttingSheetForm';
 import { useExport } from '../../../../../hooks/export/getExport';
-import { ExportType } from '../../../../../types/export';
+import { ExportResponse } from '../../../../../types/export.response';
 
 const CuttingSheetPage = (): React.JSX.Element => {
   const params = useParams<{ id: string }>();
   const { data, isLoading, error } = useExport({
     exportId: params.id,
   });
-  const pendingCuttingSheet = data as Partial<ExportType>;
+  const pendingCuttingSheet = data as Partial<ExportResponse>;
   const pathname = usePathname();
   const router = useRouter();
 
@@ -38,7 +38,7 @@ const CuttingSheetPage = (): React.JSX.Element => {
 
   useLayoutEffect(() => {
     if (!isLoading) {
-      if (!pendingCuttingSheet || pendingCuttingSheet.pendingCuttingSheet) {
+      if (!pendingCuttingSheet) {
         return redirect(pathname.replace(/\/\d+$/, ''));
       }
     }
@@ -73,7 +73,6 @@ const CuttingSheetPage = (): React.JSX.Element => {
           <CardBody w={'100%'}>
             <CuttingSheetForm
               cuttingSheetSelected={pendingCuttingSheet}
-              pathname={pathname}
             />
           </CardBody>
         </Card>
