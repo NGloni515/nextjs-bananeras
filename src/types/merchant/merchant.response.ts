@@ -1,7 +1,7 @@
 import { BankAccountType } from "../bankAccount";
 
 export interface MerchantResponse {
-    id: number;
+    id: number | '';
     businessName: string;
     businessId: string;
     email: string;

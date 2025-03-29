@@ -41,44 +41,20 @@ const SelectHarbor: React.FC<SelectHarborProps> = ({
           type={type}
         />
         <Box>
-          <FormLabel>País</FormLabel>
-          <Input isReadOnly={true} value={harbor?.country?.name || ''} />
+          <FormLabel>Tipo</FormLabel>
+          <Input isReadOnly={true} value={harbor?.type || ''} placeholder='Tipo de Puerto' />
         </Box>
         <Box>
-          <FormLabel>Latitud</FormLabel>
+          <FormLabel>Dirección</FormLabel>
           <Input
             isReadOnly={true}
-            value={
-              harbor?.latitude !== undefined && harbor?.latitude !== null
-                ? `${harbor?.latitude}`
-                : ''
-            }
-            placeholder={
-              harbor?.latitude !== undefined && harbor?.latitude === null
-                ? 'No se ha ingresado el valor'
-                : ''
-            }
+            value={harbor?.address || ''}
+            placeholder='Tipo de Dirección del puerto'
           />
         </Box>
         <Box>
-          <FormLabel>Ciudad</FormLabel>
-          <Input isReadOnly={true} value={harbor?.city?.name || ''} />
-        </Box>
-        <Box>
-          <FormLabel>Longitud</FormLabel>
-          <Input
-            isReadOnly={true}
-            value={
-              harbor?.longitude !== undefined && harbor?.longitude !== null
-                ? `${harbor?.longitude}`
-                : ''
-            }
-            placeholder={
-              harbor?.longitude !== undefined && harbor?.longitude === null
-                ? 'No se ha ingresado el valor'
-                : ''
-            }
-          />
+          <FormLabel>Locación</FormLabel>
+          <Input isReadOnly={true} value={harbor?.location || ''} />
         </Box>
       </SimpleGrid>
     </>
