@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// export.response.ts
-
 export interface Contact {
     id: number;
     name: string;
