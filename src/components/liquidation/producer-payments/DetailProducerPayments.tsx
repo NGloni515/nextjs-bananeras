@@ -23,19 +23,20 @@ const DetailProducerPayments = ({
     };
     harborDeparture: {
       name: string;
-      country: string;
-      city: string;
+      country: { name: string };
+      city: { name: string };
     };
     harborDestination: {
       name: string;
-      country: string;
-      city: string;
+      country: { name: string };
+      city: { name: string };
     };
     boxBrand: {
       name: string;
       brandCode: string;
       netWeightBox: number;
       grossWeightBox: number;
+      requiredCertificates?: { id: number; name: string }[];
     };
     boxQuantity: number;
     price: string;
@@ -43,188 +44,140 @@ const DetailProducerPayments = ({
     transport: string;
     materials: string;
     others: string;
+    subtotal2: string;
     total: string;
+    amount: string;
     transferUrl: string;
+    description?: string;
+    sourceBankAccount?: {
+      owner: string;
+      ownerID: string;
+      accountNumber: string;
+      type: string;
+      email: string;
+    };
+    destinationBankAccount?: {
+      owner: string;
+      ownerID: string;
+      accountNumber: string;
+      type: string;
+      email: string;
+    };
   };
   width: { sm: number; md: number };
 }): React.JSX.Element => {
+  const { merchant, harborDeparture, harborDestination, boxBrand } = producerPayment;
+
   return (
     <Accordion defaultIndex={[0]} allowMultiple>
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
+          <AccordionButton pl="60px" width={{ sm: width.sm, md: width.md }}>
+            <Box flex="1" textAlign="left" fontSize="md" fontWeight="bold">
               Detalles del Productor
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            <p>
-              <strong>Nombre del Productor:</strong>{' '}
-              {producerPayment.merchant.businessName}
-            </p>
-            <p>
-              <strong>RUC del Productor:</strong>{' '}
-              {producerPayment.merchant.businessId}
-            </p>
-            <p>
-              <strong>Tipo de Contrato:</strong>{' '}
-              {producerPayment.merchant.contractType}
-            </p>
-            <p>
-              <strong>Email del Productor:</strong>{' '}
-              {producerPayment.merchant.email}
-            </p>
-          </Box>
+        <AccordionPanel pb={4} pl="60px">
+          <p><strong>Nombre del Productor:</strong> {merchant.businessName}</p>
+          <p><strong>RUC:</strong> {merchant.businessId}</p>
+          <p><strong>Email:</strong> {merchant.email}</p>
+          <p><strong>Tipo de Contrato:</strong> {merchant.contractType}</p>
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
+          <AccordionButton pl="60px" width={{ sm: width.sm, md: width.md }}>
+            <Box flex="1" textAlign="left" fontSize="md" fontWeight="bold">
               Información Logística
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            <p>
-              <strong>Puerto de Salida:</strong>{' '}
-              {producerPayment.harborDeparture.name} (
-              {producerPayment.harborDeparture.city},{' '}
-              {producerPayment.harborDeparture.country})
-            </p>
-            <p>
-              <strong>Puerto de Destino:</strong>{' '}
-              {producerPayment.harborDestination.name} (
-              {producerPayment.harborDestination.city},{' '}
-              {producerPayment.harborDestination.country})
-            </p>
-          </Box>
+        <AccordionPanel pb={4} pl="60px">
+          <p>
+            <strong>Puerto de Salida:</strong> {harborDeparture.name} (
+            {harborDeparture.city.name}, {harborDeparture.country.name})
+          </p>
+          <p>
+            <strong>Puerto de Destino:</strong> {harborDestination.name} (
+            {harborDestination.city.name}, {harborDestination.country.name})
+          </p>
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
+          <AccordionButton pl="60px" width={{ sm: width.sm, md: width.md }}>
+            <Box flex="1" textAlign="left" fontSize="md" fontWeight="bold">
               Detalles Financieros
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            <p>
-              <strong>Cantidad de Cajas:</strong> {producerPayment.boxQuantity}
-            </p>
-            <p>
-              <strong>Marca y Código de Caja:</strong>{' '}
-              {producerPayment.boxBrand.name} -{' '}
-              {producerPayment.boxBrand.brandCode}
-            </p>
-            <p>
-              <strong>Peso Neto de Caja:</strong>{' '}
-              {producerPayment.boxBrand.netWeightBox} LBS
-            </p>
-            <p>
-              <strong>Peso Bruto de Caja:</strong>{' '}
-              {producerPayment.boxBrand.grossWeightBox} LBS
-            </p>
-            <p>
-              <strong>Precio Unitario:</strong> ${producerPayment.price}
-            </p>
-            <p>
-              <strong>Subtotal Inicial:</strong> ${producerPayment.subtotal1}
-            </p>
-            <p>
-              <strong>Costo de Transporte:</strong> ${producerPayment.transport}
-            </p>
-            <p>
-              <strong>Costo de Materiales:</strong> ${producerPayment.materials}
-            </p>
-            <p>
-              <strong>Otros Costos:</strong> ${producerPayment.others}
-            </p>
-            <p>
-              <strong>Total a Pagar:</strong> ${producerPayment.total}
-            </p>
-          </Box>
+        <AccordionPanel pb={4} pl="60px">
+          <p><strong>Cantidad de Cajas:</strong> {producerPayment.boxQuantity}</p>
+          <p><strong>Marca:</strong> {boxBrand.name}</p>
+          <p><strong>Código:</strong> {boxBrand.brandCode}</p>
+          <p><strong>Peso Neto por Caja:</strong> {boxBrand.netWeightBox} LBS</p>
+          <p><strong>Peso Bruto por Caja:</strong> {boxBrand.grossWeightBox} LBS</p>
+          <p><strong>Precio Unitario:</strong> ${producerPayment.price}</p>
+          <p><strong>Subtotal Inicial:</strong> ${producerPayment.subtotal1}</p>
+          <p><strong>Costo Transporte:</strong> ${producerPayment.transport}</p>
+          <p><strong>Costo Materiales:</strong> ${producerPayment.materials}</p>
+          <p><strong>Otros Costos:</strong> ${producerPayment.others}</p>
+          <p><strong>Subtotal Final:</strong> ${producerPayment.subtotal2}</p>
+          <p><strong>Total a Pagar:</strong> ${producerPayment.total}</p>
+          <p><strong>Descripción:</strong> {producerPayment.description || 'Sin observaciones'}</p>
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
-              Transferencia
+          <AccordionButton pl="60px" width={{ sm: width.sm, md: width.md }}>
+            <Box flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+              Cuentas Bancarias
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            <p>
-              <strong>Acceso:</strong>
-              <a
-                href={producerPayment.transferUrl}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                {' '}
-                Ver Evidencia
-              </a>
-            </p>
-          </Box>
+        <AccordionPanel pb={4} pl="60px">
+          {producerPayment.sourceBankAccount && (
+            <>
+              <p><strong>Cuenta Origen:</strong></p>
+              <p>Propietario: {producerPayment.sourceBankAccount.owner}</p>
+              <p>Identificación: {producerPayment.sourceBankAccount.ownerID}</p>
+              <p>Cuenta: {producerPayment.sourceBankAccount.accountNumber}</p>
+              <p>Tipo: {producerPayment.sourceBankAccount.type}</p>
+              <p>Email: {producerPayment.sourceBankAccount.email}</p>
+            </>
+          )}
+          {producerPayment.destinationBankAccount && (
+            <>
+              <p><strong>Cuenta Destino:</strong></p>
+              <p>Propietario: {producerPayment.destinationBankAccount.owner}</p>
+              <p>Identificación: {producerPayment.destinationBankAccount.ownerID}</p>
+              <p>Cuenta: {producerPayment.destinationBankAccount.accountNumber}</p>
+              <p>Tipo: {producerPayment.destinationBankAccount.type}</p>
+              <p>Email: {producerPayment.destinationBankAccount.email}</p>
+            </>
+          )}
+        </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem>
+        <Heading>
+          <AccordionButton pl="60px" width={{ sm: width.sm, md: width.md }}>
+            <Box flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+              Transferencia Realizada
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </Heading>
+        <AccordionPanel pb={4} pl="60px">
+          <p><strong>Monto Transferido:</strong> ${producerPayment.amount}</p>
+          <p><strong>Evidencia:</strong></p>
+          <a href={producerPayment.transferUrl} target="_blank" rel="noopener noreferrer">
+            Ver Comprobante
+          </a>
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
