@@ -13,14 +13,14 @@ import React, { useEffect, useLayoutEffect } from 'react';
 import SentMaterialsExportForm from '../../../../../components/export/SentMaterialsExportForm';
 import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExport } from '../../../../../hooks/export/getExport';
-import { ExportType } from '../../../../../types/export';
+import { ExportResponse } from '../../../../../types/export.response';
 
 const PendingExportPage = (): React.JSX.Element => {
   const params = useParams<{ id: string }>();
   const { data, isLoading, error } = useExport({
     exportId: params.id,
   });
-  const pendingExport = data as Partial<ExportType>;
+  const pendingExport = data as Partial<ExportResponse>;
   const pathname = usePathname();
   const router = useRouter();
 

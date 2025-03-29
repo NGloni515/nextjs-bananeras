@@ -21,7 +21,7 @@ import InputFieldSentInsecticides from './ui/InputFieldSentInsecticides';
 import InputFieldSentPesticides from './ui/InputFieldSentPesticides';
 import InputFieldSentQuantity from './ui/InputFieldSentQuantity';
 import { useCreateExportSent } from '../../hooks/export/export-sent/createExportSent';
-import { ExportType } from '../../types/export';
+import { ExportResponse } from '../../types/export.response';
 import CheckboxForm from '../ui/form/CheckboxForm';
 
 interface PesticideProps {
@@ -246,7 +246,7 @@ const validationSchema = Yup.object({
 const SentMaterialsExportForm = ({
   exportSelected,
 }: {
-  exportSelected: Partial<ExportType>;
+  exportSelected: Partial<ExportResponse>;
   pathname: string;
 }): React.JSX.Element => {
   const [initialValuesExport, setInitialValuesExport] =
@@ -352,7 +352,7 @@ const SentMaterialsExportForm = ({
             duration: 5000,
             isClosable: true,
           });
-
+          queryClient.invalidateQueries('exports');
           queryClient.invalidateQueries('exportsSent');
           queryClient.invalidateQueries('exportsSentPending');
           queryClient.invalidateQueries('exportsPending');
@@ -372,7 +372,7 @@ const SentMaterialsExportForm = ({
       onSubmit={sentMaterialsExport}
       validationSchema={validationSchema}
     >
-      {({}) => (
+      {({ }) => (
         <Form>
           <Flex flexDirection='column' gap={3}>
             <Heading fontSize={'2xl'} p={'12px'}>
