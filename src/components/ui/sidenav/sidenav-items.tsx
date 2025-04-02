@@ -26,6 +26,7 @@ export interface SidenavItem {
   isMenu?: boolean;
   menu?: SidenavMenuItem[];
   count?: number;
+  allowedRoles?: string[];
 }
 
 export interface SidenavMenuItem {

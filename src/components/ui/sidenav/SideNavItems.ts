@@ -16,27 +16,18 @@ export function GetUser() {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getNavItems(counts: any, session: any): SidenavItem[] {
+  const role = session?.user?.role || 'USER';
 
   const productorMenu: SidenavMenuItem[] = [
     {
       label: 'Agregar Productor',
       to: '/dashboard/producer/add-producer',
-      submenu: [
-        {
-          label: 'Consultar Productor',
-          to: '/dashboard/producer/producers',
-        },
-      ],
+      submenu: [{ label: 'Consultar Productor', to: '/dashboard/producer/producers' }],
     },
     {
       label: 'Agregar Finca',
       to: '/dashboard/producer/add-fincas',
-      submenu: [
-        {
-          label: 'Consultar Finca',
-          to: '/dashboard/producer/fincas',
-        },
-      ],
+      submenu: [{ label: 'Consultar Finca', to: '/dashboard/producer/fincas' }],
     },
     {
       label: 'Agregar Cuenta Bancaria',
@@ -48,62 +39,32 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
     {
       label: 'Agregar Cliente',
       to: '/dashboard/client/add-client',
-      submenu: [
-        {
-          label: 'Consultar Cliente',
-          to: '/dashboard/client/clients',
-        },
-      ],
+      submenu: [{ label: 'Consultar Cliente', to: '/dashboard/client/clients' }],
     },
     {
       label: 'Agregar Puerto',
       to: '/dashboard/client/add-harbor',
-      submenu: [
-        {
-          label: 'Consultar Puerto',
-          to: '/dashboard/client/harbors',
-        },
-      ],
+      submenu: [{ label: 'Consultar Puerto', to: '/dashboard/client/harbors' }],
     },
     {
       label: 'Agregar Naviera',
       to: '/dashboard/client/add-shipping-company',
-      submenu: [
-        {
-          label: 'Consultar Naviera',
-          to: '/dashboard/client/shipping-companies',
-        },
-      ],
+      submenu: [{ label: 'Consultar Naviera', to: '/dashboard/client/shipping-companies' }],
     },
     {
       label: 'Agregar Deposito',
       to: '/dashboard/client/add-deposit',
-      submenu: [
-        {
-          label: 'Consultar Deposito',
-          to: '/dashboard/client/deposits',
-        },
-      ],
+      submenu: [{ label: 'Consultar Deposito', to: '/dashboard/client/deposits' }],
     },
     {
       label: 'Agregar Transporte',
       to: '/dashboard/client/add-transport',
-      submenu: [
-        {
-          label: 'Consultar Transporte',
-          to: '/dashboard/client/transports',
-        },
-      ],
+      submenu: [{ label: 'Consultar Transporte', to: '/dashboard/client/transports' }],
     },
     {
       label: 'Agregar Cuenta Bancaria',
       to: '/dashboard/client/add-bank-account',
-      submenu: [
-        {
-          label: 'Cuentas Bancarias',
-          to: '/dashboard/client/bank-accounts',
-        },
-      ],
+      submenu: [{ label: 'Cuentas Bancarias', to: '/dashboard/client/bank-accounts' }],
     },
   ];
 
@@ -111,29 +72,16 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
     {
       label: 'Agregar Alicuota',
       to: '/dashboard/box-brands/add-box-brand',
-      submenu: [
-        {
-          label: 'Consultar Marca',
-          to: '/dashboard/box-brands/search',
-        },
-      ],
+      submenu: [{ label: 'Consultar Marca', to: '/dashboard/box-brands/search' }],
     },
-    {
-      label: 'Agregar Logo',
-      to: '/dashboard/box-brands/upload-logo',
-    },
+    { label: 'Agregar Logo', to: '/dashboard/box-brands/upload-logo' },
   ];
 
   const exportMenu: SidenavMenuItem[] = [
     {
       label: 'Iniciar Exportación',
       to: '/dashboard/export/add-export',
-      submenu: [
-        {
-          label: 'Consultar Exportación',
-          to: '/dashboard/export/search',
-        },
-      ],
+      submenu: [{ label: 'Consultar Exportación', to: '/dashboard/export/search' }],
     },
   ];
 
@@ -141,33 +89,18 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
     {
       label: 'Agregar Carta de Corte',
       to: '/dashboard/box-brands/add-cutting-type',
-      submenu: [
-        {
-          label: 'Tipos de Corte',
-          to: '/dashboard/box-brands/cutting-types',
-        },
-      ],
+      submenu: [{ label: 'Tipos de Corte', to: '/dashboard/box-brands/cutting-types' }],
     },
     {
       label: 'Envio Carta de Corte',
       to: '/dashboard/export/add-cutting-sheet',
       count: counts.addCuttingSheet,
-      submenu: [
-        {
-          label: 'Hojas de Corte',
-          to: '/dashboard/export/cutting-sheets',
-        },
-      ],
+      submenu: [{ label: 'Hojas de Corte', to: '/dashboard/export/cutting-sheets' }],
     },
     {
       label: 'Agregar Verificadora',
       to: '/dashboard/box-brands/add-verifier',
-      submenu: [
-        {
-          label: 'Consultar Verificadora',
-          to: '/dashboard/box-brands/verifiers',
-        },
-      ],
+      submenu: [{ label: 'Consultar Verificadora', to: '/dashboard/box-brands/verifiers' }],
     },
   ];
 
@@ -176,39 +109,23 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       label: 'Envío de Insumos',
       to: '/dashboard/liquidation/add-supply-shipment',
       count: counts.addSupplyShipment,
-      submenu: [
-        {
-          label: 'Envíos Realizados',
-          to: '/dashboard/liquidation/exports-sent',
-        },
-      ],
+      submenu: [{ label: 'Envíos Realizados', to: '/dashboard/liquidation/exports-sent' }],
     },
     {
       label: 'Pago a Productores',
       to: '/dashboard/liquidation/producer-pending-payments',
       count: counts.producerPendingPayments,
-      submenu: [
-        {
-          label: 'Pagos Realizados',
-          to: '/dashboard/liquidation/producer-payments',
-        },
-      ],
+      submenu: [{ label: 'Pagos Realizados', to: '/dashboard/liquidation/producer-payments' }],
     },
   ];
 
   const settingsMenu: SidenavMenuItem[] = [
-    {
-      label: 'Modificar Logo',
-      to: '/dashboard/settings/upload-logo',
-    },
+    { label: 'Modificar Logo', to: '/dashboard/settings/upload-logo' },
     {
       label: 'Modificar Ubicación',
       to: `/dashboard/user/update-user/${session?.user?.exporterId}`,
     },
-    {
-      label: 'Agregar Logo',
-      to: '/dashboard/producer/upload-logo',
-    },
+    { label: 'Agregar Logo', to: '/dashboard/producer/upload-logo' },
   ];
 
   const navItems: SidenavItem[] = [
@@ -218,6 +135,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       isMenu: true,
       to: '/dashboard/producer',
       menu: productorMenu,
+      allowedRoles: ['LOGISTICS', 'EXPORT'],
     },
     {
       icon: FaUserTie,
@@ -225,6 +143,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       isMenu: true,
       to: '/dashboard/client',
       menu: clientMenu,
+      allowedRoles: ['LOGISTICS', 'EXPORT'],
     },
     {
       icon: FaBoxOpen,
@@ -232,6 +151,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       isMenu: true,
       to: '/dashboard/box-brands',
       menu: boxBrandsMenu,
+      allowedRoles: ['LOGISTICS', 'EXPORT'],
     },
     {
       icon: MdFlightTakeoff,
@@ -239,6 +159,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       isMenu: true,
       to: '/dashboard/export',
       menu: exportMenu,
+      allowedRoles: ['EXPORT'],
     },
     {
       icon: MdContentCut,
@@ -247,6 +168,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       to: '/dashboard/export',
       menu: qualityMenu,
       count: counts.addCuttingSheet,
+      allowedRoles: ['QUALITY'],
     },
     {
       icon: FaCashRegister,
@@ -255,6 +177,7 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       to: '/dashboard/box-brands',
       menu: liquidationMenu,
       count: counts.addSupplyShipment + counts.producerPendingPayments,
+      allowedRoles: ['ADMINISTRATIVE'],
     },
     {
       icon: FaCogs,
@@ -262,8 +185,15 @@ export function getNavItems(counts: any, session: any): SidenavItem[] {
       isMenu: true,
       to: '/dashboard/settings',
       menu: settingsMenu,
+      allowedRoles: ['ADMINISTRATIVE'],
     },
   ];
 
-  return navItems;
+  // MASTER ve todo
+  if (role === 'MASTER') return navItems;
+
+  return navItems.filter((item) => {
+    if (!item.allowedRoles) return true;
+    return item.allowedRoles.includes(role);
+  });
 }
