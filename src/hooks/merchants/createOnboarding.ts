@@ -1,11 +1,14 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { useMutation } from 'react-query';
+import { AxiosError } from 'axios';
+import {
+  useMutation,
+  UseMutationOptions,
+  UseMutationResult,
+} from 'react-query';
 import axios from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
+import { ServerErrorResponse } from '@/types/errorResponse';
 import { MerchantType } from '@/types/merchant/merchant';
 
-interface CreateOnboardingResponse {
+export interface CreateOnboardingResponse {
   merchantId: string;
 }
 
@@ -15,17 +18,16 @@ export const createOnboarding = (
   return axios.post('/auth/exporter/onboarding', data);
 };
 
-type UseCreateOnboardingOptions = {
-  config?: MutationConfig<typeof createOnboarding>;
-};
-
-export const useCreateOnboarding = ({
-  config,
-}: UseCreateOnboardingOptions = {}) => {
-  const mutation = useMutation({
-    ...config,
-    mutationFn: createOnboarding,
-  });
-
-  return { ...mutation, createOnboarding: mutation.mutate };
+export const useCreateOnboarding = (
+  config?: UseMutationOptions<
+    CreateOnboardingResponse,
+    AxiosError<ServerErrorResponse>,
+    Partial<MerchantType>
+  >
+): UseMutationResult<
+  CreateOnboardingResponse,
+  AxiosError<ServerErrorResponse>,
+  Partial<MerchantType>
+> => {
+  return useMutation(createOnboarding, config);
 };

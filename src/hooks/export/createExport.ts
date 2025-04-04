@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { useMutation } from 'react-query';
+import { AxiosError } from 'axios';
+import {
+  useMutation,
+  UseMutationOptions,
+  UseMutationResult,
+} from 'react-query';
 import axios from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
 import { ExportType } from '@/types/export';
+import { ServerErrorResponse } from '../../types/errorResponse';
 
 interface CreateExportResponse {
   exportId: string;
@@ -15,15 +18,16 @@ export const createExport = (
   return axios.post('/export', data);
 };
 
-type UseCreateExportOptions = {
-  config?: MutationConfig<typeof createExport>;
-};
-
-export const useCreateExport = ({ config }: UseCreateExportOptions = {}) => {
-  const mutation = useMutation({
-    ...config,
-    mutationFn: createExport,
-  });
-
-  return { ...mutation, createExport: mutation.mutate };
+export const useCreateExport = (
+  config?: UseMutationOptions<
+    CreateExportResponse,
+    AxiosError<ServerErrorResponse>,
+    Partial<ExportType>
+  >
+): UseMutationResult<
+  CreateExportResponse,
+  AxiosError<ServerErrorResponse>,
+  Partial<ExportType>
+> => {
+  return useMutation(createExport, config);
 };

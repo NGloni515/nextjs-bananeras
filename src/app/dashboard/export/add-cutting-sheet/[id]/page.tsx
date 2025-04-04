@@ -1,21 +1,61 @@
-import { Box, Card, CardBody, CardHeader, Center, Heading } from '@chakra-ui/react';
-import { redirect } from 'next/navigation';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+import {
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Center,
+  Heading,
+} from '@chakra-ui/react';
+import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useLayoutEffect } from 'react';
 import CuttingSheetForm from '../../../../../components/export/cutting-sheet/CuttingSheetForm';
-import { fetchExport } from '../../../../../lib/export/export';
+import { useExport } from '../../../../../hooks/export/getExport';
+import { ExportResponse } from '../../../../../types/export.response';
 
-interface PageProps {
-  params: { id: string };
-}
+const CuttingSheetPage = (): React.JSX.Element => {
+  const params = useParams<{ id: string }>();
+  const { data, isLoading, error } = useExport({
+    exportId: params.id,
+  });
+  const pendingCuttingSheet = data as Partial<ExportResponse>;
+  const pathname = usePathname();
+  const router = useRouter();
 
-export default async function CuttingSheetPage({ params }: PageProps): Promise<JSX.Element> {
-  const exportData = await fetchExport(params.id);
-  
-  if (!exportData) {
-    redirect('/dashboard/export/add-cutting-sheet');
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data: dataRes } = response;
+      const { statusCode } = dataRes;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
+  useLayoutEffect(() => {
+    if (!isLoading) {
+      if (!pendingCuttingSheet) {
+        return redirect(pathname.replace(/\/\d+$/, ''));
+      }
+    }
+  }, [isLoading, pendingCuttingSheet, pathname]);
+
+  if (isLoading) {
+    return (
+      <Box mx={'auto'} my={'200px'}>
+        <Center>
+          <Heading>Cargando...</Heading>
+        </Center>
+      </Box>
+    );
   }
 
   return (
-    <Box my='20px' mx='auto' w='95%'>
+    <Box my={'20px'} mx='auto' w={'95%'}>
       <Center>
         <Card
           w={{
@@ -25,18 +65,18 @@ export default async function CuttingSheetPage({ params }: PageProps): Promise<J
             lg: '100%',
             xl: '100%',
           }}
-          mb="20px"
+          mb={'20px'}
         >
-          <CardHeader w="100%">
-            <Heading textAlign="center">Hoja de Corte</Heading>
+          <CardHeader w={'100%'}>
+            <Heading textAlign='center'>Hoja de Corte</Heading>
           </CardHeader>
           <CardBody w={'100%'}>
-            <CuttingSheetForm
-              cuttingSheetSelected={exportData}
-            />
+            <CuttingSheetForm cuttingSheetSelected={pendingCuttingSheet} />
           </CardBody>
         </Card>
       </Center>
     </Box>
   );
-}
+};
+
+export default CuttingSheetPage;

@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { useMutation } from 'react-query';
+import { AxiosError } from 'axios';
+import { useMutation, UseMutationOptions, UseMutationResult } from 'react-query';
 import axios from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
-import { ClientType } from '@/types/client';
+import { ClientType } from '../../../types/client';
+import { ServerErrorResponse } from '../../../types/errorResponse';
 
 interface CreateClientResponse {
-  exportId: string;
+  clientId: string;
 }
 
 export const createClient = (
@@ -15,15 +14,16 @@ export const createClient = (
   return axios.post('/client', data);
 };
 
-type UseCreateClientOptions = {
-  config?: MutationConfig<typeof createClient>;
-};
-
-export const useCreateClient = ({ config }: UseCreateClientOptions = {}) => {
-  const mutation = useMutation({
-    ...config,
-    mutationFn: createClient,
-  });
-
-  return { ...mutation, createClient: mutation.mutate };
+export const useCreateClient = (
+  config?: UseMutationOptions<
+    CreateClientResponse,
+    AxiosError<ServerErrorResponse>,
+    Partial<ClientType>
+  >
+): UseMutationResult<
+  CreateClientResponse,
+  AxiosError<ServerErrorResponse>,
+  Partial<ClientType>
+> => {
+  return useMutation(createClient, config);
 };

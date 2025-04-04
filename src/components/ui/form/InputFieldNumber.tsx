@@ -2,14 +2,13 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Input,
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  NumberInput,
-  NumberInputField,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface InputFieldProps {
   name: string;
@@ -36,35 +35,57 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
   unit,
   size = 'md',
 }) => {
-  const [field, meta, helpers] = useField(name);
+  const [, meta, helpers] = useField(name);
+  const [internalValue, setInternalValue] = useState<string>('');
 
   useEffect(() => {
     if (value !== '') {
-      const newValue =
-        isDecimal || isGeo ? Number(value).toFixed(isGeo ? 6 : 2) : value;
-      helpers.setValue(newValue);
+      const formatted =
+        isDecimal || isGeo
+          ? Number(value).toFixed(isGeo ? 6 : 2)
+          : String(value);
+      setInternalValue(formatted);
+      helpers.setValue(Number(formatted));
     } else {
+      setInternalValue('');
       helpers.setValue('');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [helpers, isDecimal, isGeo, value]);
 
-  const handleBlur = (event: React.FocusEvent): void => {
-    field.onBlur(event);
-    const newValue =
-      isDecimal || isGeo
-        ? Number(field.value).toFixed(isGeo ? 6 : 2)
-        : field.value;
-    helpers.setValue(newValue);
+  const handleBlur = (): void => {
+    const parsed = parseFloat(internalValue);
+    if (!isNaN(parsed)) {
+      const formatted = isGeo
+        ? parsed.toFixed(6)
+        : isDecimal
+          ? parsed.toFixed(2)
+          : parsed.toString();
+      setInternalValue(formatted);
+      helpers.setValue(Number(formatted));
+    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent): void => {
     if (event.key === 'Enter') {
-      const newValue =
-        isDecimal || isGeo
-          ? Number(field.value).toFixed(isGeo ? 6 : 2)
-          : field.value;
-      helpers.setValue(newValue);
+      handleBlur();
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const valueStr = e.target.value;
+    setInternalValue(valueStr);
+
+    if (
+      valueStr === '' ||
+      valueStr === '-' ||
+      valueStr === '--' ||
+      valueStr === '-.' ||
+      valueStr === '.' ||
+      valueStr === ','
+    ) {
+      helpers.setValue('');
+    } else if (!isNaN(Number(valueStr))) {
+      helpers.setValue(Number(valueStr));
     }
   };
 
@@ -72,53 +93,48 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
     <FormControl
       id={name}
       isInvalid={!!meta.error && meta.touched}
-      width={'100%'}
+      width="100%"
     >
       {label && (
-        <FormLabel fontSize='sm' mb='8px'>
+        <FormLabel fontSize="sm" mb="8px">
           {label}
         </FormLabel>
       )}
-      <InputGroup width={'100%'}>
+      <InputGroup width="100%">
         {isDolar && (
           <InputLeftElement
-            pointerEvents='none'
-            color='gray.400'
-            fontSize='1.2em'
+            pointerEvents="none"
+            color="gray.400"
+            fontSize="1.2em"
           >
             $
           </InputLeftElement>
         )}
         {unit && (
           <InputRightElement
-            pointerEvents='none'
-            color='gray.500'
-            fontSize='1em'
-            mr={'8px'}
+            pointerEvents="none"
+            color="gray.500"
+            fontSize="1em"
+            mr="8px"
           >
             {unit}
           </InputRightElement>
         )}
-        <NumberInput
-          size={size}
-          width={'100%'}
-          {...field}
+        <Input
+          type="text"
+          inputMode="decimal"
           isReadOnly={isReadOnly}
-          step={isDecimal || isGeo ? 0.01 : 1}
-          min={isGeo ? -180 : undefined}
-          max={isGeo ? 180 : undefined}
-        >
-          <NumberInputField
-            {...field}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder || label}
-            textAlign={isDecimal && !isGeo ? 'right' : 'left'}
-          />
-        </NumberInput>
+          placeholder={placeholder || label}
+          textAlign={isDecimal && !isGeo ? 'right' : 'left'}
+          size={size}
+          value={internalValue}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+        />
       </InputGroup>
       {meta.error && meta.touched && (
-        <FormErrorMessage mt='8px' mb='16px'>
+        <FormErrorMessage mt="8px" mb="16px">
           {meta.error}
         </FormErrorMessage>
       )}

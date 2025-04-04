@@ -33,7 +33,7 @@ const AddShippingCompanyModal = (): React.JSX.Element => {
         <ModalContent>
           <ModalCloseButton />
           <ModalBody>
-            <AddShippingCompanyForm onClose={onClose} />
+            <AddShippingCompanyForm />
           </ModalBody>
         </ModalContent>
       </Modal>

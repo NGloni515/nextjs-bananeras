@@ -6,68 +6,17 @@ import {
   AccordionPanel,
   Box,
   Heading,
+  Text,
+  Link,
 } from '@chakra-ui/react';
 import React from 'react';
+import { CuttingSheetResponse } from '@/types/cuttingSheet.response';
 
-const DetailCuttingSheets = ({
+const DetailCuttingSheet = ({
   cuttingSheet,
   width,
 }: {
-  cuttingSheet: {
-    id: number;
-    createdAt: string;
-    updatedAt: string;
-    pdfKey: string;
-    palletsHeight: string;
-    containerPositioning: string;
-    belowDeck: string;
-    exportId: number;
-    exporterId: number;
-    pdfUrl: string;
-    export: {
-      id: number;
-      boxQuantity: number;
-      cuttingType: {
-        quality: string;
-        shipmentType: string;
-        leavesAtHarvest: number;
-        maxAgeAtCut: number;
-        minCaliber: number;
-        maxCaliber: number;
-        fingerLength: string;
-        saneos: string;
-        cunas: string;
-        clusterDetail: string;
-        labelDetail: string;
-        packagingPattern: string;
-        authorizedTransport: string;
-        aliquot: string;
-        palletDetail: string;
-        cornerProtectorsDetail: string;
-        reinforcementsDetail: string;
-        plasticStrapsDetail: string;
-        staplesDetail: string;
-        blockingSheetsDetail: string;
-        transportDetail: string;
-        generalObservations: string;
-      };
-      merchant: {
-        businessName: string;
-      };
-      business: {
-        name: string;
-      };
-      harborDeparture: {
-        name: string;
-      };
-      harborDestination: {
-        name: string;
-      };
-      client: {
-        businessName: string;
-      };
-    };
-  };
+  cuttingSheet: CuttingSheetResponse;
   width: { sm: number; md: number };
 }): React.JSX.Element => {
   const { export: ex } = cuttingSheet;
@@ -76,114 +25,102 @@ const DetailCuttingSheets = ({
     <Accordion defaultIndex={[0]} allowMultiple>
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
-              Detalles de Corte
+          <AccordionButton pl="60px" width={width}>
+            <Box flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+              Información General
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            <p>
-              <strong>Calidad de Corte:</strong> {ex.cuttingType.quality}
-            </p>
-            <p>
-              <strong>Tipo de Envío:</strong> {ex.cuttingType.shipmentType}
-            </p>
-            <p>
-              <strong>Hojas en Cosecha:</strong>{' '}
-              {ex.cuttingType.leavesAtHarvest}
-            </p>
-            <p>
-              <strong>Edad Máxima al Corte:</strong>{' '}
-              {ex.cuttingType.maxAgeAtCut}
-            </p>
-            <p>
-              <strong>Calibre Mínimo:</strong> {ex.cuttingType.minCaliber}
-            </p>
-            <p>
-              <strong>Calibre Máximo:</strong> {ex.cuttingType.maxCaliber}
-            </p>
-            <p>
-              <strong>Longitud del Dedo:</strong> {ex.cuttingType.fingerLength}
-            </p>
-            <p>
-              <strong>Patrón de Empaquetado:</strong>{' '}
-              {ex.cuttingType.packagingPattern}
-            </p>
-            <p>
-              <strong>Transporte Autorizado:</strong>{' '}
-              {ex.cuttingType.authorizedTransport}
-            </p>
-          </Box>
+        <AccordionPanel pb={4} pl="60px">
+          <Text><strong>ID:</strong> {cuttingSheet.id}</Text>
+          <Text><strong>Altura Pallet:</strong> {cuttingSheet.palletsHeight}</Text>
+          <Text><strong>Ubicación Contenedor:</strong> {cuttingSheet.containerPositioning}</Text>
+          <Text><strong>Debajo Cubierta:</strong> {cuttingSheet.belowDeck}</Text>
+          <Text>
+            <strong>PDF:</strong>{' '}
+            <Link href={cuttingSheet.pdfUrl} target="_blank" color="blue.500">
+              Ver PDF
+            </Link>
+          </Text>
         </AccordionPanel>
       </AccordionItem>
+
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
-              Información Logística y Comercial
+          <AccordionButton pl="60px" width={width}>
+            <Box flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+              Productor y Finca
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            <p>
-              <strong>Productor:</strong> {ex.merchant.businessName}
-            </p>
-            <p>
-              <strong>Finca:</strong> {ex.business.name}
-            </p>
-            <p>
-              <strong>Puerto de Salida:</strong> {ex.harborDeparture.name}
-            </p>
-            <p>
-              <strong>Puerto de Destino:</strong> {ex.harborDestination.name}
-            </p>
-            <p>
-              <strong>Cliente:</strong> {ex.client.businessName}
-            </p>
-            <p>
-              <strong>Acceso al PDF:</strong>{' '}
-              <a
-                href={cuttingSheet.pdfUrl}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                Ver PDF
-              </a>
-            </p>
-          </Box>
+        <AccordionPanel pb={4} pl="60px">
+          <Text><strong>Productor:</strong> {ex.merchant.businessName}</Text>
+          <Text><strong>RUC:</strong> {ex.merchant.businessId}</Text>
+          <Text><strong>Finca:</strong> {ex.business.name}</Text>
+          <Text><strong>Área:</strong> {ex.business.area} m²</Text>
+          <Text><strong>Fruta:</strong> {ex.business.fruitType}</Text>
+          <Text><strong>Dirección:</strong> {ex.business.address}</Text>
+          <Text><strong>Código MAGAP:</strong> {ex.business.codeMAGAP}</Text>
+          <Text><strong>Código AGROCALIDAD:</strong> {ex.business.codeAGROCALIDAD}</Text>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <Heading>
+          <AccordionButton pl="60px" width={width}>
+            <Box flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+              Cliente
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </Heading>
+        <AccordionPanel pb={4} pl="60px">
+          <Text><strong>Nombre:</strong> {ex.client.businessName}</Text>
+          <Text><strong>RUC:</strong> {ex.client.businessId}</Text>
+          <Text><strong>Tipo:</strong> {ex.client.type}</Text>
+          <Text><strong>Correo:</strong> {ex.client.email}</Text>
+          <Text><strong>Teléfono:</strong> {ex.client.phone}</Text>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <Heading>
+          <AccordionButton pl="60px" width={width}>
+            <Box flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+              Puertos
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </Heading>
+        <AccordionPanel pb={4} pl="60px">
+          <Text><strong>Puerto Salida:</strong> {ex.harborDeparture.name}</Text>
+          <Text><strong>Ubicación:</strong> {ex.harborDeparture.location}</Text>
+          <Text><strong>Puerto Destino:</strong> {ex.harborDestination.name}</Text>
+          <Text><strong>Ubicación:</strong> {ex.harborDestination.location}</Text>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <Heading>
+          <AccordionButton pl="60px" width={width}>
+            <Box flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+              Marca de Caja (BoxBrand)
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </Heading>
+        <AccordionPanel pb={4} pl="60px">
+          <Text><strong>Nombre:</strong> {ex.boxBrand.name}</Text>
+          <Text><strong>Código:</strong> {ex.boxBrand.brandCode}</Text>
+          <Text><strong>Peso Neto:</strong> {ex.boxBrand.netWeightBox} kg</Text>
+          <Text><strong>Peso Bruto:</strong> {ex.boxBrand.grossWeightBox} kg</Text>
+          <Text><strong>Cantidad de Cajas:</strong> {ex.boxQuantity}</Text>
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
   );
 };
 
-export default DetailCuttingSheets;
+export default DetailCuttingSheet;

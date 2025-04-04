@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { useMutation } from 'react-query';
+import { AxiosError } from 'axios';
+import { useMutation, UseMutationOptions, UseMutationResult } from 'react-query';
 import axios from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
 import { MerchantType } from '@/types/merchant/merchant';
+import { ServerErrorResponse } from '../../types/errorResponse';
 
 interface CreateMerchantResponse {
   merchantId: string;
@@ -15,17 +14,16 @@ export const createMerchant = (
   return axios.post('/merchant', data);
 };
 
-type UseCreateMerchantOptions = {
-  config?: MutationConfig<typeof createMerchant>;
-};
-
-export const useCreateMerchant = ({
-  config,
-}: UseCreateMerchantOptions = {}) => {
-  const mutation = useMutation({
-    ...config,
-    mutationFn: createMerchant,
-  });
-
-  return { ...mutation, createMerchant: mutation.mutate };
+export const useCreateMerchant = (
+  config?: UseMutationOptions<
+    CreateMerchantResponse,
+    AxiosError<ServerErrorResponse>,
+    Partial<MerchantType>
+  >
+): UseMutationResult<
+  CreateMerchantResponse,
+  AxiosError<ServerErrorResponse>,
+  Partial<MerchantType>
+> => {
+  return useMutation(createMerchant, config);
 };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Accordion,
   AccordionButton,
@@ -7,14 +6,16 @@ import {
   AccordionPanel,
   Box,
   Heading,
+  Text,
 } from '@chakra-ui/react';
 import React from 'react';
+import { BusinessResponse } from '../../../types/merchant/merchant.response';
 
 const DetailBusiness = ({
   business,
   width,
 }: {
-  business: any;
+  business: BusinessResponse;
   width: { sm: number; md: number };
 }): React.JSX.Element => {
   return (
@@ -42,50 +43,50 @@ const DetailBusiness = ({
         </Heading>
         <AccordionPanel pb={4} pl='60px'>
           <Box>
-            <p>
-              <strong>Ciudad:</strong> {business.city}
-            </p>
-            <p>
+            <Text><strong>Provincia:</strong> {business.province.name}</Text>
+            <Text><strong>Ciudad:</strong> {business.city.name}</Text>
+            <Text><strong>Dirección:</strong> {business.address}</Text>
+            <Text>
               <strong>Dirección:</strong> {business.address}
-            </p>
-            <p>
+            </Text>
+            <Text>
               <strong>Tipo de Fruta:</strong> {business.fruitType}
-            </p>
+            </Text>
           </Box>
         </AccordionPanel>
       </AccordionItem>
-      <AccordionItem>
-        <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
+      {business.latitude && business.longitude && (
+        <AccordionItem>
+          <Heading>
+            <AccordionButton
+              pl="60px"
+              width={{
+                sm: Number(width.sm),
+                md: Number(width.md),
+              }}
             >
-              Geolocalización
+              <Box
+                as="span"
+                flex="1"
+                textAlign="left"
+                fontSize="md"
+                fontWeight="bold"
+              >
+                Geolocalización
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </Heading>
+          <AccordionPanel pb={4} pl="60px">
+            <Box>
+              <Text>
+                <strong>Latitud/Longitud:</strong> {business.latitude}/{business.longitude}
+              </Text>
             </Box>
-            <AccordionIcon />
-          </AccordionButton>
-        </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            <p>
-              <strong>Latitud:</strong> {business.latitude}
-            </p>
-            <p>
-              <strong>Longitud:</strong> {business.longitude}
-            </p>
-          </Box>
-        </AccordionPanel>
-      </AccordionItem>
+          </AccordionPanel>
+        </AccordionItem>
+      )}
+
       <AccordionItem>
         <Heading>
           <AccordionButton
@@ -109,12 +110,8 @@ const DetailBusiness = ({
         </Heading>
         <AccordionPanel pb={4} pl='60px'>
           <Box>
-            <p>
-              <strong>Código MAGAP:</strong> {business.codeMAGAP}
-            </p>
-            <p>
-              <strong>Código Agrocalidad:</strong> {business.codeAGROCALIDAD}
-            </p>
+            <Text><strong>Código MAGAP:</strong> {business.codeMAGAP}</Text>
+            <Text><strong>Código AGROCALIDAD:</strong> {business.codeAGROCALIDAD}</Text>
           </Box>
         </AccordionPanel>
       </AccordionItem>

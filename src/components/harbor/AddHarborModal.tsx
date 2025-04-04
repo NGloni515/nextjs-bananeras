@@ -33,7 +33,7 @@ const AddHarborModal = (): React.JSX.Element => {
         <ModalContent>
           <ModalCloseButton />
           <ModalBody>
-            <AddHarborForm onClose={onClose} />
+            <AddHarborForm />
           </ModalBody>
         </ModalContent>
       </Modal>

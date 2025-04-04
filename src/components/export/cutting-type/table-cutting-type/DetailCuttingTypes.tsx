@@ -30,8 +30,6 @@ const DetailCuttingTypes = ({
     thirdLine?: string;
     fourthLine?: string;
     packagingPattern: string;
-    authorizedTransport: string;
-    aliquot: string;
     palletDetail: string;
     cornerProtectorsDetail: string;
     reinforcementsDetail: string;
@@ -136,13 +134,6 @@ const DetailCuttingTypes = ({
             <p>
               <strong>Patrón de Empaquetado:</strong>{' '}
               {cuttingType.packagingPattern}
-            </p>
-            <p>
-              <strong>Transporte Autorizado:</strong>{' '}
-              {cuttingType.authorizedTransport}
-            </p>
-            <p>
-              <strong>Alícuota:</strong> {cuttingType.aliquot}
             </p>
             <p>
               <strong>Detalle de Pallet:</strong> {cuttingType.palletDetail}

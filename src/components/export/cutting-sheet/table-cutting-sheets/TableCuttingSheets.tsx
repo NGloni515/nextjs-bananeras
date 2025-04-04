@@ -65,10 +65,6 @@ const TableCuttingSheets = ({
             accessorKey: 'export.boxBrand.name',
             header: 'Marca de Caja',
           },
-          {
-            accessorKey: 'export.cuttingType.quality',
-            header: 'Calidad de Corte',
-          },
         ],
       },
       {

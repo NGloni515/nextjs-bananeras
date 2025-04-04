@@ -1,7 +1,8 @@
-import { useMutation } from 'react-query';
+import { AxiosError } from 'axios';
+import { useMutation, UseMutationOptions, UseMutationResult } from 'react-query';
 import axios from '@/lib/axios';
-import { MutationConfig } from '@/lib/react-query';
 import { BankAccountType } from '@/types/bankAccount';
+import { ServerErrorResponse } from '../../types/errorResponse';
 
 interface CreateBankAccountResponse {
   bankAccountId: string;
@@ -13,18 +14,14 @@ export const createBankAccount = (
   return axios.post('/bank-account', data);
 };
 
-type UseCreateBankAccountOptions = {
-  config?: MutationConfig<typeof createBankAccount>;
-};
-
-export const useCreateBankAccount = ({
-  config,
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
-}: UseCreateBankAccountOptions = {}) => {
-  const mutation = useMutation({
-    ...config,
-    mutationFn: createBankAccount,
-  });
-
-  return { ...mutation, createBankAccount: mutation.mutate };
+export const useCreateBankAccount = (
+  config?: UseMutationOptions<
+    CreateBankAccountResponse,
+    AxiosError<ServerErrorResponse>,
+    Partial<BankAccountType>
+  >): UseMutationResult<
+    CreateBankAccountResponse,
+    AxiosError<ServerErrorResponse>,
+    Partial<BankAccountType>> => {
+  return useMutation(createBankAccount, config);
 };

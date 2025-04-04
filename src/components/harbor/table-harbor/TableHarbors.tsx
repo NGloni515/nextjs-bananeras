@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box } from '@chakra-ui/react';
+import { isAxiosError } from 'axios';
 import {
   MRT_ColumnDef,
   MaterialReactTable,
@@ -11,6 +11,8 @@ import React, { useEffect, useMemo } from 'react';
 import DetailHarbors from './DetailHarbors';
 import { useHarbors } from '../../../hooks/export/harbor/getHarbors';
 import { usePagination } from '../../../hooks/usePagination';
+import { ClientType } from '../../../types/client';
+import { HarborResponse } from '../../../types/harbor.response';
 
 const TableHarbors = ({
   width,
@@ -24,18 +26,15 @@ const TableHarbors = ({
   const router = useRouter();
 
   useEffect(() => {
-    if (error) {
-      const { response } = error as any;
-      const { data: dataRes } = response;
-      const { statusCode } = dataRes;
-
-      if (statusCode === 401) {
+    if (error && isAxiosError(error)) {
+      const dataRes = error.response?.data;
+      if (dataRes?.statusCode === 401) {
         router.push('/api/auth/signout');
       }
     }
   }, [error, router]);
 
-  const columns = useMemo<MRT_ColumnDef<any>[]>(
+  const columns = useMemo<MRT_ColumnDef<HarborResponse>[]>(
     () => [
       {
         header: 'Puerto',
@@ -44,18 +43,26 @@ const TableHarbors = ({
             accessorKey: 'name',
             header: 'Nombre del Puerto',
           },
+          {
+            accessorKey: 'code',
+            header: 'Código',
+          },
         ],
       },
       {
         header: 'Ubicación',
         columns: [
           {
-            accessorKey: 'country',
+            accessorFn: (row) => row.country.name,
             header: 'País',
           },
           {
-            accessorKey: 'city',
+            accessorFn: (row) => row.city.name,
             header: 'Ciudad',
+          },
+          {
+            accessorKey: 'address',
+            header: 'Dirección',
           },
           {
             accessorKey: 'latitude',
@@ -74,11 +81,10 @@ const TableHarbors = ({
             accessorKey: 'clients',
             header: 'Clientes',
             Cell: ({ cell }): React.JSX.Element => {
-              const clients = cell.getValue<any[]>();
+              const clients = cell.getValue<ClientType[]>();
               return (
                 <span>
-                  {clients?.map((client) => client.businessName).join(', ') ||
-                    'N/A'}
+                  {clients?.map((client) => client.businessName).join(', ') || 'N/A'}
                 </span>
               );
             },

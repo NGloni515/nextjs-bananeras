@@ -2,10 +2,10 @@ import { Button, Flex } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { signIn } from 'next-auth/react';
 import * as Yup from 'yup';
+import { env } from '../../lib/env';
 import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldPassword from '../ui/form/InputFieldPassword';
 import InputFieldText from '../ui/form/InputFieldText';
-import { env } from '../../lib/env';
 
 interface ValuesProps {
   email: string;
@@ -40,6 +40,7 @@ export default function SignInForm(props: Props): React.JSX.Element {
       redirect: true,
       callbackUrl: props.callbackUrl ?? `${env.NEXT_PORTAL_URL}/dashboard`,
     });
+    res;
   };
 
   return (

@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+
 import {
   Accordion,
   AccordionButton,
@@ -10,9 +14,9 @@ import {
 import React from 'react';
 import {
   ExportSentType,
-  InsecticideSentPartType,
-  PesticideSentPartType,
-} from '../../../types/exportSent';
+  InsecticideSent,
+  PesticideSent,
+} from '../../../types/exportSent.response';
 
 const DetailExportSent = ({
   exportSent,
@@ -27,305 +31,82 @@ const DetailExportSent = ({
     <Accordion defaultIndex={[0]} allowMultiple>
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
+          <AccordionButton pl='60px' width={{ sm: width.sm, md: width.md }}>
+            <Box flex='1' textAlign='left' fontSize='md' fontWeight='bold'>
               Información Comercial del Exportador y Comerciante
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
         <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            <p>
-              <strong>Nombre del Comerciante:</strong>{' '}
-              {ex.merchant?.businessName || 'No disponible'}
-            </p>
-            <p>
-              <strong>RUC:</strong> {ex.merchant?.businessId || 'No disponible'}
-            </p>
-            <p>
-              <strong>Email:</strong> {ex.merchant?.email || 'No disponible'}
-            </p>
-            <p>
-              <strong>Dirección:</strong>{' '}
-              {ex.merchant
-                ? `${ex.merchant.address}, ${ex.merchant.city}`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Tipo de Contrato:</strong>{' '}
-              {ex.merchant?.contractType || 'No disponible'}
-            </p>
-            <p>
-              <strong>Detalles del Negocio:</strong>{' '}
-              {ex.business
-                ? `${ex.business.name}, ${ex.business.city}, ${ex.business.address}`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Tipo de Fruta:</strong>{' '}
-              {ex.business?.fruitType || 'No disponible'}
-            </p>
-            <p>
-              <strong>Área Cultivada:</strong>{' '}
-              {ex.business?.area
-                ? `${ex.business.area} hectáreas`
-                : 'No disponible'}
-            </p>
-          </Box>
+          <p><strong>Nombre del Comerciante:</strong> {ex.merchant.businessName}</p>
+          <p><strong>RUC:</strong> {ex.merchant.businessId}</p>
+          <p><strong>Email:</strong> {ex.merchant.email}</p>
+          <p><strong>Dirección:</strong> {ex.merchant.address}, </p>
+          <p><strong>Tipo de Contrato:</strong> {ex.merchant.contractType}</p>
+          <p><strong>Finca:</strong> {ex.business.name}, {ex.business.address}</p>
+          <p><strong>Tipo de Fruta:</strong> {ex.business.fruitType}</p>
+          <p><strong>Área Cultivada:</strong> {ex.business.area} m²</p>
         </AccordionPanel>
       </AccordionItem>
 
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
-              Detalles del Producto y Embalaje
+          <AccordionButton pl='60px' width={{ sm: width.sm, md: width.md }}>
+            <Box flex='1' textAlign='left' fontSize='md' fontWeight='bold'>
+              Detalles del Producto
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </Heading>
+        <AccordionPanel pb={4} pl='60px'>
+          <p><strong>Marca de Cajas:</strong> {ex.boxBrand.name}</p>
+          <p><strong>Código de Marca:</strong> {ex.boxBrand.brandCode}</p>
+          <p><strong>Cantidad Total:</strong> {ex.boxQuantity} cajas</p>
+          <p><strong>Peso Neto por Caja:</strong> {ex.boxBrand.netWeightBox} kg</p>
+          <p><strong>Peso Bruto por Caja:</strong> {ex.boxBrand.grossWeightBox} kg</p>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <Heading>
+          <AccordionButton pl='60px' width={{ sm: width.sm, md: width.md }}>
+            <Box flex='1' textAlign='left' fontSize='md' fontWeight='bold'>
+              Materiales y Embalaje Enviados
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
         <AccordionPanel pb={4} pl='60px'>
           <Box>
-            <p>
-              <strong>Marca de Cajas:</strong>{' '}
-              {ex.boxBrand?.name || 'No disponible'}
-            </p>
-            <p>
-              <strong>Código de Marca:</strong>{' '}
-              {ex.boxBrand?.brandCode || 'No disponible'}
-            </p>
-            <p>
-              <strong>Cantidad de Cajas:</strong>{' '}
-              {ex.boxQuantity || 'No disponible'}
-            </p>
-            <p>
-              <strong>Peso Neto por Caja:</strong>{' '}
-              {ex.boxBrand?.netWeightBox
-                ? `${ex.boxBrand.netWeightBox} kg`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Peso Bruto por Caja:</strong>{' '}
-              {ex.boxBrand?.grossWeightBox
-                ? `${ex.boxBrand.grossWeightBox} kg`
-                : 'No disponible'}
-            </p>
+            <p><strong>Fondo:</strong> {exportSent.bottomTypeQuantity} unidades</p>
+            <p><strong>Tapa:</strong> {exportSent.lidTypeQuantity} unidades</p>
+            <p><strong>Funda:</strong> {exportSent.coverTypeQuantity} unidades</p>
+            <p><strong>Cartulina:</strong> {exportSent.cardboardTypeQuantity} unidades</p>
+            <p><strong>Paraseal:</strong> {exportSent.parasealTypeQuantity} unidades</p>
+            <p><strong>Pad:</strong> {exportSent.padTypeQuantity} unidades</p>
+            <p><strong>Esponja:</strong> {exportSent.spongeTypeQuantity}</p>
+            <p><strong>Etiquetas:</strong> {exportSent.labelQuantity} unidades</p>
+            <p><strong>Bandas:</strong> {exportSent.bandQuantity} unidades</p>
+            <p><strong>Sachets:</strong> {exportSent.sachetQuantity} unidades</p>
+            <p><strong>Gomas:</strong> {exportSent.rubberQuantity} unidades</p>
+            <p><strong>Protectores:</strong> {exportSent.protectorQuantity} unidades</p>
+            <p><strong>Bolsas de Racimo:</strong> {exportSent.clusterBagQuantity} unidades</p>
+            <p><strong>Grampas:</strong> {exportSent.stapleQuantity} unidades</p>
+            <p><strong>Stripping:</strong> {exportSent.strippingQuantity} unidades</p>
+            <p><strong>Termógrafos:</strong> {exportSent.thermographQuantity} unidades</p>
+            <p><strong>Sellos:</strong> {exportSent.sealQuantity} unidades</p>
+            <p><strong>Etiquetas Metto:</strong> {exportSent.mettoLabelQuantity} unidades</p>
+            <p><strong>Removedor de Látex:</strong> {exportSent.latexRemoverQuantity} unidades</p>
+            <p><strong>Hojas de Bloqueo:</strong> {exportSent.blockingSheetQuantity} unidades</p>
           </Box>
         </AccordionPanel>
       </AccordionItem>
 
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
-              Detalles de Embalaje
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
-        </Heading>
-        <AccordionPanel pb={4} pl='60px'>
-          <Box>
-            <p>
-              <strong>Fondo:</strong>{' '}
-              {ex.boxBrand?.bottomType
-                ? `${ex.boxBrand.bottomType} (Cantidad: ${exportSent.bottomTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Tapa:</strong>{' '}
-              {ex.boxBrand?.lidType
-                ? `${ex.boxBrand.lidType} (Cantidad: ${exportSent.lidTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Funda:</strong>{' '}
-              {ex.boxBrand?.coverType
-                ? `${ex.boxBrand.coverType} (Cantidad: ${exportSent.coverTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Cartulina:</strong>{' '}
-              {ex.boxBrand?.cardboardType
-                ? `${ex.boxBrand.cardboardType} (Cantidad: ${exportSent.cardboardTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Paraseal:</strong>{' '}
-              {ex.boxBrand?.parasealType
-                ? `${ex.boxBrand.parasealType} (Cantidad: ${exportSent.parasealTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Pad:</strong>{' '}
-              {ex.boxBrand?.padType
-                ? `${ex.boxBrand.padType} (Cantidad: ${exportSent.padTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Esponja:</strong>{' '}
-              {ex.boxBrand?.spongeType
-                ? `${ex.boxBrand.spongeType} (Cantidad: ${exportSent.spongeTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Etiquetas:</strong>{' '}
-              {exportSent.labelQuantity
-                ? `${exportSent.labelQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Bandas:</strong>{' '}
-              {exportSent.bandQuantity
-                ? `${exportSent.bandQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Sachets:</strong>{' '}
-              {exportSent.sachetQuantity
-                ? `${exportSent.sachetQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Gomas:</strong>{' '}
-              {exportSent.rubberQuantity
-                ? `${exportSent.rubberQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Protectores:</strong>{' '}
-              {exportSent.protectorQuantity
-                ? `${exportSent.protectorQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Bolsas de Racimo:</strong>{' '}
-              {exportSent.clusterBagQuantity
-                ? `${exportSent.clusterBagQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Mini Pallets:</strong>{' '}
-              {ex.boxBrand?.miniPalletsType
-                ? `${ex.boxBrand?.miniPalletsType} (Cantidad: ${exportSent.miniPalletsTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Esquineros:</strong>{' '}
-              {ex.boxBrand?.cornerType
-                ? `${ex.boxBrand?.cornerType} (Cantidad: ${exportSent.cornerTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Refuerzos:</strong>{' '}
-              {ex.boxBrand?.reinforcementType
-                ? `${ex.boxBrand?.reinforcementType} (Cantidad: ${exportSent.reinforcementTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Grampas:</strong>{' '}
-              {exportSent.stapleQuantity
-                ? `${exportSent.stapleQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Stripping:</strong>{' '}
-              {exportSent.strippingQuantity
-                ? `${exportSent.strippingQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Termógrafos:</strong>{' '}
-              {exportSent.thermographQuantity
-                ? `${exportSent.thermographQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Sellos:</strong>{' '}
-              {exportSent.sealQuantity
-                ? `${exportSent.sealQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Etiquetas Metto:</strong>{' '}
-              {exportSent.mettoLabelQuantity
-                ? `${exportSent.mettoLabelQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Cinta de Embalar:</strong>{' '}
-              {ex.boxBrand?.packingTapeType
-                ? `${ex.boxBrand?.packingTapeType} (Cantidad: ${exportSent.packingTapeTypeQuantity})`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Removedor de Látex:</strong>{' '}
-              {exportSent.latexRemoverQuantity
-                ? `${exportSent.latexRemoverQuantity} unidades`
-                : 'No disponible'}
-            </p>
-            <p>
-              <strong>Hojas de Bloqueo:</strong>{' '}
-              {exportSent.blockingSheetQuantity
-                ? `${exportSent.blockingSheetQuantity} unidades`
-                : 'No disponible'}
-            </p>
-          </Box>
-        </AccordionPanel>
-      </AccordionItem>
-
-      <AccordionItem>
-        <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
+          <AccordionButton pl='60px' width={{ sm: width.sm, md: width.md }}>
+            <Box flex='1' textAlign='left' fontSize='md' fontWeight='bold'>
               Logística de Envío
             </Box>
             <AccordionIcon />
@@ -334,15 +115,15 @@ const DetailExportSent = ({
         <AccordionPanel pb={4} pl='60px'>
           <Box>
             <p>
-              <strong>Puerto de Salida:</strong>
+              <strong>Puerto de Salida:</strong>{' '}
               {ex.harborDeparture
-                ? `${ex.harborDeparture.name}, ${ex.harborDeparture.city}, ${ex.harborDeparture.country}`
+                ? `${ex.harborDeparture.name}, ${ex.harborDeparture.address}, ${ex.harborDeparture.type}`
                 : 'No disponible'}
             </p>
             <p>
-              <strong>Puerto de Destino:</strong>
+              <strong>Puerto de Destino:</strong>{' '}
               {ex.harborDestination
-                ? `${ex.harborDestination.name}, ${ex.harborDestination.city}, ${ex.harborDestination.country}`
+                ? `${ex.harborDestination.name}, ${ex.harborDestination.address}, ${ex.harborDestination.type}`
                 : 'No disponible'}
             </p>
           </Box>
@@ -351,60 +132,37 @@ const DetailExportSent = ({
 
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl='60px'
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize='md'
-              fontWeight='bold'
-            >
-              Control de Calidad y Seguridad
+          <AccordionButton pl='60px' width={{ sm: width.sm, md: width.md }}>
+            <Box flex='1' textAlign='left' fontSize='md' fontWeight='bold'>
+              Insumos Post Cosecha
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
         <AccordionPanel pb={4} pl='60px'>
           <Box>
-            {exportSent.pesticideSent && exportSent.pesticideSent.length > 0 ? (
-              <p>
-                <strong>Pesticidas:</strong>
-                {exportSent.pesticideSent
-                  .map((pest: Partial<PesticideSentPartType>) =>
-                    pest.pesticide && pest.quantity
-                      ? `${pest.pesticide.name} (${pest.quantity} unidades)`
-                      : 'Información incompleta'
+            <p>
+              <strong>Pesticidas:</strong>{' '}
+              {exportSent.pesticideSent.length
+                ? exportSent.pesticideSent
+                  .map(
+                    (p: PesticideSent) =>
+                      `${p.pesticide.name} (${p.quantity} unidades)`
                   )
-                  .join(', ')}
-              </p>
-            ) : (
-              <p>
-                <strong>Pesticidas:</strong> No disponible
-              </p>
-            )}
-            {exportSent.insecticideSent &&
-            exportSent.insecticideSent.length > 0 ? (
-              <p>
-                <strong>Insecticidas:</strong>
-                {exportSent.insecticideSent
-                  .map((insect: Partial<InsecticideSentPartType>) =>
-                    insect.insecticide && insect.quantity
-                      ? `${insect.insecticide.name} (${insect.quantity} unidades)`
-                      : 'Información incompleta'
+                  .join(', ')
+                : 'No disponible'}
+            </p>
+            <p>
+              <strong>Insecticidas:</strong>{' '}
+              {exportSent.insecticideSent.length
+                ? exportSent.insecticideSent
+                  .map(
+                    (i: InsecticideSent) =>
+                      `${i.insecticide.name} (${i.quantity} unidades)`
                   )
-                  .join(', ')}
-              </p>
-            ) : (
-              <p>
-                <strong>Insecticidas:</strong> No disponible
-              </p>
-            )}
+                  .join(', ')
+                : 'No disponible'}
+            </p>
           </Box>
         </AccordionPanel>
       </AccordionItem>

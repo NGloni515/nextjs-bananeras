@@ -35,39 +35,103 @@ const TableCuttingTypes = ({
     }
   }, [error, router]);
 
-  const columns = useMemo<MRT_ColumnDef<any>[]>(
-    () => [
-      {
-        accessorKey: 'shipmentType',
-        header: 'Tipo de Corte',
-      },
-      {
-        accessorKey: 'leavesAtHarvest',
-        header: 'Hojas en Cosecha',
-      },
-      {
-        accessorKey: 'maxAgeAtCut',
-        header: 'Edad Máxima al Corte',
-      },
-      {
-        accessorKey: 'fingerLength',
-        header: 'Longitud de Dedo',
-      },
-      {
-        accessorKey: 'minCaliber',
-        header: 'Calibre Mínimo',
-      },
-      {
-        accessorKey: 'maxCaliber',
-        header: 'Calibre Máximo',
-      },
-      {
-        accessorKey: 'quality',
-        header: 'Calidad',
-      },
-    ],
-    []
-  );
+  const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
+    {
+      header: 'Corte y Calidad',
+      columns: [
+        {
+          accessorKey: 'shipmentType',
+          header: 'Tipo de Corte',
+        },
+        {
+          accessorKey: 'quality',
+          header: 'Calidad',
+        },
+        {
+          accessorKey: 'leavesAtHarvest',
+          header: 'Hojas en Cosecha',
+        },
+        {
+          accessorKey: 'maxAgeAtCut',
+          header: 'Edad Máxima al Corte',
+        },
+        {
+          accessorKey: 'fingerLength',
+          header: 'Longitud del Dedo',
+        },
+        {
+          accessorKey: 'minCaliber',
+          header: 'Calibre Mínimo',
+        },
+        {
+          accessorKey: 'maxCaliber',
+          header: 'Calibre Máximo',
+        },
+      ],
+    },
+    {
+      header: 'Detalles de Empaque',
+      columns: [
+        {
+          accessorKey: 'saneos',
+          header: 'Saneos por Caja',
+        },
+        {
+          accessorKey: 'cunas',
+          header: 'Cuñas por Caja',
+        },
+        {
+          accessorKey: 'clusterDetail',
+          header: 'Detalle de Clúster',
+        },
+        {
+          accessorKey: 'labelDetail',
+          header: 'Detalle de Etiqueta',
+        },
+      ],
+    },
+    {
+      header: 'Primera Clasificación',
+      columns: [
+        {
+          accessorKey: 'firstLine',
+          header: 'Primera Línea',
+        },
+        {
+          accessorKey: 'secondLine',
+          header: 'Segunda Línea',
+        },
+        {
+          accessorKey: 'thirdLine',
+          header: 'Tercera Línea',
+        },
+        {
+          accessorKey: 'fourthLine',
+          header: 'Cuarta Línea',
+        },
+      ],
+    },
+    {
+      header: 'Observaciones',
+      columns: [
+        {
+          accessorKey: 'packagingPattern',
+          header: 'Patrón de Empaque',
+        },
+        {
+          accessorKey: 'generalObservations',
+          header: 'Observaciones Generales',
+          size: 250,
+          Cell: ({ cell }): React.ReactNode => (
+            <span style={{ whiteSpace: 'normal' }}>
+              {cell.getValue<string>() || 'N/A'}
+            </span>
+          ),
+        }
+
+      ],
+    },
+  ], []);
 
   const table = useMaterialReactTable({
     columns,

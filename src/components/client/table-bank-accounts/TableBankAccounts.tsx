@@ -36,71 +36,79 @@ const TableBankAccounts = ({
     }
   }, [error, router]);
 
-  const columns = useMemo<MRT_ColumnDef<any>[]>(
-    () => [
-      {
-        header: 'Productor/Cliente',
-        columns: [
-          {
-            accessorFn: (row) =>
-              row.merchant?.businessName || row.client?.businessName || 'N/A',
-            header: 'Nombre Comercial',
-          },
-          {
-            accessorFn: (row) =>
-              row.merchant?.businessId || row.client?.businessId || 'N/A',
-            header: 'RUC',
-          },
-          {
-            accessorFn: (row) =>
-              row.merchant?.city || row.client?.city || 'N/A',
-            header: 'Ciudad',
-          },
-          {
-            accessorFn: (row) => row.merchant?.address || 'N/A',
-            header: 'Dirección',
-          },
-        ],
-      },
-      {
-        header: 'Información Bancaria',
-        columns: [
-          {
-            accessorKey: 'bank',
-            header: 'Banco',
-          },
-          {
-            accessorKey: 'owner',
-            header: 'Propietario',
-          },
-          {
-            accessorKey: 'accountNumber',
-            header: 'Número de Cuenta',
-          },
-        ],
-      },
-      {
-        header: 'Contacto',
-        columns: [
-          {
-            accessorFn: (row) =>
-              row.client?.email || row.merchant?.email || 'N/A',
-            header: 'Correo Electrónico',
-          },
-        ],
-      },
-      {
-        header: 'Tipo',
-        columns: [
-          {
-            accessorKey: 'type',
-            header: 'Tipo de Cuenta',
-          },
-        ],
-      },
-    ],
-    []
-  );
+  const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
+    {
+      header: 'Entidad Asociada',
+      columns: [
+        {
+          accessorFn: (row) =>
+            row.client ? 'Cliente' : row.merchant ? 'Productor' : 'N/A',
+          header: 'Tipo de Entidad',
+        },
+        {
+          accessorFn: (row) =>
+            row.merchant?.businessName || row.client?.businessName || 'N/A',
+          header: 'Nombre Comercial',
+        },
+        {
+          accessorFn: (row) =>
+            row.merchant?.businessId || row.client?.businessId || 'N/A',
+          header: 'RUC',
+        },
+        {
+          accessorFn: (row) =>
+            row.merchant?.city?.name || row.client?.city?.name || 'N/A',
+          header: 'Ciudad',
+        },
+        {
+          accessorFn: (row) =>
+            row.merchant?.address || row.client?.address || 'N/A',
+          header: 'Dirección',
+        },
+      ],
+    },
+    {
+      header: 'Información Bancaria',
+      columns: [
+        {
+          accessorKey: 'bank',
+          header: 'Banco',
+        },
+        {
+          accessorKey: 'owner',
+          header: 'Propietario',
+        },
+        {
+          accessorKey: 'accountNumber',
+          header: 'Número de Cuenta',
+        },
+      ],
+    },
+    {
+      header: 'Contacto',
+      columns: [
+        {
+          accessorFn: (row) =>
+            row.client?.email || row.merchant?.email || 'N/A',
+          header: 'Correo Electrónico',
+        },
+        {
+          accessorFn: (row) =>
+            row.client?.phone || row.merchant?.phone || 'N/A',
+          header: 'Teléfono',
+        },
+      ],
+    },
+    {
+      header: 'Tipo',
+      columns: [
+        {
+          accessorKey: 'type',
+          header: 'Tipo de Cuenta',
+        },
+      ],
+    },
+  ], []);
 
   const table = useMaterialReactTable({
     columns,

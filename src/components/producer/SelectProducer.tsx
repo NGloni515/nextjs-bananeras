@@ -1,12 +1,12 @@
 import { Box, FormLabel, Input, SimpleGrid } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import InputFieldProducerSelect from './InputFieldProducerSelect';
-import { MerchantType } from '../../types/merchant/merchant';
+import { MerchantResponse } from '../../types/merchant/merchant.response';
 
 interface SelectProducerProps {
   name: string;
-  producerSelect?: Partial<MerchantType>;
-  setProducerSelect?: (producer: Partial<MerchantType> | null) => void;
+  producerSelect?: Partial<MerchantResponse>;
+  setProducerSelect?: (producer: Partial<MerchantResponse> | null) => void;
 }
 
 const SelectProducer: React.FC<SelectProducerProps> = ({
@@ -14,7 +14,7 @@ const SelectProducer: React.FC<SelectProducerProps> = ({
   producerSelect,
   setProducerSelect,
 }) => {
-  const [producer, setProducer] = useState<Partial<MerchantType> | null>(null);
+  const [producer, setProducer] = useState<Partial<MerchantResponse> | null>(null);
 
   useEffect(() => {
     if (!!producerSelect) {
@@ -33,31 +33,45 @@ const SelectProducer: React.FC<SelectProducerProps> = ({
       <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
         <InputFieldProducerSelect
           name={name}
-          label={'Productor/Razón Social'}
-          placeholder={'Seleccione el productor'}
+          label="Productor/Razón Social"
+          placeholder="Seleccione el productor"
           setProducer={setProducer}
         />
-
         <Box>
-          <FormLabel>RUC</FormLabel>
-          <Input isReadOnly={true} value={producer?.businessId || ''} />
-        </Box>
-        <Box>
-          <FormLabel>Ciudad</FormLabel>
+          <FormLabel fontSize='sm'>RUC</FormLabel>
           <Input
-            isReadOnly={true}
-            value={producer?.city || ''}
-            placeholder={producer ? 'No se ha agregado información' : ''}
+            isReadOnly
+            value={producer?.businessId || ''}
+            placeholder="RUC del Productor"
           />
         </Box>
         <Box>
-          <FormLabel>Dirección</FormLabel>
+          <FormLabel fontSize='sm'>Dirección</FormLabel>
           <Input
-            isReadOnly={true}
+            isReadOnly
             value={producer?.address || ''}
-            placeholder={producer ? 'No se ha agregado información' : ''}
+            placeholder="Dirección del Productor"
           />
         </Box>
+        {producer?.city?.name &&
+          <Box>
+            <FormLabel fontSize='sm'>Ciudad</FormLabel>
+            <Input
+              isReadOnly
+              value={producer?.city?.name || ''}
+              placeholder="Ciudad del Productor"
+            />
+          </Box>}
+        {!producer?.city?.name && (
+          <Box>
+            <FormLabel fontSize='sm'>Tipo de Contrato</FormLabel>
+            <Input
+              isReadOnly
+              value={producer?.contractType || 'No disponible'}
+              placeholder="Contrato del Productor"
+            />
+          </Box>
+        )}
       </SimpleGrid>
     </>
   );

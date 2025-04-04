@@ -69,7 +69,7 @@ const SelectBoxBrand: React.FC<SelectBoxBrandProps> = ({
             <InputFieldNumber
               name={namePrice}
               label={'Precio'}
-              value={contractType === 'Contrato' ? 6.85 : 10.5}
+              value={contractType === 'FAS' ? 6.85 : 10.5}
               isDecimal
               isDolar
             />

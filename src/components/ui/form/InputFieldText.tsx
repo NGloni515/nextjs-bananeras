@@ -29,6 +29,7 @@ interface InputFieldProps {
     firstChange?: boolean;
   };
   onClickRemove?: () => void;
+  unit?: string;
 }
 
 const InputFieldText: React.FC<InputFieldProps> = ({
@@ -41,6 +42,7 @@ const InputFieldText: React.FC<InputFieldProps> = ({
   flexDirection = 'column',
   isBan,
   onClickRemove,
+  unit,
 }) => {
   const [field, meta, helpers] = useField(name);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -139,6 +141,16 @@ const InputFieldText: React.FC<InputFieldProps> = ({
         >
           {' '}
           <InputGroup>
+            {unit && (
+              <InputRightElement
+                pointerEvents="none"
+                color="gray.500"
+                fontSize="1em"
+                mr="16px"
+              >
+                {unit}
+              </InputRightElement>
+            )}
             <Input
               {...field}
               ref={inputRef}

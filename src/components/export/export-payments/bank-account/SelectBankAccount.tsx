@@ -40,15 +40,15 @@ const SelectBankAccount: React.FC<SelectBankAccountProps> = ({
 
       <Box>
         <FormLabel>Tipo</FormLabel>
-        <Input isReadOnly={true} value={bankAccount?.type || ''} />
+        <Input isReadOnly={true} value={bankAccount?.type || ''} placeholder='Tipo de Cuenta' />
       </Box>
       <Box>
         <FormLabel>Propietario</FormLabel>
-        <Input isReadOnly={true} value={bankAccount?.owner || ''} />
+        <Input isReadOnly={true} value={bankAccount?.owner || ''} placeholder='Nombre del Propietario' />
       </Box>
       <Box>
         <FormLabel>Identificación</FormLabel>
-        <Input isReadOnly={true} value={bankAccount?.ownerID || ''} />
+        <Input isReadOnly={true} value={bankAccount?.ownerID || ''} placeholder='Identificación del Propietario' />
       </Box>
     </SimpleGrid>
   );

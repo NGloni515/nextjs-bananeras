@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-'use client'
 import {
   Box,
   Button,
@@ -15,14 +14,14 @@ import {
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import InputFieldSentInsecticides from './ui/InputFieldSentInsecticides';
 import InputFieldSentPesticides from './ui/InputFieldSentPesticides';
 import InputFieldSentQuantity from './ui/InputFieldSentQuantity';
 import { useCreateExportSent } from '../../hooks/export/export-sent/createExportSent';
-import { ExportType } from '../../types/export';
+import { ExportResponse } from '../../types/export.response';
 import CheckboxForm from '../ui/form/CheckboxForm';
 
 interface PesticideProps {
@@ -247,7 +246,8 @@ const validationSchema = Yup.object({
 const SentMaterialsExportForm = ({
   exportSelected,
 }: {
-  exportSelected: Partial<ExportType>;
+  exportSelected: Partial<ExportResponse>;
+  pathname: string;
 }): React.JSX.Element => {
   const [initialValuesExport, setInitialValuesExport] =
     useState<ValuesProps>(initialValues);
@@ -352,7 +352,7 @@ const SentMaterialsExportForm = ({
             duration: 5000,
             isClosable: true,
           });
-
+          queryClient.invalidateQueries('exports');
           queryClient.invalidateQueries('exportsSent');
           queryClient.invalidateQueries('exportsSentPending');
           queryClient.invalidateQueries('exportsPending');

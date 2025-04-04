@@ -1,17 +1,59 @@
-import { Box, Card, CardBody, CardHeader, Center, Heading } from '@chakra-ui/react';
-import { redirect } from 'next/navigation';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+import {
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Center,
+  Heading,
+} from '@chakra-ui/react';
+import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useLayoutEffect } from 'react';
 import SentMaterialsExportForm from '../../../../../components/export/SentMaterialsExportForm';
-import { fetchExport } from '../../../../../lib/export/export';
+import IsOnboarding from '../../../../../components/ui/IsOnboarding';
+import { useExport } from '../../../../../hooks/export/getExport';
+import { ExportResponse } from '../../../../../types/export.response';
 
-interface PageProps {
-  params: { id: string };
-}
+const PendingExportPage = (): React.JSX.Element => {
+  const params = useParams<{ id: string }>();
+  const { data, isLoading, error } = useExport({
+    exportId: params.id,
+  });
+  const pendingExport = data as Partial<ExportResponse>;
+  const pathname = usePathname();
+  const router = useRouter();
 
-export default async function PendingExportPage({ params }: PageProps): Promise<JSX.Element> {
-  const exportData = await fetchExport(params.id);
-  
-  if (!exportData) {
-    redirect('/dashboard/liquidation/add-supply-shipment');
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data: dataRes } = response;
+      const { statusCode } = dataRes;
+
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
+  useLayoutEffect(() => {
+    if (!isLoading) {
+      // console.log('PendingExportPage pendingExport', pendingExport);
+      if (!pendingExport || !pendingExport.pendingExportSent) {
+        return redirect(pathname.replace(/\/\d+$/, ''));
+      }
+    }
+  }, [isLoading, pendingExport, pathname]);
+
+  if (isLoading) {
+    return (
+      <Box mx={'auto'} my={'200px'}>
+        <Center>
+          <Heading>Cargando...</Heading>
+        </Center>
+      </Box>
+    );
   }
 
   return (
@@ -32,7 +74,8 @@ export default async function PendingExportPage({ params }: PageProps): Promise<
           </CardHeader>
           <CardBody w={'100%'}>
             <SentMaterialsExportForm
-              exportSelected={exportData}
+              exportSelected={pendingExport}
+              pathname={pathname}
             />
           </CardBody>
         </Card>
@@ -41,3 +84,4 @@ export default async function PendingExportPage({ params }: PageProps): Promise<
   );
 };
 
+export default IsOnboarding(PendingExportPage);
