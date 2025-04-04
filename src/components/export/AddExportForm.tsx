@@ -1,51 +1,73 @@
 'use client';
-import { Button, Divider, Flex, Heading, SimpleGrid, Box, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Box,
+  Text,
+} from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
-import InputFieldText from '../ui/form/InputFieldText';
-import InputFieldNumber from '../ui/form/InputFieldNumber';
-import InputFieldDate from '../ui/form/InputFieldDate';
-import SelectProducer from '../producer/SelectProducer';
-import SelectBusiness from '../business/SelectBusiness';
-import SelectBoxBrand from '../box-brands/SelectBoxBrand';
-import SelectClient from '../client/SelectClient';
 import DateGrid from './cutting-sheet/DateGrid';
 import { useSubmitExport } from './hooks/useSubmitExport';
-import CheckboxForm from '../ui/form/CheckboxForm';
-import { getWeekInfo } from '../../utils/getWeekInfo';
-import InputFieldShippingCompanySelect from '../shipping-company/InputFieldShippingCompanySelect';
-import InputFieldHarborShippingCompany from '../shipping-company/InputFieldHarborShippingCompany';
 import { ShippingCompanyType } from '../../types/shippingCompany';
+import { getWeekInfo } from '../../utils/getWeekInfo';
+import SelectBoxBrand from '../box-brands/SelectBoxBrand';
+import SelectBusiness from '../business/SelectBusiness';
+import SelectClient from '../client/SelectClient';
 import InputFieldDepositSelect from '../deposit/InputFieldDepositSelect';
+import SelectProducer from '../producer/SelectProducer';
+import InputFieldHarborShippingCompany from '../shipping-company/InputFieldHarborShippingCompany';
+import InputFieldShippingCompanySelect from '../shipping-company/InputFieldShippingCompanySelect';
 import InputFieldTransportSelect from '../transport/InputFiledTransportSelect';
+import CheckboxForm from '../ui/form/CheckboxForm';
+import InputFieldDate from '../ui/form/InputFieldDate';
+import InputFieldNumber from '../ui/form/InputFieldNumber';
+import InputFieldText from '../ui/form/InputFieldText';
 import InputFieldVerifierSelect from '../verifier/InputFieldVerifierSelect';
 
 const AddExportForm: React.FC = () => {
-  const { onSubmit, initialValues, validationSchema, isLoading } = useSubmitExport();
-  const [selectedShippingCompany, setSelectedShippingCompany] = useState<Partial<ShippingCompanyType> | null>(null);
+  const { onSubmit, initialValues, validationSchema, isLoading } =
+    useSubmitExport();
+  const [selectedShippingCompany, setSelectedShippingCompany] =
+    useState<Partial<ShippingCompanyType> | null>(null);
 
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    >
       {({ values, errors, setFieldValue }) => (
         <Form>
-          <Flex flexDirection="column" gap={3}>
-            <Heading fontSize="2xl" p="12px">
+          <Flex flexDirection='column' gap={3}>
+            <Heading fontSize='2xl' p='12px'>
               Productor
             </Heading>
-            <Divider mb="16px" />
-            <SelectProducer name="merchantId" />
-            <Heading fontSize="2xl" p="12px">
+            <Divider mb='16px' />
+            <SelectProducer name='merchantId' />
+            <Heading fontSize='2xl' p='12px'>
               Finca
             </Heading>
-            <Divider mb="16px" />
-            <SelectBusiness name="businessId" merchant={values.merchantId || undefined} />
-            <Heading fontSize="2xl" p="12px">
+            <Divider mb='16px' />
+            <SelectBusiness
+              name='businessId'
+              merchant={values.merchantId || undefined}
+            />
+            <Heading fontSize='2xl' p='12px'>
               Marca de Caja
             </Heading>
-            <Divider mb="16px" />
-            <SelectBoxBrand name="boxBrandId" />
+            <Divider mb='16px' />
+            <SelectBoxBrand name='boxBrandId' />
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-              <InputFieldNumber name="boxQuantity" label="Cantidad de Cajas" unit="cajas" /><Box />
+              <InputFieldNumber
+                name='boxQuantity'
+                label='Cantidad de Cajas'
+                unit='cajas'
+              />
+              <Box />
             </SimpleGrid>
             <Heading fontSize={'2xl'} p={'12px'}>
               Fecha de Corte
@@ -75,29 +97,29 @@ const AddExportForm: React.FC = () => {
                 nameBoxes={'weekCutting.boxesOfDay'}
                 boxQuantity={Number(values.boxQuantity)}
                 dateSelected={values.cuttingDate}
-                startDate={
-                  getWeekInfo({ date: values.cuttingDate }).startDate
-                }
+                startDate={getWeekInfo({ date: values.cuttingDate }).startDate}
               />
             )}
-            {values.cuttingDate && errors.weekCutting && typeof errors.weekCutting === 'string' && (
-              <Text color={'#E53E3E'} fontSize={'14px'}>
-                {errors.weekCutting ? (errors.weekCutting as string) : ''}
-              </Text>
-            )}
-            <Heading fontSize="2xl" p="12px">
+            {values.cuttingDate &&
+              errors.weekCutting &&
+              typeof errors.weekCutting === 'string' && (
+                <Text color={'#E53E3E'} fontSize={'14px'}>
+                  {errors.weekCutting ? (errors.weekCutting as string) : ''}
+                </Text>
+              )}
+            <Heading fontSize='2xl' p='12px'>
               Cliente
             </Heading>
-            <Divider mb="16px" />
+            <Divider mb='16px' />
             <SelectClient name={'clientId'} />
             <Heading fontSize={'2xl'} p={'12px'}>
               Naviera
             </Heading>
             <Divider mb={'16px'} />
             <InputFieldShippingCompanySelect
-              name="shippingCompanyId"
-              label="Naviera"
-              placeholder="Seleccione una Naviera"
+              name='shippingCompanyId'
+              label='Naviera'
+              placeholder='Seleccione una Naviera'
               onSelect={(company) => {
                 setSelectedShippingCompany(company);
                 setFieldValue('departureHarborId', '');
@@ -107,41 +129,70 @@ const AddExportForm: React.FC = () => {
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
               <InputFieldHarborShippingCompany
                 key={`departure-${selectedShippingCompany?.id || 'none'}`}
-                name="departureHarborId"
-                label="Puerto de Salida"
-                type="departure"
-                placeholder="Selecciona un puerto de Salida"
+                name='departureHarborId'
+                label='Puerto de Salida'
+                type='departure'
+                placeholder='Selecciona un puerto de Salida'
                 shippingCompany={selectedShippingCompany}
               />
               <InputFieldHarborShippingCompany
                 key={`destination-${selectedShippingCompany?.id || 'none'}`}
-                name="destinationHarborId"
-                label="Puerto de Destino"
-                type="destination"
-                placeholder="Selecciona un puerto de Destino"
+                name='destinationHarborId'
+                label='Puerto de Destino'
+                type='destination'
+                placeholder='Selecciona un puerto de Destino'
                 shippingCompany={selectedShippingCompany}
               />
             </SimpleGrid>
 
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-              <InputFieldText name="shipName" label="Nombre de la Nave" />
-              <InputFieldText name="estimatedTravelTime" label="Tiempo estimado de viaje" />
+              <InputFieldText name='shipName' label='Nombre de la Nave' />
+              <InputFieldText
+                name='estimatedTravelTime'
+                label='Tiempo estimado de viaje'
+              />
             </SimpleGrid>
 
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-              <InputFieldText name="bookingNumber" label="Número de Booking" />
-              <InputFieldText name="cutOffTime" label="Hora de Corte" unit='HH:mm' />
+              <InputFieldText name='bookingNumber' label='Número de Booking' />
+              <InputFieldText
+                name='cutOffTime'
+                label='Hora de Corte'
+                unit='HH:mm'
+              />
             </SimpleGrid>
 
             <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={5}>
-              <InputFieldDepositSelect name="depositId" label="Depósito" placeholder='Selecciona un Deposito' />
-              <InputFieldTransportSelect name="transportId" label="Transporte" placeholder='Selecciona un Transporte' />
-              <InputFieldVerifierSelect name="verifierId" label="Verificadora" placeholder='Selecciona una Verificadora' />
+              <InputFieldDepositSelect
+                name='depositId'
+                label='Depósito'
+                placeholder='Selecciona un Deposito'
+              />
+              <InputFieldTransportSelect
+                name='transportId'
+                label='Transporte'
+                placeholder='Selecciona un Transporte'
+              />
+              <InputFieldVerifierSelect
+                name='verifierId'
+                label='Verificadora'
+                placeholder='Selecciona una Verificadora'
+              />
             </SimpleGrid>
 
-            <Divider my="16px" />
-            <CheckboxForm name="dataReviewed" label="He revisado los datos agregados" />
-            <Button mt="12px" py="8px" px="16px" type="submit" colorScheme="teal" isLoading={isLoading}>
+            <Divider my='16px' />
+            <CheckboxForm
+              name='dataReviewed'
+              label='He revisado los datos agregados'
+            />
+            <Button
+              mt='12px'
+              py='8px'
+              px='16px'
+              type='submit'
+              colorScheme='teal'
+              isLoading={isLoading}
+            >
               Enviar
             </Button>
           </Flex>

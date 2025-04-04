@@ -121,25 +121,28 @@ const AddCertificateForm = ({
     >
       {() => (
         <Form>
-          <Flex flexDirection="column" gap={3}>
-            <Heading fontSize="2xl" p="12px">
+          <Flex flexDirection='column' gap={3}>
+            <Heading fontSize='2xl' p='12px'>
               Agregar Certificado
             </Heading>
-            <Divider mb="16px" />
-            <InputFieldText name="name" label="Nombre" />
-            <InputFieldText name="certificateCode" label="Código del Certificado" />
-            <InputFieldDate name="issueDate" label="Fecha de Emisión" />
-            <InputFieldDate name="expirationDate" label="Fecha de Expiración" />
-            <FormLabel fontSize="sm" mb={0}>
+            <Divider mb='16px' />
+            <InputFieldText name='name' label='Nombre' />
+            <InputFieldText
+              name='certificateCode'
+              label='Código del Certificado'
+            />
+            <InputFieldDate name='issueDate' label='Fecha de Emisión' />
+            <InputFieldDate name='expirationDate' label='Fecha de Expiración' />
+            <FormLabel fontSize='sm' mb={0}>
               Logo
             </FormLabel>
-            <UploadLogoFile name="logo" />
+            <UploadLogoFile name='logo' />
             <Button
-              mt="32px"
-              py="8px"
-              px="16px"
-              type="submit"
-              colorScheme="teal"
+              mt='32px'
+              py='8px'
+              px='16px'
+              type='submit'
+              colorScheme='teal'
               isLoading={isLoading}
             >
               Agregar

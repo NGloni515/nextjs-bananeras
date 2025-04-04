@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Icon } from '@chakra-ui/react';
 import {
-    ChakraStylesConfig,
-    DropdownIndicatorProps,
-    Select as ChakraSelect,
-    GroupBase,
-    chakraComponents,
-    CSSObjectWithLabel,
-    SingleValue,
+  ChakraStylesConfig,
+  DropdownIndicatorProps,
+  Select as ChakraSelect,
+  GroupBase,
+  chakraComponents,
+  CSSObjectWithLabel,
+  SingleValue,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
 import React, { useEffect, useState } from 'react';
@@ -16,83 +16,84 @@ import { useCities } from '@/hooks/location/getCities';
 import { City } from '@/types/location/city';
 
 const chakraStyles: ChakraStylesConfig<City, false, GroupBase<City>> = {
-    container: (provided) => ({ ...provided, w: 'full' }),
-    placeholder: (provided) => ({ ...provided, color: 'gray.600' }),
-    input: (provided) => ({ ...provided, color: 'gray.900' }),
-    option: (provided) => ({
-        ...provided,
-        borderBottom: '1px solid',
-        borderColor: 'gray.200',
-    }),
+  container: (provided) => ({ ...provided, w: 'full' }),
+  placeholder: (provided) => ({ ...provided, color: 'gray.600' }),
+  input: (provided) => ({ ...provided, color: 'gray.900' }),
+  option: (provided) => ({
+    ...provided,
+    borderBottom: '1px solid',
+    borderColor: 'gray.200',
+  }),
 };
 
 const cityComponents = {
-    DropdownIndicator: (
-        props: DropdownIndicatorProps<City, false, GroupBase<City>>
-    ): React.JSX.Element => (
-        <chakraComponents.DropdownIndicator {...props}>
-            <Icon as={MdOutlineArrowDropDownCircle} boxSize="16px" />
-        </chakraComponents.DropdownIndicator>
-    ),
+  DropdownIndicator: (
+    props: DropdownIndicatorProps<City, false, GroupBase<City>>
+  ): React.JSX.Element => (
+    <chakraComponents.DropdownIndicator {...props}>
+      <Icon as={MdOutlineArrowDropDownCircle} boxSize='16px' />
+    </chakraComponents.DropdownIndicator>
+  ),
 };
 
 interface CitySelectBaseProps {
-    name: string;
-    placeholder: string;
-    provinceId?: number;
-    resetOnParentChange?: boolean;
-    onChange?: (newValue: City | null) => void;
-    field?: FieldInputProps<number>;
+  name: string;
+  placeholder: string;
+  provinceId?: number;
+  resetOnParentChange?: boolean;
+  onChange?: (newValue: City | null) => void;
+  field?: FieldInputProps<number>;
 }
 
 const CitySelectBase: React.FC<CitySelectBaseProps> = ({
-    name,
-    placeholder,
-    provinceId,
-    resetOnParentChange = true,
-    field,
-    onChange,
+  name,
+  placeholder,
+  provinceId,
+  resetOnParentChange = true,
+  field,
+  onChange,
 }) => {
-    const { data, isLoading } = useCities(provinceId);
-    const [internalValue, setInternalValue] = useState<City | null>(null);
+  const { data, isLoading } = useCities(provinceId);
+  const [internalValue, setInternalValue] = useState<City | null>(null);
+  const menuPortalTarget =
+    typeof document !== 'undefined' ? document.body : undefined;
+  useEffect(() => {
+    if (!resetOnParentChange) return;
+    setInternalValue(null);
+    onChange?.(null);
+  }, [provinceId]);
 
-    useEffect(() => {
-        if (!resetOnParentChange) return;
-        setInternalValue(null);
-        onChange?.(null);
-    }, [provinceId]);
+  const handleChange = (newValue: SingleValue<City>): void => {
+    setInternalValue(newValue || null);
+    onChange?.(newValue || null);
+  };
 
-    const handleChange = (newValue: SingleValue<City>): void => {
-        setInternalValue(newValue || null);
-        onChange?.(newValue || null);
-    };
-
-    return (
-        <ChakraSelect
-            {...field}
-            name={name}
-            menuPortalTarget={document.body}
-            styles={{
-                menuPortal: (provided) =>
-                    ({ ...provided, zIndex: 100 }) as CSSObjectWithLabel,
-            }}
-            useBasicStyles
-            chakraStyles={chakraStyles}
-            noOptionsMessage={() => 'Ciudades no encontradas'}
-            isLoading={isLoading}
-            options={data}
-            getOptionLabel={(city) => city.name}
-            getOptionValue={(city) => city.id.toString()}
-            onChange={handleChange}
-            value={
-                field?.value
-                    ? data?.find((opt) => opt.id === field.value) || null
-                    : internalValue
-            }
-            placeholder={placeholder}
-            components={cityComponents}
-        />
-    );
+  return (
+    <ChakraSelect
+      {...field}
+      name={name}
+      menuPortalTarget={menuPortalTarget}
+      styles={{
+        menuPortal: (provided) =>
+          ({ ...provided, zIndex: 100 }) as CSSObjectWithLabel,
+      }}
+      useBasicStyles
+      chakraStyles={chakraStyles}
+      noOptionsMessage={() => 'Ciudades no encontradas'}
+      isLoading={isLoading}
+      options={data}
+      getOptionLabel={(city) => city.name}
+      getOptionValue={(city) => city.id.toString()}
+      onChange={handleChange}
+      value={
+        field?.value
+          ? data?.find((opt) => opt.id === field.value) || null
+          : internalValue
+      }
+      placeholder={placeholder}
+      components={cityComponents}
+    />
+  );
 };
 
 export default CitySelectBase;

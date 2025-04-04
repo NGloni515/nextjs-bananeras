@@ -1,133 +1,137 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Icon } from '@chakra-ui/react';
 import {
-    ChakraStylesConfig,
-    DropdownIndicatorProps,
-    Select as ChakraSelect,
-    GroupBase,
-    SingleValue,
-    chakraComponents,
-    CSSObjectWithLabel,
+  ChakraStylesConfig,
+  DropdownIndicatorProps,
+  Select as ChakraSelect,
+  GroupBase,
+  SingleValue,
+  chakraComponents,
+  CSSObjectWithLabel,
 } from 'chakra-react-select';
 import { FieldInputProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md';
+import { useDeposits } from '../../hooks/deposit/getDeposits';
 import { usePagination } from '../../hooks/usePagination';
 import { DepositResponse } from '../../types/deposit/deposit.response';
-import { useDeposits } from '../../hooks/deposit/getDeposits';
 
 interface DepositSelectBaseProps {
-    name?: string;
-    field?: FieldInputProps<unknown>;
-    placeholder: string;
-    setDeposit?: (deposit: Partial<DepositResponse>) => void;
-    onChange?: (newValue: Partial<DepositResponse>) => void;
+  name?: string;
+  field?: FieldInputProps<unknown>;
+  placeholder: string;
+  setDeposit?: (deposit: Partial<DepositResponse>) => void;
+  onChange?: (newValue: Partial<DepositResponse>) => void;
 }
 
 const chakraStyles: ChakraStylesConfig<
-    Partial<DepositResponse>,
-    false,
-    GroupBase<Partial<DepositResponse>>
+  Partial<DepositResponse>,
+  false,
+  GroupBase<Partial<DepositResponse>>
 > = {
-    container: (provided) => ({
-        ...provided,
-        w: 'full',
-    }),
-    placeholder: (provided) => ({
-        ...provided,
-        color: 'gray.600',
-    }),
-    input: (provided) => ({
-        ...provided,
-        color: 'gray.900',
-    }),
-    option: (provided) => ({
-        ...provided,
-        borderBottom: '1px solid',
-        borderColor: 'gray.200',
-    }),
+  container: (provided) => ({
+    ...provided,
+    w: 'full',
+  }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: 'gray.600',
+  }),
+  input: (provided) => ({
+    ...provided,
+    color: 'gray.900',
+  }),
+  option: (provided) => ({
+    ...provided,
+    borderBottom: '1px solid',
+    borderColor: 'gray.200',
+  }),
 };
 
 const depositComponents = {
-    DropdownIndicator: (
-        props: DropdownIndicatorProps<
-            Partial<DepositResponse>,
-            false,
-            GroupBase<Partial<DepositResponse>>
-        >
-    ): JSX.Element => (
-        <chakraComponents.DropdownIndicator {...props}>
-            <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
-        </chakraComponents.DropdownIndicator>
-    ),
+  DropdownIndicator: (
+    props: DropdownIndicatorProps<
+      Partial<DepositResponse>,
+      false,
+      GroupBase<Partial<DepositResponse>>
+    >
+  ): JSX.Element => (
+    <chakraComponents.DropdownIndicator {...props}>
+      <Icon as={MdOutlineArrowDropDownCircle} size='13px' />
+    </chakraComponents.DropdownIndicator>
+  ),
 };
 
 const DepositSelectBase: React.FC<DepositSelectBaseProps> = ({
-    name,
-    placeholder,
-    field,
-    onChange,
-    setDeposit,
+  name,
+  placeholder,
+  field,
+  onChange,
+  setDeposit,
 }) => {
-    const { paginationParams } = usePagination();
-    const { data = [], isLoading, error } = useDeposits(paginationParams);
-    const router = useRouter();
+  const { paginationParams } = usePagination();
+  const { data = [], isLoading, error } = useDeposits(paginationParams);
+  const router = useRouter();
 
-    useEffect(() => {
-        if (!!error) {
-            const { response } = error as any;
-            const { data } = response;
-            const { statusCode } = data;
+  useEffect(() => {
+    if (!!error) {
+      const { response } = error as any;
+      const { data } = response;
+      const { statusCode } = data;
 
-            if (statusCode === 401) {
-                router.push('/api/auth/signout');
-            }
-        }
-    }, [error]);
+      if (statusCode === 401) {
+        router.push('/api/auth/signout');
+      }
+    }
+  }, [error, router]);
 
-    const handleChange = (newValue: SingleValue<Partial<DepositResponse>>) => {
-        if (setDeposit) {
-            setDeposit(newValue as Partial<DepositResponse>);
-        }
+  const handleChange = (
+    newValue: SingleValue<Partial<DepositResponse>>
+  ): void => {
+    if (setDeposit) {
+      setDeposit(newValue as Partial<DepositResponse>);
+    }
 
-        if (onChange) {
-            onChange(newValue as Partial<DepositResponse>);
-        }
-    };
+    if (onChange) {
+      onChange(newValue as Partial<DepositResponse>);
+    }
+  };
 
-    return (
-        <ChakraSelect
-            {...field}
-            name={name}
-            menuPortalTarget={document.body}
-            styles={{
-                menuPortal: (provided) =>
-                    ({ ...provided, zIndex: 100 }) as CSSObjectWithLabel,
-            }}
-            useBasicStyles
-            chakraStyles={chakraStyles}
-            noOptionsMessage={() =>
-                !!error
-                    ?
-                    (error as any).response.data.message
-                    : 'No hay depositos disponible/s'
-            }
-            isLoading={isLoading}
-            options={data}
-            getOptionLabel={(opt: Partial<DepositResponse>) => `${opt.name}`}
-            getOptionValue={(opt: Partial<DepositResponse>) =>
-                opt.id ? opt.id.toString() : ''
-            }
-            onChange={(newValue) => handleChange(newValue)}
-            value={
-                field?.value
-                    ? data.find((opt: Partial<DepositResponse>) => opt.id === field?.value)
-                    : null
-            }
-            placeholder={placeholder}
-            components={depositComponents}
-        />
-    );
+  return (
+    <ChakraSelect
+      {...field}
+      name={name}
+      menuPortalTarget={document.body}
+      styles={{
+        menuPortal: (provided) =>
+          ({ ...provided, zIndex: 100 }) as CSSObjectWithLabel,
+      }}
+      useBasicStyles
+      chakraStyles={chakraStyles}
+      noOptionsMessage={() =>
+        !!error
+          ? (error as any).response.data.message
+          : 'No hay depositos disponible/s'
+      }
+      isLoading={isLoading}
+      options={data}
+      getOptionLabel={(opt: Partial<DepositResponse>) => `${opt.name}`}
+      getOptionValue={(opt: Partial<DepositResponse>) =>
+        opt.id ? opt.id.toString() : ''
+      }
+      onChange={(newValue) => handleChange(newValue)}
+      value={
+        field?.value
+          ? data.find(
+              (opt: Partial<DepositResponse>) => opt.id === field?.value
+            )
+          : null
+      }
+      placeholder={placeholder}
+      components={depositComponents}
+    />
+  );
 };
 
 export default DepositSelectBase;

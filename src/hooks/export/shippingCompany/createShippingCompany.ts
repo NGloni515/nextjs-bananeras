@@ -1,8 +1,12 @@
 import { AxiosError } from 'axios';
-import { useMutation, UseMutationOptions, UseMutationResult } from 'react-query';
+import {
+  useMutation,
+  UseMutationOptions,
+  UseMutationResult,
+} from 'react-query';
 import axios from '@/lib/axios';
 import { ServerErrorResponse } from '../../../types/errorResponse';
-import { ShippingCompanyType } from '../../../types/shippingCompany';
+import { ShippingCompanyType } from '../../../types/shippingCompany.create';
 
 interface CreateShippingCompanyResponse {
   shippingCompanyId: string;

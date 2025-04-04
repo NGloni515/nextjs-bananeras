@@ -104,7 +104,7 @@ const DetailInvoice = ({ payment }: props): React.JSX.Element => {
           <FormLabel>País</FormLabel>
           <Input
             isReadOnly={true}
-            value={payment.harborDeparture?.country || ''}
+            value={payment.harborDeparture?.country?.name || ''}
           />
         </Box>
         <Box>
@@ -129,7 +129,7 @@ const DetailInvoice = ({ payment }: props): React.JSX.Element => {
           <FormLabel>Ciudad</FormLabel>
           <Input
             isReadOnly={true}
-            value={payment.harborDeparture?.city || ''}
+            value={payment.harborDeparture?.city?.name || ''}
           />
         </Box>
         <Box>
@@ -174,7 +174,7 @@ const DetailInvoice = ({ payment }: props): React.JSX.Element => {
           <FormLabel>País</FormLabel>
           <Input
             isReadOnly={true}
-            value={payment.harborDestination?.country || ''}
+            value={payment.harborDestination?.country?.name || ''}
           />
         </Box>
         <Box>
@@ -199,7 +199,7 @@ const DetailInvoice = ({ payment }: props): React.JSX.Element => {
           <FormLabel>Ciudad</FormLabel>
           <Input
             isReadOnly={true}
-            value={payment.harborDestination?.city || ''}
+            value={payment.harborDestination?.city?.name || ''}
           />
         </Box>
         <Box>

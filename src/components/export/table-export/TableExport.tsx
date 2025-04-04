@@ -13,7 +13,6 @@ import { BsFillSendCheckFill, BsFillSendDashFill } from 'react-icons/bs';
 import DetailExport from './DetailExport';
 import { useExports } from '../../../hooks/export/getExports';
 import { usePagination } from '../../../hooks/usePagination';
-import { ExportType } from '../../../types/export';
 import { ExportResponse } from '../../../types/export.response';
 
 const TableExport = ({
@@ -40,64 +39,75 @@ const TableExport = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const columns = useMemo<MRT_ColumnDef<ExportResponse>[]>(() => [
-    {
-      header: 'Exportación',
-      columns: [
-        { accessorKey: 'boxQuantity', header: 'Cajas' },
-        { accessorKey: 'boxBrand.name', header: 'Caja' },
-        { accessorKey: 'boxBrand.brand.name', header: 'Marca' },
-        { accessorKey: 'boxBrand.brandCode', header: 'Código Marca' },
-        { accessorKey: 'shipName', header: 'Barco' },
-        { accessorKey: 'bookingNumber', header: 'Booking' },
-        { accessorKey: 'cutOffTime', header: 'Cut-Off' },
-      ],
-    },
-    {
-      header: 'Productor/Finca',
-      columns: [
-        { accessorKey: 'merchant.businessName', header: 'Productor' },
-        { accessorKey: 'merchant.businessId', header: 'RUC' },
-        { accessorKey: 'business.name', header: 'Finca' },
-        { accessorKey: 'business.city.name', header: 'Ciudad Finca' },
-      ],
-    },
-    {
-      header: 'Cliente',
-      columns: [
-        { accessorKey: 'client.businessName', header: 'Razón Social' },
-        { accessorKey: 'client.businessId', header: 'RUC' },
-        { accessorKey: 'client.email', header: 'Email', enableClickToCopy: true },
-        { accessorKey: 'client.phone', header: 'Teléfono', enableClickToCopy: true },
-      ],
-    },
-    {
-      header: 'Puertos',
-      columns: [
-        { accessorKey: 'harborDeparture.name', header: 'Salida' },
-        { accessorKey: 'harborDestination.name', header: 'Destino' },
-      ],
-    },
-    {
-      header: 'Envío',
-      columns: [
-        {
-          id: 'enviado',
-          header: 'Enviado',
-          accessorFn: (row) => `${row.pendingExportSent}`,
-          Cell: ({ renderedCellValue }) => (
-            <Center>
-              {renderedCellValue === 'false' ? (
-                <BsFillSendCheckFill color="green" />
-              ) : (
-                <BsFillSendDashFill color="orange" />
-              )}
-            </Center>
-          ),
-        },
-      ],
-    },
-  ], []);
+  const columns = useMemo<MRT_ColumnDef<ExportResponse>[]>(
+    () => [
+      {
+        header: 'Exportación',
+        columns: [
+          { accessorKey: 'boxQuantity', header: 'Cajas' },
+          { accessorKey: 'boxBrand.name', header: 'Caja' },
+          { accessorKey: 'boxBrand.brand.name', header: 'Marca' },
+          { accessorKey: 'boxBrand.brandCode', header: 'Código Marca' },
+          { accessorKey: 'shipName', header: 'Barco' },
+          { accessorKey: 'bookingNumber', header: 'Booking' },
+          { accessorKey: 'cutOffTime', header: 'Cut-Off' },
+        ],
+      },
+      {
+        header: 'Productor/Finca',
+        columns: [
+          { accessorKey: 'merchant.businessName', header: 'Productor' },
+          { accessorKey: 'merchant.businessId', header: 'RUC' },
+          { accessorKey: 'business.name', header: 'Finca' },
+          { accessorKey: 'business.city.name', header: 'Ciudad Finca' },
+        ],
+      },
+      {
+        header: 'Cliente',
+        columns: [
+          { accessorKey: 'client.businessName', header: 'Razón Social' },
+          { accessorKey: 'client.businessId', header: 'RUC' },
+          {
+            accessorKey: 'client.email',
+            header: 'Email',
+            enableClickToCopy: true,
+          },
+          {
+            accessorKey: 'client.phone',
+            header: 'Teléfono',
+            enableClickToCopy: true,
+          },
+        ],
+      },
+      {
+        header: 'Puertos',
+        columns: [
+          { accessorKey: 'harborDeparture.name', header: 'Salida' },
+          { accessorKey: 'harborDestination.name', header: 'Destino' },
+        ],
+      },
+      {
+        header: 'Envío',
+        columns: [
+          {
+            id: 'enviado',
+            header: 'Enviado',
+            accessorFn: (row) => `${row.pendingExportSent}`,
+            Cell: ({ renderedCellValue }) => (
+              <Center>
+                {renderedCellValue === 'false' ? (
+                  <BsFillSendCheckFill color='green' />
+                ) : (
+                  <BsFillSendDashFill color='orange' />
+                )}
+              </Center>
+            ),
+          },
+        ],
+      },
+    ],
+    []
+  );
 
   const table = useMaterialReactTable({
     columns,

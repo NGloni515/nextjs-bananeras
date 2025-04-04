@@ -4,7 +4,6 @@ import { CuttingType } from './cuttingType';
 import { ExportSentType } from './exportSent';
 import { HarborType } from './harbor';
 import { BusinessType } from './merchant/business';
-import { MerchantType } from './merchant/merchant';
 import { MerchantResponse } from './merchant/merchant.response';
 
 export type ExportType = {

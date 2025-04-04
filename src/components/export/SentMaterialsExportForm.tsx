@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-'use client'
 import {
   Box,
   Button,
@@ -15,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import InputFieldSentInsecticides from './ui/InputFieldSentInsecticides';
@@ -373,7 +372,7 @@ const SentMaterialsExportForm = ({
       onSubmit={sentMaterialsExport}
       validationSchema={validationSchema}
     >
-      {({ }) => (
+      {({}) => (
         <Form>
           <Flex flexDirection='column' gap={3}>
             <Heading fontSize={'2xl'} p={'12px'}>

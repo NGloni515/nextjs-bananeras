@@ -194,6 +194,7 @@ const PendingPaymentForm = ({
   paymentSelected,
 }: {
   paymentSelected: Partial<ExportSentType>;
+  pathname?: string;
 }): React.JSX.Element => {
   const [initialValuesPayment, setInitialValuesPayment] =
     useState<ValuesProps>(initialValues);

@@ -1,5 +1,3 @@
-import { HarborType } from './harbor';
-
 export type HarborInfo = {
   harborId: number | '';
   estDuration: string;
@@ -20,15 +18,7 @@ export type ShippingCompanyType = {
   frequencies: string;
   cargoType: string;
   trackingPlatform: string;
-  departureHarbors: Array<{
-    harbor: HarborType;
-    estDuration: string;
-    cost: number;
-  }>;
-  destinationHarbors: Array<{
-    harbor: HarborType;
-    estDuration: string;
-    cost: number;
-  }>;
+  departureHarbors: Array<HarborInfo>;
+  destinationHarbors: Array<HarborInfo>;
   contacts: Partial<ContactType>[];
 };

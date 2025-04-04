@@ -16,11 +16,7 @@ import { usePagination } from '@/hooks/usePagination';
 import { useCountries } from '../../hooks/location/getCountries';
 import { Country } from '../../types/location/country';
 
-const chakraStyles: ChakraStylesConfig<
-  Country,
-  false,
-  GroupBase<Country>
-> = {
+const chakraStyles: ChakraStylesConfig<Country, false, GroupBase<Country>> = {
   container: (provided) => ({
     ...provided,
     w: 'full',
@@ -59,6 +55,8 @@ const CountrySelectBase: React.FC<{
 }> = ({ setCountry, onChange, field, placeholder, name }) => {
   const { paginationParams } = usePagination();
   const { data, isLoading } = useCountries(paginationParams);
+  const menuPortalTarget =
+    typeof document !== 'undefined' ? document.body : undefined;
 
   const handleChange = (newValue: SingleValue<Country>): void => {
     if (setCountry) setCountry(newValue as Country);
@@ -69,7 +67,7 @@ const CountrySelectBase: React.FC<{
     <ChakraSelect
       {...field}
       name={name}
-      menuPortalTarget={document.body}
+      menuPortalTarget={menuPortalTarget}
       styles={{
         menuPortal: (provided) =>
           ({ ...provided, zIndex: 100 }) as CSSObjectWithLabel,
