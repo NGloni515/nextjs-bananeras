@@ -13,7 +13,7 @@ export default function SidenavBar({
 }: Readonly<{ children: React.ReactNode }>): React.JSX.Element {
   const counts = useMenuCounts();
   const { data: session } = useSession();
-  const navItems = getNavItems(counts.counts, session);
+  const navItems = getNavItems(counts.counts, session?.user || null);
   const exporterData = useExporter();
 
   return (
