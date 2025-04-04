@@ -1,15 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
-import {
-  Box,
-  Card,
-  CardBody,
-  CardHeader,
-  Center,
-  Heading,
-} from '@chakra-ui/react';
-import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
-import React, { useEffect, useLayoutEffect } from 'react';
+import { Box, Card, CardBody, CardHeader, Center, Heading } from '@chakra-ui/react';
+import { redirect } from 'next/navigation';
 import CuttingSheetForm from '../../../../../components/export/cutting-sheet/CuttingSheetForm';
 import { useExport } from '../../../../../hooks/export/getExport';
 import { ExportResponse } from '../../../../../types/export.response';
@@ -55,7 +45,7 @@ const CuttingSheetPage = (): React.JSX.Element => {
   }
 
   return (
-    <Box my={'20px'} mx='auto' w={'95%'}>
+    <Box my='20px' mx='auto' w='95%'>
       <Center>
         <Card
           w={{
@@ -65,10 +55,10 @@ const CuttingSheetPage = (): React.JSX.Element => {
             lg: '100%',
             xl: '100%',
           }}
-          mb={'20px'}
+          mb="20px"
         >
-          <CardHeader w={'100%'}>
-            <Heading textAlign='center'>Hoja de Corte</Heading>
+          <CardHeader w="100%">
+            <Heading textAlign="center">Hoja de Corte</Heading>
           </CardHeader>
           <CardBody w={'100%'}>
             <CuttingSheetForm
@@ -79,6 +69,4 @@ const CuttingSheetPage = (): React.JSX.Element => {
       </Center>
     </Box>
   );
-};
-
-export default CuttingSheetPage;
+}

@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react';
 import { useQuery, useQueryClient } from 'react-query';
-import { BACKEND_URL } from '../lib/constants';
+import { env } from '../lib/env';
 
 export interface UserProfile {
   userDetails: {
@@ -22,13 +22,16 @@ export interface UserProfile {
 }
 
 async function fetchExporter(refreshToken: string): Promise<UserProfile> {
-  const response = await fetch(BACKEND_URL + '/auth/exporter/profile', {
-    method: 'GET',
-    headers: {
-      authorization: `Bearer ${refreshToken}`,
-      'Content-Type': 'application/json',
-    },
-  });
+  const response = await fetch(
+    env.NEXT_PUBLIC_API_URL + '/auth/exporter/profile',
+    {
+      method: 'GET',
+      headers: {
+        authorization: `Bearer ${refreshToken}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 
   if (!response.ok) {
     throw new Error('Error al obtener el perfil');

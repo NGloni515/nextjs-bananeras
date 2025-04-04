@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { getSession } from 'next-auth/react';
-import { BACKEND_URL } from './constants';
+import { env } from './env';
 
 const axiosInstance = axios.create({
-  baseURL: `${BACKEND_URL}`,
+  baseURL: `${env.NEXT_PUBLIC_API_URL}`,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
