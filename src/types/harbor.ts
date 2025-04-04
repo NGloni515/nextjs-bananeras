@@ -1,16 +1,21 @@
-import { RequirementSCType } from './requirementSC';
+import { ContactType } from './merchant/contact';
 
 export type HarborType = {
   id: number | '';
   type: string;
-  country: string;
-  city: string;
-  location: string;
   name: string;
+  country: { id: number; name: string };
+  province: { id: number; name: string };
+  city: { id: number; name: string };
+  countryId: number | '';
+  provinceId: number | '';
+  cityId: number | '';
+  address: string;
+  location: string;
   latitude: number | '';
   longitude: number | '';
   openTime: string;
   closeTime: string;
-  shippingCompanies: number[] | null;
-  requirementsSC: Partial<RequirementSCType>[];
+  daysOfOperation: string[];
+  contacts: Partial<ContactType>[];
 };

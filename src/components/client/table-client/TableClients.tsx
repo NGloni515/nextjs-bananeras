@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box } from '@chakra-ui/react';
+import { isAxiosError } from 'axios';
 import {
   MRT_ColumnDef,
   MaterialReactTable,
@@ -11,6 +11,7 @@ import React, { useEffect, useMemo } from 'react';
 import DetailClients from './DetailClients';
 import { useClients } from '../../../hooks/export/client/getClients';
 import { usePagination } from '../../../hooks/usePagination';
+import { ClientResponse } from '../../../types/client.response';
 
 const TableClients = ({
   width,
@@ -24,87 +25,131 @@ const TableClients = ({
   const router = useRouter();
 
   useEffect(() => {
-    if (error) {
-      const { response } = error as any;
-      const { data: dataRes } = response;
-      const { statusCode } = dataRes;
-
-      if (statusCode === 401) {
+    if (error && isAxiosError(error)) {
+      const dataRes = error.response?.data;
+      if (dataRes?.statusCode === 401) {
         router.push('/api/auth/signout');
       }
     }
   }, [error, router]);
 
-  const columns = useMemo<MRT_ColumnDef<any>[]>(
-    () => [
-      {
-        header: 'Cliente',
-        columns: [
-          {
-            accessorKey: 'businessName',
-            header: 'Nombre Cliente',
+  const columns = useMemo<MRT_ColumnDef<ClientResponse>[]>(() => [
+    {
+      header: 'Cliente',
+      columns: [
+        {
+          accessorKey: 'businessName',
+          header: 'Nombre Cliente',
+        },
+        {
+          accessorKey: 'businessId',
+          header: 'RUC',
+        },
+        {
+          accessorKey: 'type',
+          header: 'Tipo de Negocio',
+        },
+        {
+          accessorKey: 'commercialType',
+          header: 'Tipo Comercial',
+        },
+      ],
+    },
+    {
+      header: 'Contacto',
+      columns: [
+        {
+          accessorKey: 'email',
+          header: 'Correo Electrónico',
+        },
+        {
+          accessorKey: 'phone',
+          header: 'Teléfono',
+        },
+        {
+          accessorKey: 'contacts',
+          header: 'Contactos',
+          Cell: ({ cell }): React.ReactNode => {
+            const contacts = cell.getValue<ClientResponse['contacts']>();
+            return (
+              <span>
+                {contacts?.map((c) => `${c.name} (${c.role})`).join(', ') || 'N/A'}
+              </span>
+            );
           },
-          {
-            accessorKey: 'businessId',
-            header: 'RUC',
+        },
+      ],
+    },
+    {
+      header: 'Ubicación',
+      columns: [
+        {
+          accessorKey: 'address',
+          header: 'Dirección',
+        },
+        {
+          accessorKey: 'postalCode',
+          header: 'Código Postal',
+        },
+        {
+          accessorKey: 'country.name',
+          header: 'País',
+        },
+        {
+          accessorKey: 'province.name',
+          header: 'Provincia',
+        },
+        {
+          accessorKey: 'city.name',
+          header: 'Ciudad',
+        },
+      ],
+    },
+    {
+      header: 'Envío',
+      columns: [
+        {
+          accessorKey: 'shippingMethod',
+          header: 'Método de Envío',
+        },
+        {
+          accessorKey: 'harbors',
+          header: 'Puertos',
+          Cell: ({ cell }): React.ReactNode => {
+            const harbors = cell.getValue<ClientResponse['harbors']>();
+            return (
+              <span>
+                {harbors?.map((h) => h.name).join(', ') || 'N/A'}
+              </span>
+            );
           },
-        ],
-      },
-      {
-        header: 'Contacto',
-        columns: [
-          {
-            accessorKey: 'email',
-            header: 'Correo Electrónico',
+        },
+        {
+          accessorKey: 'incoterms',
+          header: 'Incoterms',
+          Cell: ({ cell }): React.ReactNode => {
+            const incoterms = cell.getValue<ClientResponse['incoterms']>();
+            const count = incoterms?.length ?? 0;
+            return <span>{count > 0 ? `${count} asignado${count > 1 ? 's' : ''}` : 'Ninguno'}</span>;
           },
-          {
-            accessorKey: 'phone',
-            header: 'Teléfono',
+        },
+      ],
+    },
+    {
+      header: 'Certificados',
+      columns: [
+        {
+          accessorKey: 'certificates',
+          header: 'Certificados',
+          Cell: ({ cell }): React.ReactNode => {
+            const certs = cell.getValue<ClientResponse['certificates']>();
+            const count = certs?.length ?? 0;
+            return <span>{count > 0 ? `${count} asignado${count > 1 ? 's' : ''}` : 'Ninguno'}</span>;
           },
-        ],
-      },
-      {
-        header: 'Información Adicional',
-        columns: [
-          {
-            accessorKey: 'harbors',
-            header: 'Puertos',
-            Cell: ({ cell }): React.JSX.Element => {
-              const harbors = cell.getValue<any[]>();
-              return (
-                <span>
-                  {harbors?.map((harbor) => harbor.name).join(', ') || 'N/A'}
-                </span>
-              );
-            },
-          },
-          {
-            accessorKey: 'shippingCompanies',
-            header: 'Compañías de Envío',
-            Cell: ({ cell }): React.JSX.Element => {
-              const companies = cell.getValue<any[]>();
-              return (
-                <span>
-                  {companies?.map((company) => company.name).join(', ') ||
-                    'N/A'}
-                </span>
-              );
-            },
-          },
-        ],
-      },
-      {
-        header: 'Tipo',
-        columns: [
-          {
-            accessorKey: 'type',
-            header: 'Tipo de Negocio',
-          },
-        ],
-      },
-    ],
-    []
-  );
+        },
+      ],
+    },
+  ], []);
 
   const table = useMaterialReactTable({
     columns,
@@ -156,7 +201,7 @@ const TableClients = ({
           width: '100%',
         }}
       >
-        <DetailClients business={row.original} width={width} />
+        <DetailClients client={row.original} width={width} />
       </Box>
     ),
     localization: MRT_Localization_ES,

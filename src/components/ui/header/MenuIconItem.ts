@@ -1,7 +1,20 @@
+import { useSession } from 'next-auth/react';
 import { BsPersonGear } from 'react-icons/bs';
 import { FaPowerOff } from 'react-icons/fa';
 import { MenuItemProps } from './MenuIcon';
-import { GetUser } from '../sidenav/SideNavItems';
+
+export function GetUser():
+  | {
+      id: number;
+      email: string;
+      name: string;
+      exporterId: string;
+      onboardingStatus: string;
+    }
+  | undefined {
+  const { data: session } = useSession();
+  return session?.user;
+}
 
 export function getTopBarItems(): MenuItemProps[] {
   const user = GetUser();

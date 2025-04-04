@@ -2,13 +2,13 @@ import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
 import ProducerSelectBase from './ProducerSelectBase';
-import { MerchantType } from '../../types/merchant/merchant';
+import { MerchantResponse } from '../../types/merchant/merchant.response';
 
 interface InputFieldProducerSelectProps {
   name: string;
   label: string;
   placeholder: string;
-  setProducer?: (producer: Partial<MerchantType>) => void;
+  setProducer?: (producer: Partial<MerchantResponse>) => void;
 }
 
 const InputFieldProducerSelect: React.FC<InputFieldProducerSelectProps> = ({

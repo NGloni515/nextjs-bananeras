@@ -21,7 +21,7 @@ interface HarborMultiSelectBaseProps {
   name?: string;
   field?: FieldInputProps<any>;
   placeholder: string;
-  type: 'Nacional' | 'Internacional';
+  type: string | 'Nacional' | 'Internacional';
   setHarbors?: (harbors: Partial<HarborType>[]) => void;
   onChange?: (newValues: Partial<HarborType>[]) => void;
 }
@@ -122,7 +122,7 @@ const HarborMultiSelectBase: React.FC<HarborMultiSelectBaseProps> = ({
       isLoading={isLoading}
       options={data}
       getOptionLabel={(harbor: Partial<HarborType>) =>
-        `${harbor.name} - ${harbor.country}`
+        `${harbor.name} - ${harbor?.country?.name}`
       }
       getOptionValue={(harbor: Partial<HarborType>) =>
         harbor.id ? harbor.id.toString() : ''
@@ -130,9 +130,9 @@ const HarborMultiSelectBase: React.FC<HarborMultiSelectBaseProps> = ({
       onChange={(newValues) => handleChange(newValues as Partial<HarborType>[])}
       value={
         field?.value
-          ? data.filter(
-              (opt: Partial<HarborType>) => field.value.indexOf(opt.id) >= 0
-            )
+          ? data?.filter(
+            (opt: Partial<HarborType>) => field.value.indexOf(opt.id) >= 0
+          )
           : []
       }
       closeMenuOnSelect={false}

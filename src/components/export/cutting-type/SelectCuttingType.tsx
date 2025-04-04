@@ -40,18 +40,19 @@ const SelectCuttingType: React.FC<SelectCuttingTypeProps> = ({
           setCuttingType={setCuttingType}
         />
         <Box>
-          <FormLabel>Calidad</FormLabel>
-          <Input isReadOnly={true} value={cuttingType?.quality || ''} />
+          <FormLabel fontSize='sm'>Calidad</FormLabel>
+          <Input isReadOnly={true} value={cuttingType?.quality || ''} placeholder='Calidad del Corte' />
         </Box>
         <Box>
-          <FormLabel>Detalle del Cluster</FormLabel>
-          <Input isReadOnly={true} value={cuttingType?.clusterDetail || ''} />
+          <FormLabel fontSize='sm'>Detalle del Cluster</FormLabel>
+          <Input isReadOnly={true} value={cuttingType?.clusterDetail || ''} placeholder='Detalle del Cluster' />
         </Box>
         <Box>
-          <FormLabel>Patrón de Empaque</FormLabel>
+          <FormLabel fontSize='sm'>Patrón de Empaque</FormLabel>
           <Input
             isReadOnly={true}
             value={cuttingType?.packagingPattern || ''}
+            placeholder='Patrón de Empaque'
           />
         </Box>
       </SimpleGrid>

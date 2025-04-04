@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -20,7 +19,7 @@ import { useUploadTransferImage } from '../../../hooks/export/producerPayment/up
 import { BoxBrandType } from '../../../types/box-brand/boxBrand';
 import { ExportSentType } from '../../../types/exportSent';
 import { HarborType } from '../../../types/harbor';
-import { MerchantType } from '../../../types/merchant/merchant';
+import { MerchantResponse } from '../../../types/merchant/merchant.response';
 import SelectBoxBrand from '../../box-brands/SelectBoxBrand';
 import SelectHarbor from '../../harbor/SelectHarbor';
 import SelectProducer from '../../producer/SelectProducer';
@@ -200,7 +199,7 @@ const PendingPaymentForm = ({
   const [initialValuesPayment, setInitialValuesPayment] =
     useState<ValuesProps>(initialValues);
   const [producerSelect, setProducerSelect] =
-    useState<Partial<MerchantType> | null>(
+    useState<Partial<MerchantResponse> | null>(
       paymentSelected?.export!.merchant || null
     );
   const [departureHarbor, setDepartureHarbor] =
@@ -257,7 +256,7 @@ const PendingPaymentForm = ({
         dataReviewed,
         ...paymentData
       } = values;
-
+      void dataReviewed;
       const { producerPaymentId } = await createProducerPayment({
         ...paymentData,
         amount: Number(amount),
@@ -308,7 +307,7 @@ const PendingPaymentForm = ({
       onSubmit={sentPayment}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting, values, handleChange }) => (
+      {({ values }) => (
         <Form>
           <Flex flexDirection='column' gap={3}>
             <Heading fontSize={'2xl'} p={'12px'}>
@@ -324,7 +323,7 @@ const PendingPaymentForm = ({
             <SelectProducer
               name={'merchantId'}
               setProducerSelect={setProducerSelect}
-              producerSelect={producerSelect as Partial<MerchantType>}
+              producerSelect={producerSelect as Partial<MerchantResponse>}
             />
 
             <Heading fontSize={'2xl'} p={'12px'}>

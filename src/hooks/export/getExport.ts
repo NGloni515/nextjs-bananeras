@@ -2,8 +2,8 @@ import { AxiosResponse } from 'axios';
 import { UseQueryResult, useQuery } from 'react-query';
 import axios from '@/lib/axios';
 import { QueryConfig } from '@/lib/react-query';
-import { ExportType } from '@/types/export';
 import { serializeQueryResult } from '@/utils/serializeQueryResult';
+import { ExportResponse } from '../../types/export.response';
 
 export const getExport = ({
   exportId,
@@ -22,10 +22,10 @@ type UseExportOptions = {
 
 export const useExport = ({
   exportId,
-}: UseExportOptions): UseQueryResult<ExportType> => {
+}: UseExportOptions): UseQueryResult<ExportResponse> => {
   const result = useQuery(['export', exportId], () => getExport({ exportId }), {
     keepPreviousData: true,
   });
 
-  return serializeQueryResult(result) as UseQueryResult<ExportType>;
+  return serializeQueryResult(result) as UseQueryResult<ExportResponse>;
 };

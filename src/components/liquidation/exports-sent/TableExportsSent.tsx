@@ -115,31 +115,6 @@ const TableExportsSent = ({
           },
         ],
       },
-      {
-        header: 'Control de Calidad',
-        columns: [
-          {
-            accessorKey: 'pesticideSent',
-            header: 'Pesticidas Enviados',
-            Cell: ({ cell }): React.JSX.Element | string => {
-              const pesticides = cell.getValue() as any[];
-              return pesticides
-                .map((p) => `${p.pesticide.name} (Cantidad: ${p.quantity})`)
-                .join(', ');
-            },
-          },
-          {
-            accessorKey: 'insecticideSent',
-            header: 'Insecticidas Enviados',
-            Cell: ({ cell }): React.JSX.Element | string => {
-              const insecticides = cell.getValue() as any[];
-              return insecticides
-                .map((i) => `${i.insecticide.name} (Cantidad: ${i.quantity})`)
-                .join(', ');
-            },
-          },
-        ],
-      },
     ],
     []
   );

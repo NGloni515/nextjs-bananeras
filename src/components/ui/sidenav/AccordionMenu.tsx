@@ -38,7 +38,6 @@ export const AccordionMenu = ({
         onClick={toggleAccordion}
         px='10px'
         py='12px'
-        // _focus={{ bg: 'green.300', color: 'white' }}
         _hover={{
           bg: 'green.300',
           color: 'white',
@@ -61,34 +60,55 @@ export const AccordionMenu = ({
         <Icon as={isOpen ? IoIosArrowDown : IoIosArrowForward} />
       </Button>
       {isOpen &&
-        item.menu?.map((item, index) => (
-          <Link
-            key={index}
-            display={'block'}
-            as={Link_Next}
-            href={isAble ? item.to : ''}
-            w='full'
-            borderRadius='md'
-            color={pathname === item.to ? 'green.800' : 'black'}
-          >
-            <Flex
-              alignItems='center'
-              justifyContent='start'
-              h='48px'
-              p='0'
-              pl='8px'
+        item.menu?.map((menuItem, index) => (
+          <Box key={index}>
+            <Link
+              display="block"
+              as={Link_Next}
+              href={isAble ? menuItem.to : ''}
+              w="full"
+              borderRadius="md"
+              color={pathname === menuItem.to ? 'green.800' : 'black'}
             >
-              <Box
-                bg={pathname.includes(item.to) ? 'green.300' : 'green.100'}
-                w={'3px'}
-                h={'100%'}
-                mx={2}
-                rounded={'1px'}
-              />
-              <Text ml={2}>{item.label}</Text>
-              {renderBadge(item.count)}
-            </Flex>
-          </Link>
+              <Flex alignItems="center" justifyContent="start" h="48px" p="0" pl="8px">
+                <Box
+                  bg={pathname.includes(menuItem.to) ? 'green.300' : 'green.100'}
+                  w="3px"
+                  h="100%"
+                  rounded="base"
+                />
+                <Text ml={2}>{menuItem.label}</Text>
+                {renderBadge(menuItem.count)}
+              </Flex>
+            </Link>
+            {menuItem.submenu &&
+              menuItem.submenu.map((subItem, subIndex) => (
+                <Link
+                  key={`${index}-${subIndex}`}
+                  display="block"
+                  as={Link_Next}
+                  href={isAble ? subItem.to : ''}
+                  w="full"
+                  borderRadius="md"
+                  color={pathname === subItem.to ? 'green.800' : 'black'}
+                >
+                  <Flex
+                    alignItems="center"
+                    justifyContent="start"
+                    h="48px"
+                    p="0"
+                    pl="32px"
+                  >
+                    <Box
+                      h="40%"
+                      rounded="base"
+                    />
+                    <Text ml={2}>{subItem.label}</Text>
+                    {renderBadge(subItem.count)}
+                  </Flex>
+                </Link>
+              ))}
+          </Box>
         ))}
     </>
   );

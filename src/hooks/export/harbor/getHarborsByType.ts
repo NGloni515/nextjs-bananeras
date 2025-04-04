@@ -10,7 +10,7 @@ type Params = PaginationParams;
 
 interface listHarborsProps {
   params: Params;
-  type: 'Nacional' | 'Internacional';
+  type: string | 'Nacional' | 'Internacional';
 }
 
 function listHarborsByType({
@@ -37,7 +37,7 @@ function listHarborsByType({
 }
 
 interface useHarborsProps extends Params {
-  type: 'Nacional' | 'Internacional';
+  type: string | 'Nacional' | 'Internacional';
 }
 
 export function useHarborsByType({

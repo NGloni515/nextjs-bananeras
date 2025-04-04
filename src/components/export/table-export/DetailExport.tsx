@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Accordion,
   AccordionButton,
@@ -6,126 +7,128 @@ import {
   AccordionPanel,
   Box,
   Heading,
+  Text,
 } from '@chakra-ui/react';
 import React from 'react';
-import DetailContacts from './DetailContacts';
-import DetailProducerPayment from './DetailProducerPayment';
-import DetailSupply from './DetailSupply';
-import { BoxBrandType } from '../../../types/box-brand/boxBrand';
-import { ExportSentType } from '../../../types/exportSent';
-import { ContactType } from '../../../types/merchant/contact';
-import { ProducerPaymentType } from '../../../types/producerPayment';
-
-const DetailExport = ({
-  boxBrand,
-  businessContacts,
-  supply,
-  pendingSent,
-  width,
-  windowSize,
-}: {
-  boxBrand: Partial<BoxBrandType>;
-  businessContacts: Partial<ContactType>[];
-  supply?: Partial<ExportSentType>;
-  pendingSent: boolean;
+import { ExportResponse } from '../../../types/export.response';
+interface DetailExportsProps {
+  data: ExportResponse;
   width: { sm: number; md: number };
-  windowSize: { width: number | null; height: number | null };
-}): React.JSX.Element => {
+}
+const DetailExport: React.FC<DetailExportsProps> = ({ data, width }) => {
+  const renderContacts = (contacts: any[]): React.JSX.Element[] =>
+    contacts.map((c, i) => (
+      <Box key={i} mb={2}>
+        <Text><strong>Nombre:</strong> {c.name}</Text>
+        <Text><strong>Correo:</strong> {c.email}</Text>
+        <Text><strong>Teléfono:</strong> {c.phone}</Text>
+      </Box>
+    ));
+
   return (
     <Accordion defaultIndex={[0]} allowMultiple>
       <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl={'60px'}
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize={'md'}
-              fontWeight={'bold'}
-            >
-              Contactos de la Finca:{' '}
-            </Box>
+          <AccordionButton width={{ sm: `${width.sm}px`, md: `${width.md}px` }}>
+            <Box flex="1" textAlign="left"><strong>Detalles Generales</strong></Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl={'60px'}>
-          <DetailContacts businessContacts={businessContacts} width={width} />
+        <AccordionPanel>
+          <Text><strong>Booking:</strong> {data.bookingNumber}</Text>
+          <Text><strong>Nombre del Barco:</strong> {data.shipName}</Text>
+          <Text><strong>Tiempo Estimado:</strong> {data.estimatedTravelTime}</Text>
+          <Text><strong>Cut Off:</strong> {data.cutOffTime}</Text>
         </AccordionPanel>
       </AccordionItem>
-      <AccordionItem isDisabled={pendingSent}>
+
+      <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl={'60px'}
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize={'md'}
-              fontWeight={'bold'}
-            >
-              Insumos Enviados: {pendingSent && 'Aun no se realiza el envío'}
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
+          <AccordionButton width={{ sm: `${width.sm}px`, md: `${width.md}px` }}>
+            <Box flex="1" textAlign="left"><strong>Productor y Finca</strong></Box><AccordionIcon /></AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl={'60px'}>
-          <DetailSupply
-            boxBrand={boxBrand}
-            supply={supply as Partial<ExportSentType>}
-            width={width}
-            windowSize={windowSize}
-            pendingSent={pendingSent}
-          />
+        <AccordionPanel>
+          <Text><strong>Razón Social:</strong> {data.merchant?.businessName}</Text>
+          <Text><strong>RUC:</strong> {data.merchant?.businessId}</Text>
+          <Text><strong>Finca:</strong> {data.business?.name}</Text>
+          <Text><strong>Ciudad:</strong> {data.business?.city?.name}</Text>
+          <Text><strong>Dirección:</strong> {data.business?.address}</Text>
+          <Text><strong>Área:</strong> {data.business?.area} ha</Text>
         </AccordionPanel>
       </AccordionItem>
-      <AccordionItem
-        isDisabled={
-          (!pendingSent && supply?.pendingProducerPayment) || pendingSent
-        }
-      >
+
+      <AccordionItem>
         <Heading>
-          <AccordionButton
-            pl={'60px'}
-            width={{
-              sm: Number(width.sm),
-              md: Number(width.md),
-            }}
-          >
-            <Box
-              as='span'
-              flex='1'
-              textAlign='left'
-              fontSize={'md'}
-              fontWeight={'bold'}
-            >
-              Pago al Productor:{' '}
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
+          <AccordionButton width={{ sm: `${width.sm}px`, md: `${width.md}px` }}>
+            <Box flex="1" textAlign="left"><strong>Cliente</strong></Box><AccordionIcon /></AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl={'60px'}>
-          {supply && (
-            <DetailProducerPayment
-              payment={supply.producerPayment as ProducerPaymentType}
-              width={width}
-              windowSize={windowSize}
-              pendingSent={pendingSent}
-              pendingPayment={
-                (!pendingSent && supply?.pendingProducerPayment) || pendingSent
-              }
-            />
-          )}
+        <AccordionPanel>
+          <Text><strong>Nombre:</strong> {data.client?.businessName}</Text>
+          <Text><strong>RUC:</strong> {data.client?.businessId}</Text>
+          <Text><strong>Email:</strong> {data.client?.email}</Text>
+          <Text><strong>Teléfono:</strong> {data.client?.phone}</Text>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <Heading>
+          <AccordionButton width={{ sm: `${width.sm}px`, md: `${width.md}px` }}>
+            <Box flex="1" textAlign="left"><strong>Puerto</strong></Box><AccordionIcon /></AccordionButton>
+        </Heading>
+        <AccordionPanel>
+          <Text><strong>Salida:</strong> {data.harborDeparture?.name} ({data.harborDeparture?.city?.name})</Text>
+          <Text><strong>Destino:</strong> {data.harborDestination?.name} ({data.harborDestination?.city?.name})</Text>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <Heading>
+          <AccordionButton width={{ sm: `${width.sm}px`, md: `${width.md}px` }}>
+            <Box flex="1" textAlign="left"><strong>Materiales y Marca de Caja</strong></Box><AccordionIcon /></AccordionButton>
+        </Heading>
+        <AccordionPanel>
+          <Text><strong>Marca:</strong> {data.boxBrand?.name}</Text>
+          <Text><strong>Código:</strong> {data.boxBrand?.brandCode}</Text>
+          <Text><strong>Cantidad de Cajas:</strong> {data.boxQuantity}</Text>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <Heading>
+          <AccordionButton width={{ sm: `${width.sm}px`, md: `${width.md}px` }}>
+            <Box flex="1" textAlign="left"><strong>Transporte y Logística</strong></Box><AccordionIcon /></AccordionButton>
+        </Heading>
+        <AccordionPanel>
+          <Text><strong>Transportista:</strong> {data.transport?.name}</Text>
+          <Text><strong>RUC:</strong> {data.transport?.ruc}</Text>
+          <Text><strong>Dirección:</strong> {data.transport?.address}</Text>
+          <Box mt={3}><strong>Contactos:</strong>{renderContacts(data.transport?.contacts || [])}</Box>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <Heading>
+          <AccordionButton width={{ sm: `${width.sm}px`, md: `${width.md}px` }}>
+            <Box flex="1" textAlign="left"><strong>Depósito</strong></Box><AccordionIcon /></AccordionButton>
+        </Heading>
+        <AccordionPanel>
+          <Text><strong>Nombre:</strong> {data.deposit?.name}</Text>
+          <Text><strong>Dirección:</strong> {data.deposit?.address}</Text>
+          <Text><strong>Ciudad:</strong> {data.deposit?.city?.name}</Text>
+          <Box mt={3}><strong>Contactos:</strong>{renderContacts(data.deposit?.contacts || [])}</Box>
+        </AccordionPanel>
+      </AccordionItem>
+
+      <AccordionItem>
+        <Heading>
+          <AccordionButton width={{ sm: `${width.sm}px`, md: `${width.md}px` }}>
+            <Box flex="1" textAlign="left"><strong>Verificadora</strong></Box><AccordionIcon /></AccordionButton>
+        </Heading>
+        <AccordionPanel>
+          <Text><strong>Nombre:</strong> {data.verifier?.name}</Text>
+          <Text><strong>RUC:</strong> {data.verifier?.ruc}</Text>
+          <Text><strong>Dirección:</strong> {data.verifier?.address}</Text>
+          <Box mt={3}><strong>Contactos:</strong>{renderContacts(data.verifier?.contacts || [])}</Box>
         </AccordionPanel>
       </AccordionItem>
     </Accordion>

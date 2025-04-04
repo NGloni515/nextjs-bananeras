@@ -17,7 +17,7 @@ const SelectBusiness: React.FC<SelectBusinessProps> = ({ name, merchant }) => {
         <InputFieldBusinessSelect
           name={name}
           label={'Finca/Razón Social'}
-          placeholder={'Seleccione la finca'}
+          placeholder={'Seleccione la Finca'}
           setBusiness={setBusiness}
           merchant={merchant}
         />
@@ -27,15 +27,7 @@ const SelectBusiness: React.FC<SelectBusinessProps> = ({ name, merchant }) => {
           <Input
             isReadOnly={true}
             value={business?.area || ''}
-            placeholder={business ? 'No se ha agregado información' : ''}
-          />
-        </Box>
-        <Box>
-          <FormLabel>Ciudad</FormLabel>
-          <Input
-            isReadOnly={true}
-            value={business?.city || ''}
-            placeholder={business ? 'No se ha agregado información' : ''}
+            placeholder='Área de la Finca'
           />
         </Box>
         <Box>
@@ -43,7 +35,15 @@ const SelectBusiness: React.FC<SelectBusinessProps> = ({ name, merchant }) => {
           <Input
             isReadOnly={true}
             value={business?.address || ''}
-            placeholder={business ? 'No se ha agregado información' : ''}
+            placeholder='Dirección de la Finca'
+          />
+        </Box>
+        <Box>
+          <FormLabel>Ciudad</FormLabel>
+          <Input
+            isReadOnly={true}
+            value={business?.city?.name || ''}
+            placeholder='Ciudad de la Finca'
           />
         </Box>
       </SimpleGrid>

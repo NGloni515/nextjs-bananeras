@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box } from '@chakra-ui/react';
+import { isAxiosError } from 'axios';
 import {
   MRT_ColumnDef,
   MaterialReactTable,
@@ -11,6 +11,7 @@ import React, { useEffect, useMemo } from 'react';
 import DetailBusiness from './DetailBusiness';
 import { useBusinesses } from '../../../hooks/business/getAllBusiness';
 import { usePagination } from '../../../hooks/usePagination';
+import { BusinessResponse } from '../../../types/merchant/merchant.response';
 
 const TableBusiness = ({
   width,
@@ -24,19 +25,15 @@ const TableBusiness = ({
   const router = useRouter();
 
   useEffect(() => {
-    if (!!error) {
-      const { response } = error as any;
-      const { data: dataRes } = response;
-      const { statusCode } = dataRes;
-
-      if (statusCode === 401) {
+    if (error && isAxiosError(error)) {
+      const dataRes = error.response?.data;
+      if (dataRes?.statusCode === 401) {
         router.push('/api/auth/signout');
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error]);
+  }, [error, router]);
 
-  const columns = useMemo<MRT_ColumnDef<any>[]>(
+  const columns = useMemo<MRT_ColumnDef<BusinessResponse>[]>(
     () => [
       {
         header: 'Información Básica',
@@ -46,7 +43,7 @@ const TableBusiness = ({
             header: 'Nombre',
           },
           {
-            accessorKey: 'city',
+            accessorKey: 'city.name',
             header: 'Ciudad',
           },
           {

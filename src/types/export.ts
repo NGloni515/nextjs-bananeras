@@ -5,6 +5,7 @@ import { ExportSentType } from './exportSent';
 import { HarborType } from './harbor';
 import { BusinessType } from './merchant/business';
 import { MerchantType } from './merchant/merchant';
+import { MerchantResponse } from './merchant/merchant.response';
 
 export type ExportType = {
   id: number | '';
@@ -18,19 +19,24 @@ export type ExportType = {
   boxBrandId: number | '';
   cuttingType: Partial<CuttingType>;
   cuttingTypeId: number | '';
-  merchant: Partial<MerchantType>;
+  merchant: Partial<MerchantResponse>;
   merchantId: number | '';
   business: Partial<BusinessType>;
   businessId: number | '';
   harborDeparture: Partial<HarborType>;
-  departureHarborId: number | '';
   harborDestination: Partial<HarborType>;
-  destinationHarborId: number | '';
   client: Partial<ClientType>;
   clientId: number | '';
-  shipSteam: string;
-  shippingLineSeal: string;
-  extraSeal: string;
+  shipName: string;
+  estimatedTravelTime: string;
+  bookingNumber: string;
+  cutOffTime: string;
+  shippingCompanyId: number;
+  departureHarborId: number;
+  destinationHarborId: number;
+  depositId: number;
+  transportId: number;
+  verifierId: number;
   pendingExportSent: boolean;
   pendingCuttingSheet: boolean;
   exportSent: Partial<ExportSentType>;

@@ -1,0 +1,40 @@
+import { AxiosResponse } from 'axios';
+import { useQuery } from 'react-query';
+import axios from '@/lib/axios';
+import { PaginationParams } from '@/types/paginationParams';
+import { serializeQueryResult } from '@/utils/serializeQueryResult';
+import { VerifierResponse } from '../../types/verifier/verifier.response';
+
+type Params = PaginationParams;
+
+function listVerifiers(params: Params): Promise<AxiosResponse<VerifierResponse[]>> {
+    return axios
+        .get('/verifier', { params })
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            if (error.response?.status === 404) {
+                return {
+                    data: [],
+                    status: 404,
+                    statusText: 'Not Found',
+                    headers: {},
+                    config: error.config,
+                } as AxiosResponse;
+            }
+            throw error;
+        });
+}
+
+export function useVerifiers({ search = '', page = 1, limit = 10 }: Params): ReturnType<typeof serializeQueryResult> {
+    const result = useQuery(
+        ['verifiers', search, page, limit],
+        () => listVerifiers({ search, page, limit }),
+        {
+            keepPreviousData: true,
+        }
+    );
+
+    return serializeQueryResult(result);
+}

@@ -8,7 +8,7 @@ interface InputFieldHarborMultiSelectProps {
   name: string;
   label: string;
   placeholder: string;
-  type: 'Nacional' | 'Internacional';
+  type: string | 'Nacional' | 'Internacional';
   setHarbors?: (harbors: Partial<HarborType>[]) => void;
 }
 
