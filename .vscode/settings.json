@@ -1,10 +1,10 @@
 {
   "editor.formatOnSave": true,
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
   },
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
@@ -28,5 +28,11 @@
   },
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.eol": "\n",
-  "cSpell.words": ["chakra", "formik", "Formik"]
+  "cSpell.words": [
+    "AGROCALIDAD",
+    "chakra",
+    "MAGAP",
+    "formik",
+    "Formik",
+  ]
 }
