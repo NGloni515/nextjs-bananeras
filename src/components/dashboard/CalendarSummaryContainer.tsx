@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { Grid, GridItem, Text, Center, Skeleton } from '@chakra-ui/react';
+import {
+  Grid,
+  GridItem,
+  Text,
+  Center,
+  Skeleton,
+  Divider,
+} from '@chakra-ui/react';
 import {
   startOfWeek,
   endOfWeek,
@@ -13,6 +20,7 @@ import {
 import { es } from 'date-fns/locale';
 import React, { useState, useMemo, useRef } from 'react';
 import { ExportResponse } from '@/types/export.response';
+import { ExportSentChart } from './ExportSentChart';
 import WeeklyExportsCalendar from './WeeklyExportsCalendar';
 import WeeklyExportsSummary from './WeeklyExportsSummary';
 import { useExports } from '../../hooks/export/getExports';
@@ -175,8 +183,17 @@ export default function CalendarSummaryContainer(): JSX.Element {
         <GridItem>
           <Skeleton height='300px' borderRadius='md' boxShadow='md' p={4} />
         </GridItem>
+        <Grid templateColumns='repeat(2, 1fr)' gap={4}>
+          <GridItem>
+            <Skeleton height='150px' borderRadius='md' boxShadow='md' p={4} />
+          </GridItem>
+          <GridItem>
+            <Skeleton height='150px' borderRadius='md' boxShadow='md' p={4} />
+          </GridItem>
+        </Grid>
+        <Grid />
         <GridItem>
-          <Skeleton height='150px' borderRadius='md' boxShadow='md' p={4} />
+          <Skeleton height='500px' borderRadius='md' boxShadow='md' p={4} />
         </GridItem>
       </Grid>
     );
@@ -216,23 +233,44 @@ export default function CalendarSummaryContainer(): JSX.Element {
         />
       </GridItem>
       <Grid templateColumns='repeat(2, 1fr)' gap={4}>
-        <GridItem bg='white' p={4} borderRadius='md' boxShadow='md'>
-          <Text fontWeight='bold' mb={4}>
+        <GridItem bg='white' p={6} borderRadius='md' boxShadow='md'>
+          <Text fontSize='xl' fontWeight='normal' mb={2}>
             Egreso Total Semanal
           </Text>
-          <Text fontSize='2xl' fontWeight='bold'>
-            {totalEgreso} $
+          <Divider
+            mb={6}
+            borderTopWidth='2px'
+            borderBottomWidth='0px'
+            borderStyle='dashed'
+            borderColor='teal.500'
+          />
+          <Text fontSize='2xl' fontWeight='semibold'>
+            ${totalEgreso} USD
           </Text>
         </GridItem>
-        <GridItem bg='white' p={4} borderRadius='md' boxShadow='md'>
-          <Text fontWeight='bold' mb={4}>
+        <GridItem bg='white' p={6} borderRadius='md' boxShadow='md'>
+          <Text fontSize='xl' mb={2}>
             Ingreso Total Semanal
           </Text>
-          <Text fontSize='2xl' fontWeight='bold'>
-            {totalIngreso} $
+          <Divider
+            mb={6}
+            borderTopWidth='2px'
+            borderBottomWidth='0px'
+            borderStyle='dashed'
+            borderColor='teal.500'
+          />
+          <Text fontSize='2xl' fontWeight='semibold'>
+            ${totalIngreso} USD
           </Text>
         </GridItem>
       </Grid>
+      <GridItem />
+      <GridItem bg='white' p={6} borderRadius='md' boxShadow={'md'} mb={4}>
+        <Text fontSize='2xl' fontWeight='bold' mb={4}>
+          Diagrama Cliente/Productor
+        </Text>
+        <ExportSentChart weekStart={weekStart} weekEnd={weekEnd} />
+      </GridItem>
     </Grid>
   );
 }
