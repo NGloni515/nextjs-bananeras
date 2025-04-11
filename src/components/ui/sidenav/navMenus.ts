@@ -54,13 +54,6 @@ export const CLIENT_MENU: SidenavMenuItem[] = [
       { label: 'Consultar Transporte', to: '/dashboard/client/transports' },
     ],
   },
-  {
-    label: 'Agregar Cuenta Bancaria',
-    to: '/dashboard/client/add-bank-account',
-    submenu: [
-      { label: 'Cuentas Bancarias', to: '/dashboard/client/bank-accounts' },
-    ],
-  },
 ];
 
 export const BOX_BRANDS_MENU: SidenavMenuItem[] = [
@@ -151,6 +144,13 @@ export function getLiquidationMenu(counts: {
           label: 'Pagos Realizados',
           to: '/dashboard/liquidation/client-payments',
         },
+      ],
+    },
+    {
+      label: 'Agregar Cuenta Bancaria',
+      to: '/dashboard/client/add-bank-account',
+      submenu: [
+        { label: 'Cuentas Bancarias', to: '/dashboard/client/bank-accounts' },
       ],
     },
   ];
