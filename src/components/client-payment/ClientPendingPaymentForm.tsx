@@ -172,6 +172,7 @@ const ClientPendingPaymentForm = ({
 
       queryClient.invalidateQueries('clientPayments');
       queryClient.invalidateQueries('exportsSentPending');
+      queryClient.invalidateQueries('clientPaymentsPending');
       actions.resetForm();
       router.push('/dashboard/liquidation/client-payments');
     } catch (error: unknown) {
