@@ -90,12 +90,21 @@ export default function WeeklyExportsSummary({
                   />
                   <Text fontWeight='bold' p={2}>
                     {group.totalBoxes} {group.exports[0].boxBrand?.brand.name}{' '}
-                    {group.exports[0].harborDestination?.country.code} (
+                    {group.exports[0].harborDestination?.country.region} (
                     {group.exports[0].boxBrand?.boxQuantity}){' '}
-                    {group.exports[0].client?.certificates?.certificate?.name ==
-                    'RAINFOREST ALLIANCE'
-                      ? 'RFA'
-                      : ''}{' '}
+                    {((): string => {
+                      const certificates =
+                        group.exports[0].client?.certificates;
+                      if (Array.isArray(certificates)) {
+                        return certificates.some(
+                          (item) =>
+                            item.certificate?.name === 'RAINFOREST ALLIANCE'
+                        )
+                          ? 'RFA'
+                          : '';
+                      }
+                      return '';
+                    })()}{' '}
                     {group.exports[0].harborDestination?.country.code}{' '}
                     {group.exports[0].harborDestination?.code}{' '}
                     {group.exports[0].deposit?.code}{' '}
@@ -114,12 +123,20 @@ export default function WeeklyExportsSummary({
                 <PopoverCloseButton />
                 <PopoverHeader>
                   {group.totalBoxes} {group.exports[0].boxBrand?.brand.name}{' '}
-                  {group.exports[0].harborDestination?.country.code} (
+                  {group.exports[0].harborDestination?.country.region} (
                   {group.exports[0].boxBrand?.boxQuantity}){' '}
-                  {group.exports[0].client?.certificates?.certificate?.name ==
-                  'RAINFOREST ALLIANCE'
-                    ? 'RFA'
-                    : ''}{' '}
+                  {((): string => {
+                    const certificates = group.exports[0].client?.certificates;
+                    if (Array.isArray(certificates)) {
+                      return certificates.some(
+                        (item) =>
+                          item.certificate?.name === 'RAINFOREST ALLIANCE'
+                      )
+                        ? 'RFA'
+                        : '';
+                    }
+                    return '';
+                  })()}{' '}
                   {group.exports[0].harborDestination?.country.code}{' '}
                   {group.exports[0].harborDestination?.code}{' '}
                   {group.exports[0].deposit?.code}{' '}
