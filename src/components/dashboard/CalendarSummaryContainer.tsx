@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Grid, GridItem, Text, Center, Skeleton } from '@chakra-ui/react';
@@ -15,6 +16,7 @@ import { ExportResponse } from '@/types/export.response';
 import WeeklyExportsCalendar from './WeeklyExportsCalendar';
 import WeeklyExportsSummary from './WeeklyExportsSummary';
 import { useExports } from '../../hooks/export/getExports';
+import { useExportsSent } from '../../hooks/export/getExportSents';
 
 const colorPalette = [
   '#f87171',
@@ -36,6 +38,16 @@ export default function CalendarSummaryContainer(): JSX.Element {
   const [selectedClient, setSelectedClient] = useState<string>('');
 
   const { data, isLoading, isError } = useExports({
+    search: '',
+    page: 1,
+    limit: 100,
+  });
+
+  const {
+    data: sentData,
+    isLoading: isLoadingSent,
+    isError: isErrorSent,
+  } = useExportsSent({
     search: '',
     page: 1,
     limit: 100,
@@ -122,7 +134,39 @@ export default function CalendarSummaryContainer(): JSX.Element {
     return exportColorMap.current[exportId];
   }
 
-  if (isLoading) {
+  const exportSentData = useMemo(() => (sentData ? sentData : []), [sentData]);
+
+  const filteredExportSent = useMemo(() => {
+    return exportSentData.filter((sent: any) => {
+      if (!sent?.export?.cuttingDate) return false;
+      try {
+        const cuttingDate = parseISO(sent.export.cuttingDate);
+        return cuttingDate >= weekStart && cuttingDate <= weekEnd;
+      } catch (error) {
+        return false;
+      }
+    });
+  }, [exportSentData, weekStart, weekEnd]);
+
+  const totalEgreso = useMemo(() => {
+    return filteredExportSent.reduce((acc: number, sent: any) => {
+      if (sent.producerPayment && sent.producerPayment.total) {
+        return acc + Number(sent.producerPayment.amount);
+      }
+      return acc;
+    }, 0);
+  }, [filteredExportSent]);
+
+  const totalIngreso = useMemo(() => {
+    return filteredExportSent.reduce((acc: number, sent: any) => {
+      if (sent.clientPayment && sent.clientPayment.total) {
+        return acc + Number(sent.clientPayment.total);
+      }
+      return acc;
+    }, 0);
+  }, [filteredExportSent]);
+
+  if (isLoading || isLoadingSent) {
     return (
       <Grid templateColumns={{ base: '1fr', md: '3fr 1fr' }} gap={4}>
         <GridItem>
@@ -131,10 +175,13 @@ export default function CalendarSummaryContainer(): JSX.Element {
         <GridItem>
           <Skeleton height='300px' borderRadius='md' boxShadow='md' p={4} />
         </GridItem>
+        <GridItem>
+          <Skeleton height='150px' borderRadius='md' boxShadow='md' p={4} />
+        </GridItem>
       </Grid>
     );
   }
-  if (isError || !data) {
+  if (isError || isErrorSent || !data || !sentData) {
     return (
       <Center>
         <Text>Error al cargar exportaciones.</Text>
@@ -168,6 +215,24 @@ export default function CalendarSummaryContainer(): JSX.Element {
           getExportColor={getExportColor}
         />
       </GridItem>
+      <Grid templateColumns='repeat(2, 1fr)' gap={4}>
+        <GridItem bg='white' p={4} borderRadius='md' boxShadow='md'>
+          <Text fontWeight='bold' mb={4}>
+            Egreso Total Semanal
+          </Text>
+          <Text fontSize='2xl' fontWeight='bold'>
+            {totalEgreso} $
+          </Text>
+        </GridItem>
+        <GridItem bg='white' p={4} borderRadius='md' boxShadow='md'>
+          <Text fontWeight='bold' mb={4}>
+            Ingreso Total Semanal
+          </Text>
+          <Text fontSize='2xl' fontWeight='bold'>
+            {totalIngreso} $
+          </Text>
+        </GridItem>
+      </Grid>
     </Grid>
   );
 }
