@@ -125,7 +125,7 @@ const ClientSelectBase: React.FC<ClientSelectBaseProps> = ({
       onChange={(newValue) => handleChange(newValue)}
       value={
         field?.value
-          ? data.find((opt: Partial<ClientType>) => opt.id === field?.value)
+          ? data?.find((opt: Partial<ClientType>) => opt.id === field?.value)
           : undefined
       }
       placeholder={placeholder}
