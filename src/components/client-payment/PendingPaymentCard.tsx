@@ -34,8 +34,8 @@ const PendingPaymentCard: React.FC<PendingPaymentCardProps> = ({
 
   const details = [
     {
-      label: 'Productor',
-      value: exportSentItem.export?.merchant?.businessName,
+      label: 'Cliente',
+      value: exportSentItem.export?.client?.businessName,
     },
     {
       label: 'Finca',
@@ -50,8 +50,8 @@ const PendingPaymentCard: React.FC<PendingPaymentCardProps> = ({
       value: exportSentItem.export?.harborDestination?.name,
     },
     {
-      label: 'Cliente',
-      value: exportSentItem.export?.client?.businessName,
+      label: 'Productor',
+      value: exportSentItem.export?.merchant?.businessName,
     },
   ];
 
@@ -60,7 +60,7 @@ const PendingPaymentCard: React.FC<PendingPaymentCardProps> = ({
       <Card boxShadow='md' borderRadius='md' width={'350px'}>
         <CardHeader>
           <Heading fontSize={'xl'} fontWeight={'extrabold'} color={'teal.500'}>
-            Pago pendiente
+            Cobro pendiente
           </Heading>
         </CardHeader>
         <CardBody>
@@ -89,7 +89,7 @@ const PendingPaymentCard: React.FC<PendingPaymentCardProps> = ({
             variant={'outline'}
             onClick={onOpen}
           >
-            Realizar pago
+            Realizar cobro
           </Button>
         </CardFooter>
       </Card>
@@ -98,8 +98,8 @@ const PendingPaymentCard: React.FC<PendingPaymentCardProps> = ({
         isOpen={isOpen}
         onClose={onClose}
         onConfirm={handleClick}
-        title={`Abrir Pago Pendiente: ${exportSentItem.export?.merchant?.businessName || 'Sin título'}`}
-        description='¿Estás seguro de que deseas empezar este Pago Pendiente?'
+        title={`Abrir Cobro Pendiente: ${exportSentItem.export?.client?.businessName || 'Sin título'}`}
+        description='¿Estás seguro de que deseas empezar este Cobro Pendiente?'
       />
     </>
   );

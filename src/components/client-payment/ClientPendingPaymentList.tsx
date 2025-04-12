@@ -70,11 +70,11 @@ const PendingPaymentList = (): React.JSX.Element => {
     <>
       <VStack spacing={4} alignItems='center' justifyContent='center'>
         <Heading width='100%' textAlign='center'>
-          Lista de Pagos Pendientes
+          Lista de Cobros Pendientes
         </Heading>
         {data.length === 0 ? (
           <Center p={6}>
-            <Text>No existen pagos pendientes</Text>
+            <Text>No existen cobros pendientes</Text>
           </Center>
         ) : (
           <SimpleGrid
