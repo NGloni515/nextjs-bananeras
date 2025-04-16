@@ -57,6 +57,9 @@ export default function ExportCardWithPopover({
             {exportData.merchant?.businessName ?? 'Sin productor'}
           </Text>
           <Text>
+            <strong>Finca:</strong> {exportData.business?.name ?? 'Sin finca'}
+          </Text>
+          <Text>
             <strong>Marca:</strong> {exportData.boxBrand?.name ?? 'Sin marca'}
             {' - '}
             {exportData.boxBrand?.brand.name ?? 'Sin marca'}
