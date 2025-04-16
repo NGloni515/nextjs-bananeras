@@ -23,6 +23,7 @@ import { ExportResponse } from '@/types/export.response';
 import { ExportSentChart } from './ExportSentChart';
 import WeeklyExportsCalendar from './WeeklyExportsCalendar';
 import WeeklyExportsSummary from './WeeklyExportsSummary';
+import { WeeklyFarmSummaryCard } from './WeeklyFarmSummaryCard';
 import { useExports } from '../../hooks/export/getExports';
 import { useExportsSent } from '../../hooks/export/getExportSents';
 
@@ -183,7 +184,10 @@ export default function CalendarSummaryContainer(): JSX.Element {
         <GridItem>
           <Skeleton height='300px' borderRadius='md' boxShadow='md' p={4} />
         </GridItem>
-        <Grid templateColumns='repeat(2, 1fr)' gap={4}>
+        <GridItem>
+          <Skeleton height='300px' borderRadius='md' boxShadow='md' p={4} />
+        </GridItem>
+        <Grid gap={4}>
           <GridItem>
             <Skeleton height='150px' borderRadius='md' boxShadow='md' p={4} />
           </GridItem>
@@ -232,7 +236,18 @@ export default function CalendarSummaryContainer(): JSX.Element {
           getExportColor={getExportColor}
         />
       </GridItem>
-      <Grid templateColumns='repeat(2, 1fr)' gap={4}>
+      <GridItem>
+        <WeeklyFarmSummaryCard
+          exportSentData={filteredExportSent}
+          weekStart={weekStart}
+          weekEnd={weekEnd}
+          getExportColor={getExportColor}
+          selectedProducer={selectedProducer}
+          selectedBoxBrand={selectedBoxBrand}
+          selectedClient={selectedClient}
+        />
+      </GridItem>
+      <Grid gap={4}>
         <GridItem bg='white' p={6} borderRadius='md' boxShadow='md'>
           <Text fontSize='xl' fontWeight='normal' mb={2}>
             Egreso Total Semanal
@@ -264,7 +279,6 @@ export default function CalendarSummaryContainer(): JSX.Element {
           </Text>
         </GridItem>
       </Grid>
-      <GridItem />
       <GridItem bg='white' p={6} borderRadius='md' boxShadow={'md'} mb={4}>
         <Text fontSize='2xl' fontWeight='bold' mb={4}>
           Diagrama Cliente/Productor
