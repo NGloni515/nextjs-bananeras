@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
+import { useClientPaymentsPending } from './client-payment/getClientPaymentPending';
 import { useCuttingSheetsPending } from './export/cuttingSheet/getExportsSentPending';
 import { useExportsSentPending } from './export/export-sent/getExportsSentPending';
 import { useExportsPending } from './export/getExportsPending';
@@ -21,10 +22,15 @@ export function useNotifications(): {
   });
   const { data: payments, isLoading: isLoadingPayments } =
     useExportsSentPending({ page: 1, limit: 10 });
+  const { data: clientPayments, isLoading: isLoadingClientPayments } =
+    useClientPaymentsPending({ page: 1, limit: 10 });
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const isLoading =
-    isLoadingCuttingSheets || isLoadingSupplies || isLoadingPayments;
+    isLoadingCuttingSheets ||
+    isLoadingSupplies ||
+    isLoadingPayments ||
+    isLoadingClientPayments;
 
   useEffect(() => {
     const newNotifications: NotificationItem[] = [];
@@ -59,8 +65,18 @@ export function useNotifications(): {
       );
     }
 
+    if (clientPayments?.length > 0) {
+      newNotifications.push(
+        ...clientPayments.map((clientPayment: any) => ({
+          message: `Cobro pendiente al cliente con ID ${clientPayment.id}`,
+          detail: `Cliente: ${clientPayment.export?.client?.businessName}`,
+          href: `/dashboard/liquidation/client-pending-payments/${clientPayment.id}`,
+        }))
+      );
+    }
+
     setNotifications(newNotifications);
-  }, [cuttingSheets, supplies, payments]);
+  }, [cuttingSheets, supplies, payments, clientPayments]);
 
   return { notifications, isLoading };
 }
