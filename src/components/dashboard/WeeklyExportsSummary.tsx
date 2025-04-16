@@ -159,6 +159,10 @@ export default function WeeklyExportsSummary({
                         {exp.merchant?.businessName ?? 'Sin productor'}
                       </Text>
                       <Text>
+                        <strong>Finca:</strong>{' '}
+                        {exp.business?.name ?? 'Sin finca'}
+                      </Text>
+                      <Text>
                         <strong>Marca:</strong>{' '}
                         {exp.boxBrand?.name ?? 'Sin marca'}
                         {' - '}
