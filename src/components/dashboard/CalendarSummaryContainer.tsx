@@ -236,7 +236,7 @@ export default function CalendarSummaryContainer(): JSX.Element {
           getExportColor={getExportColor}
         />
       </GridItem>
-      <GridItem>
+      <GridItem bg='white' p={4} borderRadius='md' boxShadow={'md'}>
         <WeeklyFarmSummaryCard
           exportSentData={filteredExportSent}
           weekStart={weekStart}

@@ -132,10 +132,18 @@ export const WeeklyFarmSummaryCard = ({
     return Object.values(grouped);
   }, [filteredData, getExportColor]);
 
-  if (farmsSummary.length === 0) return null;
+  if (farmsSummary.length === 0) {
+    return (
+      <Box p={4}>
+        <Text fontSize='xl'>
+          Aún no se han incluido exportaciones para la semana seleccionada.
+        </Text>
+      </Box>
+    );
+  }
 
   return (
-    <Box bg='white' p={4} borderRadius='md' boxShadow='md' height='100%'>
+    <Box height='100%'>
       <HStack width='100%' justify='space-between' align='center' mb={2}>
         <Text fontSize='xl' fontWeight='bold'>
           Exportaciones por Finca

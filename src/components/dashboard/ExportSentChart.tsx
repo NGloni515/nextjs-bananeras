@@ -84,8 +84,8 @@ export function ExportSentChart({
 
   if (filteredSentData.length === 0) {
     return (
-      <Box p={4}>
-        <Text fontSize='xl' fontWeight='bold'>
+      <Box>
+        <Text fontSize='xl'>
           Aún no se han incluido exportaciones para la semana seleccionada.
         </Text>
       </Box>
