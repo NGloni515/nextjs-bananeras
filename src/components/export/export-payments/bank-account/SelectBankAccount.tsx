@@ -5,12 +5,14 @@ import { BankAccountType } from '../../../../types/bankAccount';
 
 interface SelectBankAccountProps {
   name: string;
+  label?: string;
   bankAccountSelect?: Partial<BankAccountType>;
   setBankAccountSelect?: (bankAccount: Partial<BankAccountType> | null) => void;
 }
 
 const SelectBankAccount: React.FC<SelectBankAccountProps> = ({
   name,
+  label,
   bankAccountSelect,
   setBankAccountSelect,
 }) => {
@@ -33,22 +35,34 @@ const SelectBankAccount: React.FC<SelectBankAccountProps> = ({
     <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
       <InputFieldBankAccountSelect
         name={name}
-        label={'Productor/Razón Social'}
+        label={label ? label : 'Productor/Razón Social'}
         placeholder={'Seleccione el productor'}
         setBankAccount={setBankAccount}
       />
 
       <Box>
         <FormLabel>Tipo</FormLabel>
-        <Input isReadOnly={true} value={bankAccount?.type || ''} placeholder='Tipo de Cuenta' />
+        <Input
+          isReadOnly={true}
+          value={bankAccount?.type || ''}
+          placeholder='Tipo de Cuenta'
+        />
       </Box>
       <Box>
         <FormLabel>Propietario</FormLabel>
-        <Input isReadOnly={true} value={bankAccount?.owner || ''} placeholder='Nombre del Propietario' />
+        <Input
+          isReadOnly={true}
+          value={bankAccount?.owner || ''}
+          placeholder='Nombre del Propietario'
+        />
       </Box>
       <Box>
         <FormLabel>Identificación</FormLabel>
-        <Input isReadOnly={true} value={bankAccount?.ownerID || ''} placeholder='Identificación del Propietario' />
+        <Input
+          isReadOnly={true}
+          value={bankAccount?.ownerID || ''}
+          placeholder='Identificación del Propietario'
+        />
       </Box>
     </SimpleGrid>
   );

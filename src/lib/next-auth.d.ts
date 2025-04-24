@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { JWT } from 'next-auth/jwt';
-import NextAuth from 'next-auth/next';
+import 'next-auth';
 
 declare module 'next-auth' {
   interface Session {
@@ -10,6 +8,7 @@ declare module 'next-auth' {
       name: string;
       exporterId: string;
       onboardingStatus: string;
+      role: string;
     };
     accessToken: string;
     refreshToken: string;
@@ -24,6 +23,7 @@ declare module 'next-auth/jwt' {
       name: string;
       exporterId: string;
       onboardingStatus: string;
+      role: string;
     };
     accessToken: string;
     refreshToken: string;

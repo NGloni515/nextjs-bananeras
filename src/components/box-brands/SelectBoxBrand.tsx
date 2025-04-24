@@ -76,7 +76,7 @@ const SelectBoxBrand: React.FC<SelectBoxBrandProps> = ({
             <Box></Box>
             <InputFieldNumber
               name={nameSubtotal1}
-              label={'Subtotal1'}
+              label={contractType ? 'Subtotal1' : 'Total'}
               value={Number(boxQuantity) * Number(price)}
               isDecimal
               isDolar
