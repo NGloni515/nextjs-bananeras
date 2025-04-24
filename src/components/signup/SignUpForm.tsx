@@ -51,6 +51,10 @@ export default function SignUpForm(): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
 
   const signUp = async (values: ValuesProps): Promise<void> => {
+    console.log('➡️ Intentando registrar usuario:', {
+      businessName: values.exportName,
+      email: values.email,
+    });
     setIsLoading(true);
     try {
       const res = await fetch(
@@ -70,6 +74,7 @@ export default function SignUpForm(): React.JSX.Element {
 
       if (!res.ok) {
         const errorData = await res.json();
+        console.error('❌ Error en registro:', res.status, errorData.message);
         toast({
           title: `Error ${res.status}`,
           description: errorData.message,
@@ -80,6 +85,7 @@ export default function SignUpForm(): React.JSX.Element {
         return;
       }
 
+      console.log('✅ Registro exitoso para usuario:', values.email);
       toast({
         title: 'Registro exitoso',
         description: 'Su cuenta ha sido creada.',

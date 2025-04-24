@@ -20,6 +20,7 @@ export interface NavCounts {
   addCuttingSheet: number;
   addSupplyShipment: number;
   producerPendingPayments: number;
+  clientPendingPayments: number;
 }
 
 export interface SessionUser {
@@ -83,8 +84,12 @@ export function getNavItems(
       menu: getLiquidationMenu({
         addSupplyShipment: counts.addSupplyShipment,
         producerPendingPayments: counts.producerPendingPayments,
+        clientPendingPayments: counts.clientPendingPayments,
       }),
-      count: counts.addSupplyShipment + counts.producerPendingPayments,
+      count:
+        counts.addSupplyShipment +
+        counts.producerPendingPayments +
+        counts.clientPendingPayments,
       allowedRoles: ['ADMINISTRATIVE'],
     },
     {

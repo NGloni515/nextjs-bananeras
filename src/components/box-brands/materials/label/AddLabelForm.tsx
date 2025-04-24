@@ -73,14 +73,17 @@ const validationSchema = Yup.object({
     .lessThan(10000, 'Debe ser menor que 10000 ')
     .required('Requerido'),
   art: Yup.mixed()
-    .required('Se requiere una imagen')
+    .notRequired()
     .test('fileFormat', 'Formato no soportado', (value) => {
-      return value && SUPPORTED_FORMATS.includes((value as File).type);
+      if (!value) return true;
+      if (value instanceof File) {
+        return SUPPORTED_FORMATS.includes(value.type);
+      }
+      return false;
     }),
   description: Yup.string()
     .max(200, 'Debe tener 200 caracteres o menos')
-    .min(10, 'Debe tener 10 caracteres o más')
-    .required('Requerido'),
+    .min(10, 'Debe tener 10 caracteres o más'),
 });
 
 const AddLabelForm = ({ onClose }: AddLabelFormProps): React.JSX.Element => {

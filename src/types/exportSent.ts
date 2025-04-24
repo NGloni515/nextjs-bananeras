@@ -55,5 +55,6 @@ export type ExportSentType = {
   insecticideSent: Partial<InsecticideSentPartType>[];
 
   pendingProducerPayment: boolean;
+  pendingClientPayment: boolean;
   producerPayment: ProducerPaymentType;
 };

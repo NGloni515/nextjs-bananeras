@@ -61,9 +61,13 @@ const validationSchema = Yup.object({
     .lessThan(10000, 'Debe ser menor que 10000 ')
     .required('Requerido'),
   art: Yup.mixed()
-    .required('Se requiere una imagen')
+    .notRequired()
     .test('fileFormat', 'Formato no soportado', (value) => {
-      return value && SUPPORTED_FORMATS.includes((value as File).type);
+      if (!value) return true;
+      if (value instanceof File) {
+        return SUPPORTED_FORMATS.includes(value.type);
+      }
+      return false;
     }),
   code: Yup.string()
     .max(50, 'Debe tener 50 caracteres o menos')
@@ -115,8 +119,7 @@ const AddMettoLabelForm = ({
           duration: 5000,
           isClosable: true,
         });
-
-        queryClient.invalidateQueries('labels');
+        queryClient.invalidateQueries('mettoLabels');
         actions.resetForm();
         !!onClose && onClose();
       },
