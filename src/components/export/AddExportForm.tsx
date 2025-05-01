@@ -25,12 +25,18 @@ import InputFieldTransportSelect from '../transport/InputFiledTransportSelect';
 import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldDate from '../ui/form/InputFieldDate';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
+import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
 import InputFieldVerifierSelect from '../verifier/InputFieldVerifierSelect';
 
 const AddExportForm: React.FC = () => {
   const { onSubmit, initialValues, validationSchema, isLoading } =
     useSubmitExport();
+  const ContractOpt = [
+    { name: 'FOB (FREE ON BOARD)', id: 'FOB' },
+    { name: 'FAS (FREE ALONGSIDE SHIP)', id: 'FAS' },
+    { name: 'SPOT (ES VENTA AL CORTO PLAZO)', id: 'SPOT' },
+  ];
   const [selectedShippingCompany, setSelectedShippingCompany] =
     useState<Partial<ShippingCompanyType> | null>(null);
 
@@ -66,6 +72,11 @@ const AddExportForm: React.FC = () => {
                 name='boxQuantity'
                 label='Cantidad de Cajas'
                 unit='cajas'
+              />
+              <InputFieldSelector
+                name={'contractType'}
+                label={'Tipo de Contrato'}
+                options={ContractOpt}
               />
               <Box />
             </SimpleGrid>
@@ -162,7 +173,7 @@ const AddExportForm: React.FC = () => {
               />
             </SimpleGrid>
 
-            <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={5}>
+            <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
               <InputFieldDepositSelect
                 name='depositId'
                 label='Depósito'
@@ -177,6 +188,10 @@ const AddExportForm: React.FC = () => {
                 name='verifierId'
                 label='Verificadora'
                 placeholder='Selecciona una Verificadora'
+              />
+              <InputFieldNumber
+                name='numberOfVerifiers'
+                label='Número de Verificadores'
               />
             </SimpleGrid>
 
