@@ -43,6 +43,7 @@ export function useSubmitExport(): {
       weekBoxesOfDay: weekCutting.boxesOfDay,
       weekTotal: Number(boxQuantity),
       boxQuantity: Number(boxQuantity),
+      numberOfVerifiers: Number(values.numberOfVerifiers),
     };
 
     createExport(exportData, {
