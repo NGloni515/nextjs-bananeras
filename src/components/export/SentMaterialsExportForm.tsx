@@ -357,6 +357,8 @@ const SentMaterialsExportForm = ({
           queryClient.invalidateQueries('exportsSentPending');
           queryClient.invalidateQueries('exportsPending');
           queryClient.invalidateQueries('clientPaymentsPending');
+          queryClient.invalidateQueries('cuttingSheets');
+          queryClient.invalidateQueries('cuttingSheetsPending');
           actions.resetForm();
           router.push('/dashboard/liquidation/exports-sent');
         },
