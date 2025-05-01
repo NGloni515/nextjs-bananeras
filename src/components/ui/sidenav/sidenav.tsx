@@ -46,6 +46,7 @@ export function Sidenav({ navItems }: SidenavProps): React.JSX.Element {
           zIndex='999'
           bg={'white'}
           shadow='xs'
+          pl={'24px'}
         >
           <SkeletonCircle
             isLoaded={!isLoading}
@@ -74,7 +75,7 @@ export function Sidenav({ navItems }: SidenavProps): React.JSX.Element {
                   fontWeight='bold'
                   color='green'
                 >
-                  {user?.exporterDetails.businessName || 'Bananeras'}
+                  {user?.exporterDetails.businessName || 'Exportmétricas'}
                 </Text>
               </Skeleton>
             </Link>
@@ -108,7 +109,7 @@ export function Sidenav({ navItems }: SidenavProps): React.JSX.Element {
                     fontWeight='bold'
                     color='green'
                   >
-                    {user?.exporterDetails.businessName || 'Bananeras'}
+                    {user?.exporterDetails.businessName || 'Exportmétricas'}
                   </Text>
                 </Skeleton>
               </Center>
