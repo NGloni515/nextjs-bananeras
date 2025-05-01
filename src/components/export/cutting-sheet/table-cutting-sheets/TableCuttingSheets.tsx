@@ -62,7 +62,7 @@ const TableCuttingSheets = ({
             header: 'Altura de Pallets',
           },
           {
-            accessorKey: 'export.boxBrand.name',
+            accessorKey: 'exportSent.export.boxBrand.name',
             header: 'Marca de Caja',
           },
         ],
@@ -71,23 +71,23 @@ const TableCuttingSheets = ({
         header: 'Datos Comerciales',
         columns: [
           {
-            accessorKey: 'export.merchant.businessName',
+            accessorKey: 'exportSent.export.merchant.businessName',
             header: 'Productor',
           },
           {
-            accessorKey: 'export.business.name',
+            accessorKey: 'exportSent.export.business.name',
             header: 'Finca',
           },
           {
-            accessorKey: 'export.harborDeparture.name',
+            accessorKey: 'exportSent.export.harborDeparture.name',
             header: 'Puerto de Salida',
           },
           {
-            accessorKey: 'export.harborDestination.name',
+            accessorKey: 'exportSent.export.harborDestination.name',
             header: 'Puerto de Destino',
           },
           {
-            accessorKey: 'export.client.businessName',
+            accessorKey: 'exportSent.export.client.businessName',
             header: 'Cliente',
           },
         ],
