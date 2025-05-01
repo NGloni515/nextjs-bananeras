@@ -29,7 +29,7 @@ const SignUpPage = (): JSX.Element => {
           '2xl': '480px',
         }}
       >
-        <Logo />
+        <Logo align='left' width={60} height={60} />
         <Heading
           color='blackAlpha.900'
           fontWeight='bold'
