@@ -92,12 +92,13 @@ export interface ExportResponse {
   estimatedTravelTime: string;
   bookingNumber: string;
   cutOffTime: string;
-  pendingCuttingSheet: boolean | null;
   cuttingDate: string;
   weekDescription: string;
   weekDaysOfWeek: string[];
   weekBoxesOfDay: number[];
   weekTotal: number;
+  numberOfVerifiers: number;
+  contractType: string;
   merchant: {
     id: number;
     businessName: string;
