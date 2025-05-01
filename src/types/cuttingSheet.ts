@@ -1,5 +1,5 @@
 export interface CuttingSheetType {
-  exportId: number | '';
+  exportSentId: number | '' | undefined;
   cuttingTypeId: number;
   palletsHeight: string;
   containerPositioning: string;
