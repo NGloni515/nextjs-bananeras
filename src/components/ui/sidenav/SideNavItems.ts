@@ -68,15 +68,6 @@ export function getNavItems(
       allowedRoles: ['EXPORT'],
     },
     {
-      icon: MdContentCut,
-      label: 'Calidad',
-      isMenu: true,
-      to: '/dashboard/export',
-      menu: getQualityMenu({ addCuttingSheet: counts.addCuttingSheet }),
-      count: counts.addCuttingSheet,
-      allowedRoles: ['QUALITY'],
-    },
-    {
       icon: FaCashRegister,
       label: 'Liquidación',
       isMenu: true,
@@ -91,6 +82,15 @@ export function getNavItems(
         counts.producerPendingPayments +
         counts.clientPendingPayments,
       allowedRoles: ['ADMINISTRATIVE'],
+    },
+    {
+      icon: MdContentCut,
+      label: 'Calidad',
+      isMenu: true,
+      to: '/dashboard/export',
+      menu: getQualityMenu({ addCuttingSheet: counts.addCuttingSheet }),
+      count: counts.addCuttingSheet,
+      allowedRoles: ['QUALITY'],
     },
     {
       icon: FaCogs,

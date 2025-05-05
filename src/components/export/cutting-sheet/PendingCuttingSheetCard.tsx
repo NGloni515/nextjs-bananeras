@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Button,
@@ -12,11 +13,10 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { ExportType } from '../../../types/export';
 import ConfirmationModal from '../../ui/ConfirmationModal';
 
 interface Props {
-  exportItem: Partial<ExportType>;
+  exportItem: Partial<any>;
   pathname: string;
 }
 
@@ -35,23 +35,23 @@ const PendingCuttingSheetCard = ({
   const details = [
     {
       label: 'Productor',
-      value: exportItem.merchant?.businessName,
+      value: exportItem.export.merchant?.businessName,
     },
     {
       label: 'Finca',
-      value: exportItem.business?.name,
+      value: exportItem.export.business?.name,
     },
     {
       label: 'Puerto Salida',
-      value: exportItem.harborDeparture?.name,
+      value: exportItem.export.harborDeparture?.name,
     },
     {
       label: 'Puerto Destino',
-      value: exportItem.harborDestination?.name,
+      value: exportItem.export.harborDestination?.name,
     },
     {
       label: 'Cliente',
-      value: exportItem.client?.businessName,
+      value: exportItem.export.client?.businessName,
     },
   ];
 
@@ -98,7 +98,7 @@ const PendingCuttingSheetCard = ({
         isOpen={isOpen}
         onClose={onClose}
         onConfirm={handleClick}
-        title={`Abrir Hoja de Corte: ${exportItem.merchant?.businessName || 'Sin título'}`}
+        title={`Abrir hoja de corte para: ${exportItem.export.merchant?.businessName || 'Sin título'} - ${exportItem.export.client?.businessName || 'Sin título'}`}
         description='¿Estás seguro de que deseas empezar esta Hoja de Corte?'
       />
     </>

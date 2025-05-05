@@ -11,20 +11,30 @@ import {
 import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useLayoutEffect } from 'react';
 import CuttingSheetForm from '../../../../../components/export/cutting-sheet/CuttingSheetForm';
+import { useExportSent } from '../../../../../hooks/export/export-sent/getExportSent';
 import { useExport } from '../../../../../hooks/export/getExport';
 import { ExportResponse } from '../../../../../types/export.response';
+import { ExportSentType } from '../../../../../types/exportSent';
 
 const CuttingSheetPage = (): React.JSX.Element => {
   const params = useParams<{ id: string }>();
   const { data, isLoading, error } = useExport({
     exportId: params.id,
   });
+  const {
+    data: exportSentData,
+    isLoading: isLoadingSent,
+    error: errorSent,
+  } = useExportSent({
+    exportSentId: params.id,
+  });
   const pendingCuttingSheet = data as Partial<ExportResponse>;
+  const exportSent = exportSentData as Partial<ExportSentType>;
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    if (!!error) {
+    if (!!error && !!errorSent) {
       const { response } = error as any;
       const { data: dataRes } = response;
       const { statusCode } = dataRes;
@@ -37,12 +47,12 @@ const CuttingSheetPage = (): React.JSX.Element => {
   }, [error]);
 
   useLayoutEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !isLoadingSent) {
       if (!pendingCuttingSheet) {
         return redirect(pathname.replace(/\/\d+$/, ''));
       }
     }
-  }, [isLoading, pendingCuttingSheet, pathname]);
+  }, [isLoading, isLoadingSent, pendingCuttingSheet, pathname]);
 
   if (isLoading) {
     return (
@@ -71,7 +81,10 @@ const CuttingSheetPage = (): React.JSX.Element => {
             <Heading textAlign='center'>Hoja de Corte</Heading>
           </CardHeader>
           <CardBody w={'100%'}>
-            <CuttingSheetForm cuttingSheetSelected={pendingCuttingSheet} />
+            <CuttingSheetForm
+              cuttingSheetSelected={pendingCuttingSheet}
+              exportSentSelected={exportSent}
+            />
           </CardBody>
         </Card>
       </Center>

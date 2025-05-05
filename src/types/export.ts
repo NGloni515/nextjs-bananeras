@@ -37,6 +37,5 @@ export type ExportType = {
   transportId: number;
   verifierId: number;
   pendingExportSent: boolean;
-  pendingCuttingSheet: boolean;
   exportSent: Partial<ExportSentType>;
 };
