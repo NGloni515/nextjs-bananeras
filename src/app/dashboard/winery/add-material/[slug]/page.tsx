@@ -1,0 +1,129 @@
+'use client';
+
+import {
+  Center,
+  Text,
+  Box,
+  Heading,
+  Card,
+  CardBody,
+  CardHeader,
+} from '@chakra-ui/react';
+import { AxiosError } from 'axios';
+import { useParams } from 'next/navigation';
+import { useExporter } from '@/hooks/useUserProfile';
+import { useExporterMaterials } from '@/hooks/winery/getExporterMaterials';
+import { useExporterMaterialStock } from '@/hooks/winery/useExporterMaterialStock';
+import { ExporterMaterial } from '@/types/winery/exporterMateriales';
+import { AddMaterialForm } from '../../../../../components/winery/AddMaterialForm';
+import { CreateInitialStockForm } from '../../../../../components/winery/CreateInitialStockForm';
+
+export default function AddMaterialPage(): JSX.Element {
+  const params = useParams();
+  const slug = Array.isArray(params?.slug) ? params.slug[0] : params?.slug;
+
+  const [materialType, materialIdString] = slug?.split('-') ?? [];
+
+  const { user, isLoading: isLoadingUser } = useExporter();
+  const exporterId = user?.exporterDetails?.id;
+
+  const { data: materials, isLoading: isLoadingMaterials } =
+    useExporterMaterials({
+      exporterId: exporterId?.toString() ?? '',
+    });
+
+  const selectedMaterial = (materials ?? []).find(
+    (m: ExporterMaterial) =>
+      m.materialType === materialType && String(m.id) === materialIdString
+  );
+
+  const stockQuery = useExporterMaterialStock({
+    exporterId: exporterId ?? 0,
+    materialType: materialType ?? '',
+    materialId: Number(materialIdString),
+  });
+
+  const isLoadingStock = stockQuery.isLoading;
+  const stockError = stockQuery.error;
+
+  const stockNotFound =
+    stockError instanceof AxiosError && stockError.response?.status === 400;
+
+  if (isLoadingUser || isLoadingMaterials || isLoadingStock) {
+    return (
+      <Box mx={'auto'} my={'200px'}>
+        <Center>
+          <Heading>Cargando...</Heading>
+        </Center>
+      </Box>
+    );
+  }
+
+  if (!exporterId || !selectedMaterial) {
+    return (
+      <Center py={10}>
+        <Text color='red.500'>No se encontró el material solicitado</Text>
+      </Center>
+    );
+  }
+
+  if (stockNotFound) {
+    return (
+      <Box my={'20px'} mx='auto' w={'95%'}>
+        <Center>
+          <Card
+            w={{
+              base: '95%',
+              sm: '95%',
+              md: '90%',
+              lg: '100%',
+              xl: '100%',
+            }}
+            mb={'20px'}
+          >
+            <CardHeader w={'100%'}>
+              <Heading>Asignar Stock Inicial</Heading>
+            </CardHeader>
+            <CardBody>
+              <CreateInitialStockForm
+                exporterId={exporterId}
+                materialType={selectedMaterial.materialType}
+                materialId={Number(selectedMaterial.id)}
+                materialName={selectedMaterial.name}
+              />
+            </CardBody>
+          </Card>
+        </Center>
+      </Box>
+    );
+  }
+
+  return (
+    <Box my={'20px'} mx='auto' w={'95%'}>
+      <Center>
+        <Card
+          w={{
+            base: '95%',
+            sm: '95%',
+            md: '90%',
+            lg: '100%',
+            xl: '100%',
+          }}
+          mb={'20px'}
+        >
+          <CardHeader w={'100%'}>
+            <Heading>Movimientos del Material</Heading>
+          </CardHeader>
+          <CardBody w={'100%'}>
+            <AddMaterialForm
+              exporterId={exporterId}
+              materialType={selectedMaterial.materialType}
+              materialId={Number(selectedMaterial.id)}
+              materialName={selectedMaterial.name}
+            />
+          </CardBody>
+        </Card>
+      </Center>
+    </Box>
+  );
+}
