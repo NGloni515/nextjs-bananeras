@@ -12,7 +12,7 @@ import {
   Icon,
   VStack,
 } from '@chakra-ui/react';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { MdArrowDropDown, MdArrowDropUp, MdDragHandle } from 'react-icons/md';
 import { useSpotPrices } from '../../hooks/utils/getSpotPrices';
 
