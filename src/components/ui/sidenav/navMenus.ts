@@ -75,6 +75,14 @@ export const EXPORT_MENU: SidenavMenuItem[] = [
   },
 ];
 
+export const WINERY_MENU: SidenavMenuItem[] = [
+  {
+    label: 'Carga de Materiales',
+    to: '/dashboard/winery/add-material',
+    submenu: [{ label: 'Consultar Stock', to: '/dashboard/winery/stock' }],
+  },
+];
+
 export function getQualityMenu(counts: {
   addCuttingSheet: number;
 }): SidenavMenuItem[] {
