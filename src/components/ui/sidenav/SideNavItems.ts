@@ -23,6 +23,7 @@ export interface NavCounts {
   addSupplyShipment: number;
   producerPendingPayments: number;
   clientPendingPayments: number;
+  exportSentCostsPending: number;
 }
 
 export interface SessionUser {
@@ -78,11 +79,13 @@ export function getNavItems(
         addSupplyShipment: counts.addSupplyShipment,
         producerPendingPayments: counts.producerPendingPayments,
         clientPendingPayments: counts.clientPendingPayments,
+        exportSentCostsPending: counts.exportSentCostsPending,
       }),
       count:
         counts.addSupplyShipment +
         counts.producerPendingPayments +
-        counts.clientPendingPayments,
+        counts.clientPendingPayments +
+        counts.exportSentCostsPending,
       allowedRoles: ['ADMINISTRATIVE'],
     },
     {
