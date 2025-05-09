@@ -104,6 +104,8 @@ export function UpdateStockModal({
                   name='cost'
                   label='Costo Actual'
                   value={initialCost}
+                  isDecimal
+                  unit='$'
                 />
 
                 <Divider my={4} />
