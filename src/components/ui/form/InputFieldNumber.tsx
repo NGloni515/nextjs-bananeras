@@ -1,4 +1,7 @@
+'use client';
+
 import {
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -6,6 +9,7 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  Text,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React, { useEffect, useState } from 'react';
@@ -21,6 +25,7 @@ interface InputFieldProps {
   isGeo?: boolean;
   unit?: string;
   size?: string;
+  flexDirection?: 'column' | 'row';
 }
 
 const InputFieldNumber: React.FC<InputFieldProps> = ({
@@ -34,6 +39,7 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
   isGeo = false,
   unit,
   size = 'md',
+  flexDirection = 'column',
 }) => {
   const [, meta, helpers] = useField(name);
   const [internalValue, setInternalValue] = useState<string>('');
@@ -90,51 +96,68 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
   };
 
   return (
-    <FormControl
-      id={name}
-      isInvalid={!!meta.error && meta.touched}
-      width="100%"
-    >
-      {label && (
-        <FormLabel fontSize="sm" mb="8px">
-          {label}
-        </FormLabel>
-      )}
-      <InputGroup width="100%">
-        {isDolar && (
-          <InputLeftElement
-            pointerEvents="none"
-            color="gray.400"
-            fontSize="1.2em"
+    <FormControl id={name} isInvalid={!!meta.error && meta.touched} w='100%'>
+      <Flex
+        flexDirection={flexDirection}
+        alignItems={flexDirection === 'row' ? 'center' : 'flex-start'}
+        w='100%'
+      >
+        {label && (
+          <Flex
+            flex={flexDirection === 'row' ? '1' : 'none'}
+            minW={flexDirection === 'row' ? '15%' : '100%'}
+            maxW={flexDirection === 'row' ? '25%' : '100%'}
+            alignItems='center'
+            marginRight={flexDirection === 'row' ? '2%' : '0'}
           >
-            $
-          </InputLeftElement>
+            <FormLabel
+              fontSize='sm'
+              mb={flexDirection === 'column' ? '8px' : '0'}
+              m={0}
+              overflow='hidden'
+            >
+              <Text>{label}</Text>
+            </FormLabel>
+          </Flex>
         )}
-        {unit && (
-          <InputRightElement
-            pointerEvents="none"
-            color="gray.500"
-            fontSize="1em"
-            mr="8px"
-          >
-            {unit}
-          </InputRightElement>
-        )}
-        <Input
-          type="text"
-          inputMode="decimal"
-          isReadOnly={isReadOnly}
-          placeholder={placeholder || label}
-          textAlign={isDecimal && !isGeo ? 'right' : 'left'}
-          size={size}
-          value={internalValue}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-        />
-      </InputGroup>
+        <Flex flex={label ? '2' : '1'} w='100%'>
+          <InputGroup w='100%'>
+            {isDolar && (
+              <InputLeftElement
+                pointerEvents='none'
+                color='gray.400'
+                fontSize='1.2em'
+              >
+                $
+              </InputLeftElement>
+            )}
+            {unit && (
+              <InputRightElement
+                pointerEvents='none'
+                color='gray.500'
+                fontSize='1em'
+                mr='8px'
+              >
+                {unit}
+              </InputRightElement>
+            )}
+            <Input
+              type='text'
+              inputMode='decimal'
+              isReadOnly={isReadOnly}
+              placeholder={placeholder || label}
+              textAlign={isDecimal && !isGeo ? 'right' : 'left'}
+              size={size}
+              value={internalValue}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+            />
+          </InputGroup>
+        </Flex>
+      </Flex>
       {meta.error && meta.touched && (
-        <FormErrorMessage mt="8px" mb="16px">
+        <FormErrorMessage mt='8px' mb='16px'>
           {meta.error}
         </FormErrorMessage>
       )}
