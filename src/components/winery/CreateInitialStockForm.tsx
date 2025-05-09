@@ -108,6 +108,8 @@ export function CreateInitialStockForm({
                 name='assignedCost'
                 label='Costo Asignado'
                 placeholder='Costo unitario'
+                isDecimal
+                unit='$'
               />
             </SimpleGrid>
             <SimpleGrid columns={{ base: 1, sm: 1 }}>
