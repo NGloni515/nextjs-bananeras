@@ -119,6 +119,7 @@ export function getLiquidationMenu(counts: {
   addSupplyShipment: number;
   producerPendingPayments: number;
   clientPendingPayments: number;
+  exportSentCostsPending: number;
 }): SidenavMenuItem[] {
   return [
     {
@@ -129,6 +130,17 @@ export function getLiquidationMenu(counts: {
         {
           label: 'Envíos Realizados',
           to: '/dashboard/liquidation/exports-sent',
+        },
+      ],
+    },
+    {
+      label: 'Costo de Exportación',
+      to: '/dashboard/liquidation/add-export-cost',
+      count: counts.exportSentCostsPending,
+      submenu: [
+        {
+          label: 'Costos Validados',
+          to: '/dashboard/liquidation/export-costs',
         },
       ],
     },
