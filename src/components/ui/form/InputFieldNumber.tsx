@@ -9,7 +9,6 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  Text,
 } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React, { useEffect, useState } from 'react';
@@ -105,18 +104,18 @@ const InputFieldNumber: React.FC<InputFieldProps> = ({
         {label && (
           <Flex
             flex={flexDirection === 'row' ? '1' : 'none'}
-            minW={flexDirection === 'row' ? '15%' : '100%'}
-            maxW={flexDirection === 'row' ? '25%' : '100%'}
+            minWidth={flexDirection === 'row' ? '15%' : '100%'}
+            maxWidth={flexDirection === 'row' ? '25%' : '100%'}
             alignItems='center'
             marginRight={flexDirection === 'row' ? '2%' : '0'}
           >
             <FormLabel
               fontSize='sm'
-              mb={flexDirection === 'column' ? '8px' : '0'}
-              m={0}
+              mb={'8px'}
+              textAlign={flexDirection === 'row' ? 'left' : 'center'}
               overflow='hidden'
             >
-              <Text>{label}</Text>
+              {label}
             </FormLabel>
           </Flex>
         )}
