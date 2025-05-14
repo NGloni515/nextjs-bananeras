@@ -58,7 +58,7 @@ export function MaterialList(): JSX.Element {
   if (isLoadingExporter || isLoading) {
     return (
       <Center py={10}>
-        Cargando Materiales <Spinner size='md' />
+        Cargando Materiales <Spinner size='md' ml={4} />
       </Center>
     );
   }
@@ -131,9 +131,19 @@ export function MaterialList(): JSX.Element {
             p={2}
           >
             <CardBody>
-              <Heading size='sm' mb={2}>
-                {material.name}
-              </Heading>
+              <Box
+                w={'100%'}
+                display='flex'
+                justifyContent='space-between'
+                alignItems='center'
+              >
+                <Heading size='sm' mb={2}>
+                  {material.name}
+                </Heading>
+                <Text fontSize='sm' color='gray.600'>
+                  ID: {material.id}
+                </Text>
+              </Box>
               <Text fontSize='sm' color='gray.600'>
                 Tipo:{' '}
                 {MATERIAL_TYPE_LABELS[material.materialType] ??
