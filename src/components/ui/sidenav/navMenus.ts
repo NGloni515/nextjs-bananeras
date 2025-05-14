@@ -81,6 +81,10 @@ export const WINERY_MENU: SidenavMenuItem[] = [
     to: '/dashboard/winery/add-material',
     submenu: [{ label: 'Consultar Stock', to: '/dashboard/winery/stock' }],
   },
+  {
+    label: 'Trazabilidad de Stock',
+    to: '/dashboard/winery/stock-movements',
+  },
 ];
 
 export function getQualityMenu(counts: {
