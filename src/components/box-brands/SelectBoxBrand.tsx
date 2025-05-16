@@ -52,7 +52,7 @@ const SelectBoxBrand: React.FC<SelectBoxBrandProps> = ({
         />
 
         <Box>
-          <FormLabel>Código</FormLabel>
+          <FormLabel fontSize='sm'>Código</FormLabel>
           <Input isReadOnly={true} value={boxBrand?.brandCode || ''} />
         </Box>
 

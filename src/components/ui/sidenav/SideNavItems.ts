@@ -5,6 +5,7 @@ import {
   MdContentCut,
   MdFlightTakeoff,
 } from 'react-icons/md';
+import { PiPackageBold } from 'react-icons/pi';
 import {
   PRODUCER_MENU,
   CLIENT_MENU,
@@ -13,6 +14,7 @@ import {
   getQualityMenu,
   getLiquidationMenu,
   getSettingsMenu,
+  WINERY_MENU,
 } from './navMenus';
 import { SidenavItem } from './sidenav-items';
 
@@ -21,6 +23,7 @@ export interface NavCounts {
   addSupplyShipment: number;
   producerPendingPayments: number;
   clientPendingPayments: number;
+  exportSentCostsPending: number;
 }
 
 export interface SessionUser {
@@ -76,11 +79,13 @@ export function getNavItems(
         addSupplyShipment: counts.addSupplyShipment,
         producerPendingPayments: counts.producerPendingPayments,
         clientPendingPayments: counts.clientPendingPayments,
+        exportSentCostsPending: counts.exportSentCostsPending,
       }),
       count:
         counts.addSupplyShipment +
         counts.producerPendingPayments +
-        counts.clientPendingPayments,
+        counts.clientPendingPayments +
+        counts.exportSentCostsPending,
       allowedRoles: ['ADMINISTRATIVE'],
     },
     {
@@ -98,6 +103,14 @@ export function getNavItems(
       isMenu: true,
       to: '/dashboard/settings',
       menu: getSettingsMenu(session?.exporterId),
+      allowedRoles: ['ADMINISTRATIVE'],
+    },
+    {
+      icon: PiPackageBold,
+      label: 'Bodega',
+      isMenu: true,
+      to: '/dashboard/winery',
+      menu: WINERY_MENU,
       allowedRoles: ['ADMINISTRATIVE'],
     },
   ];

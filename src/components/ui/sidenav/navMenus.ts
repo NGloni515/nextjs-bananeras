@@ -75,6 +75,18 @@ export const EXPORT_MENU: SidenavMenuItem[] = [
   },
 ];
 
+export const WINERY_MENU: SidenavMenuItem[] = [
+  {
+    label: 'Carga de Materiales',
+    to: '/dashboard/winery/add-material',
+    submenu: [{ label: 'Consultar Stock', to: '/dashboard/winery/stock' }],
+  },
+  {
+    label: 'Trazabilidad de Stock',
+    to: '/dashboard/winery/stock-movements',
+  },
+];
+
 export function getQualityMenu(counts: {
   addCuttingSheet: number;
 }): SidenavMenuItem[] {
@@ -111,6 +123,7 @@ export function getLiquidationMenu(counts: {
   addSupplyShipment: number;
   producerPendingPayments: number;
   clientPendingPayments: number;
+  exportSentCostsPending: number;
 }): SidenavMenuItem[] {
   return [
     {
@@ -121,6 +134,17 @@ export function getLiquidationMenu(counts: {
         {
           label: 'Envíos Realizados',
           to: '/dashboard/liquidation/exports-sent',
+        },
+      ],
+    },
+    {
+      label: 'Costo de Exportación',
+      to: '/dashboard/liquidation/add-export-cost',
+      count: counts.exportSentCostsPending,
+      submenu: [
+        {
+          label: 'Costos Validados',
+          to: '/dashboard/liquidation/export-costs',
         },
       ],
     },
