@@ -19,6 +19,7 @@ import ReadOnlyDateGrid from './ReadOnlyDateGrid';
 import { useCreateCuttingSheet } from '../../../hooks/export/cuttingSheet/createCuttingSheet';
 import { CuttingSheetType } from '../../../types/cuttingSheet';
 import { ExportResponse } from '../../../types/export.response';
+import { ExportSentType } from '../../../types/exportSent';
 import CheckboxForm from '../../ui/form/CheckboxForm';
 import InputFieldSelector from '../../ui/form/InputFieldSelector';
 import InputFieldText from '../../ui/form/InputFieldText';
@@ -139,7 +140,6 @@ const emptyExportData: ExportResponse = {
   },
   exportSent: false,
   pendingExportSent: false,
-  pendingCuttingSheet: false,
   cuttingDate: '',
   weekDescription: '',
   weekDaysOfWeek: ['', '', '', '', '', '', ''],
@@ -149,6 +149,8 @@ const emptyExportData: ExportResponse = {
   estimatedTravelTime: '',
   bookingNumber: '',
   cutOffTime: '',
+  numberOfVerifiers: 0,
+  contractType: '',
   shippingCompany: { id: 0, name: '', code: '', contacts: [] },
   deposit: {
     id: 0,
@@ -268,10 +270,12 @@ const finalValidationSchema = Yup.object({
 
 interface CuttingSheetFormProps {
   cuttingSheetSelected: Partial<ExportResponse>;
+  exportSentSelected: Partial<ExportSentType>;
 }
 
 const CuttingSheetForm = ({
   cuttingSheetSelected,
+  exportSentSelected,
 }: CuttingSheetFormProps): React.JSX.Element => {
   const [finalValues, setFinalValues] = useState<FinalFormValues>(
     initialFinalFormValues
@@ -293,7 +297,7 @@ const CuttingSheetForm = ({
     formikHelpers: FormikHelpers<FinalFormValues>
   ): Promise<void> => {
     const payload: CuttingSheetType = {
-      exportId: values.exportData.id,
+      exportSentId: exportSentSelected.id,
       cuttingTypeId: Number(values.cuttingTypeId),
       palletsHeight: values.palletsHeight,
       containerPositioning: values.containerPositioning,
@@ -481,6 +485,10 @@ const CuttingSheetForm = ({
             label='Dirección'
             value={finalValues.exportData?.verifier.address}
           />
+          <DisplayField
+            label='Número de Verificadores'
+            value={finalValues.exportData?.numberOfVerifiers.toString()}
+          />
         </SimpleGrid>
         <Heading size='md' mt='4' mb='4'>
           Información del Cliente
@@ -570,6 +578,10 @@ const CuttingSheetForm = ({
             value={finalValues.exportData?.boxBrand?.brandCode || ''}
           />
           <DisplayField
+            label='Tipo de Contrato'
+            value={finalValues.exportData?.contractType || ''}
+          />
+          <DisplayField
             label='Peso Neto'
             value={
               finalValues.exportData?.boxBrand?.netWeightBox?.toString() ||
@@ -595,10 +607,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Fondo'
-            value={
-              finalValues.exportData?.boxBrand?.bottomTypeQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.bottomTypeQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Tapa'
@@ -606,10 +615,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Tapa'
-            value={
-              finalValues.exportData?.boxBrand?.lidTypeQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.lidTypeQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Funda'
@@ -617,10 +623,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Funda'
-            value={
-              finalValues.exportData?.boxBrand?.coverTypeQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.coverTypeQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Cartulina'
@@ -628,10 +631,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Cartulina'
-            value={
-              finalValues.exportData?.boxBrand?.cardboardTypeQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.cardboardTypeQuantity?.toString() || '0'}
           />
           <DisplayField
             label='ParaSeal'
@@ -639,10 +639,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. ParaSeal'
-            value={
-              finalValues.exportData?.boxBrand?.parasealTypeQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.parasealTypeQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Pad'
@@ -650,10 +647,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Pad'
-            value={
-              finalValues.exportData?.boxBrand?.padTypeQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.padTypeQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Esponja'
@@ -661,10 +655,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Esponja'
-            value={
-              finalValues.exportData?.boxBrand?.spongeTypeQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.spongeTypeQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Etiqueta'
@@ -672,9 +663,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Etiqueta'
-            value={
-              finalValues.exportData?.boxBrand?.labelQuantity.toString() || '0'
-            }
+            value={exportSentSelected?.labelQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Banda'
@@ -682,9 +671,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Banda'
-            value={
-              finalValues.exportData?.boxBrand?.bandQuantity.toString() || '0'
-            }
+            value={exportSentSelected?.bandQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Sachet'
@@ -692,9 +679,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Sachet'
-            value={
-              finalValues.exportData?.boxBrand?.sachetQuantity.toString() || '0'
-            }
+            value={exportSentSelected?.sachetQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Liga'
@@ -702,9 +687,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Liga'
-            value={
-              finalValues.exportData?.boxBrand?.rubberQuantity.toString() || '0'
-            }
+            value={exportSentSelected?.rubberQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Protector'
@@ -712,10 +695,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Protector'
-            value={
-              finalValues.exportData?.boxBrand?.protectorQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.protectorQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Cluster Bag'
@@ -723,10 +703,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Cluster Bag'
-            value={
-              finalValues.exportData?.boxBrand?.clusterBagQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.clusterBagQuantity?.toString() || '0'}
           />
         </SimpleGrid>
         <Heading size='sm' mt='4' mb='2'>
@@ -739,10 +716,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Pallets'
-            value={
-              finalValues.exportData?.boxBrand?.palletsTypeQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.palletsTypeQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Mini Pallets'
@@ -751,8 +725,7 @@ const CuttingSheetForm = ({
           <DisplayField
             label='Cant. Mini Pallets'
             value={
-              finalValues.exportData?.boxBrand?.miniPalletsTypeQuantity.toString() ||
-              '0'
+              exportSentSelected?.miniPalletsTypeQuantity?.toString() || '0'
             }
           />
           <DisplayField
@@ -761,10 +734,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Esquinero'
-            value={
-              finalValues.exportData?.boxBrand?.cornerTypeQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.cornerTypeQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Refuerzo'
@@ -775,8 +745,7 @@ const CuttingSheetForm = ({
           <DisplayField
             label='Cant. Refuerzo'
             value={
-              finalValues.exportData?.boxBrand?.reinforcementTypeQuantity.toString() ||
-              '0'
+              exportSentSelected?.reinforcementTypeQuantity?.toString() || '0'
             }
           />
           <DisplayField
@@ -785,9 +754,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Grapa'
-            value={
-              finalValues.exportData?.boxBrand?.stapleQuantity.toString() || '0'
-            }
+            value={exportSentSelected?.stapleQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Zuncho'
@@ -795,10 +762,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Zuncho'
-            value={
-              finalValues.exportData?.boxBrand?.strippingQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.strippingQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Termógrafo'
@@ -806,10 +770,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Termógrafo'
-            value={
-              finalValues.exportData?.boxBrand?.thermographQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.thermographQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Sello'
@@ -817,9 +778,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Sello'
-            value={
-              finalValues.exportData?.boxBrand?.sealQuantity.toString() || '0'
-            }
+            value={exportSentSelected?.sealQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Etiqueta Metto'
@@ -827,10 +786,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Etiqueta Metto'
-            value={
-              finalValues.exportData?.boxBrand?.mettoLabelQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.mettoLabelQuantity?.toString() || '0'}
           />
         </SimpleGrid>
 
@@ -845,8 +801,7 @@ const CuttingSheetForm = ({
           <DisplayField
             label='Cant. Cinta'
             value={
-              finalValues.exportData?.boxBrand?.packingTapeTypeQuantity.toString() ||
-              '0'
+              exportSentSelected?.packingTapeTypeQuantity?.toString() || '0'
             }
           />
           <DisplayField
@@ -855,10 +810,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Removedor'
-            value={
-              finalValues.exportData?.boxBrand?.latexRemoverQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.latexRemoverQuantity?.toString() || '0'}
           />
           <DisplayField
             label='Lámina'
@@ -866,10 +818,7 @@ const CuttingSheetForm = ({
           />
           <DisplayField
             label='Cant. Lámina'
-            value={
-              finalValues.exportData?.boxBrand?.blockingSheetQuantity.toString() ||
-              '0'
-            }
+            value={exportSentSelected?.blockingSheetQuantity?.toString() || '0'}
           />
         </SimpleGrid>
         <Heading size='sm' mt='4' mb='2'>
@@ -879,29 +828,25 @@ const CuttingSheetForm = ({
           Pesticide Cocktail
         </Heading>
         <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2'>
-          {finalValues.exportData?.boxBrand?.pesticideCocktail.map(
-            (item, index) => (
-              <DisplayField
-                key={index}
-                label={`Pesticida ${index + 1}`}
-                value={`${item.pesticide.name} (Cant: ${item.quantity})`}
-              />
-            )
-          )}
+          {exportSentSelected?.pesticideSent?.map((item, index) => (
+            <DisplayField
+              key={index}
+              label={`Pesticida ${index + 1}`}
+              value={`${item?.pesticide?.name} (Cant: ${item.quantity})`}
+            />
+          ))}
         </SimpleGrid>
         <Heading size='sm' mt='4' mb='2'>
           Insecticide Cocktail
         </Heading>
         <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2'>
-          {finalValues.exportData?.boxBrand?.insecticideCocktail.map(
-            (item, index) => (
-              <DisplayField
-                key={index}
-                label={`Insecticida ${index + 1}`}
-                value={`${item.insecticide.name} (Cant: ${item.quantity})`}
-              />
-            )
-          )}
+          {exportSentSelected?.insecticideSent?.map((item, index) => (
+            <DisplayField
+              key={index}
+              label={`Insecticida ${index + 1}`}
+              value={`${item?.insecticide?.name} (Cant: ${item.quantity})`}
+            />
+          ))}
         </SimpleGrid>
       </Box>
 

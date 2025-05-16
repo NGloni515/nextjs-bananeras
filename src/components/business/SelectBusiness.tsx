@@ -23,7 +23,7 @@ const SelectBusiness: React.FC<SelectBusinessProps> = ({ name, merchant }) => {
         />
 
         <Box>
-          <FormLabel>Área</FormLabel>
+          <FormLabel fontSize='sm'>Área</FormLabel>
           <Input
             isReadOnly={true}
             value={business?.area || ''}
@@ -31,7 +31,7 @@ const SelectBusiness: React.FC<SelectBusinessProps> = ({ name, merchant }) => {
           />
         </Box>
         <Box>
-          <FormLabel>Dirección</FormLabel>
+          <FormLabel fontSize='sm'>Dirección</FormLabel>
           <Input
             isReadOnly={true}
             value={business?.address || ''}
@@ -39,7 +39,7 @@ const SelectBusiness: React.FC<SelectBusinessProps> = ({ name, merchant }) => {
           />
         </Box>
         <Box>
-          <FormLabel>Ciudad</FormLabel>
+          <FormLabel fontSize='sm'>Ciudad</FormLabel>
           <Input
             isReadOnly={true}
             value={business?.city?.name || ''}

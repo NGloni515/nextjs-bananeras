@@ -60,7 +60,7 @@ export const AppBar = ({ exporter }: AppBarProps): React.JSX.Element => {
                 fontWeight='bold'
                 color='green'
               >
-                {user?.exporterDetails.businessName || 'Bananeras'}
+                {user?.exporterDetails.businessName || 'Exportmétricas'}
               </Text>
             </Skeleton>
           </Center>
@@ -74,7 +74,7 @@ export const AppBar = ({ exporter }: AppBarProps): React.JSX.Element => {
               fontWeight='bold'
               color='green'
             >
-              {user?.exporterDetails.businessName || 'Bananeras'}
+              {user?.exporterDetails.businessName || 'Exportmétricas'}
             </Text>
           </Center>
         </>

@@ -21,6 +21,7 @@ import { es } from 'date-fns/locale';
 import React, { useState, useMemo, useRef } from 'react';
 import { ExportResponse } from '@/types/export.response';
 import { ExportSentChart } from './ExportSentChart';
+import { SpotPriceComparison } from './SpotPriceComparison';
 import WeeklyExportsCalendar from './WeeklyExportsCalendar';
 import WeeklyExportsSummary from './WeeklyExportsSummary';
 import { WeeklyFarmSummaryCard } from './WeeklyFarmSummaryCard';
@@ -195,7 +196,9 @@ export default function CalendarSummaryContainer(): JSX.Element {
             <Skeleton height='150px' borderRadius='md' boxShadow='md' p={4} />
           </GridItem>
         </Grid>
-        <Grid />
+        <GridItem>
+          <Skeleton height='500px' borderRadius='md' boxShadow='md' p={4} />
+        </GridItem>
         <GridItem>
           <Skeleton height='500px' borderRadius='md' boxShadow='md' p={4} />
         </GridItem>
@@ -284,6 +287,9 @@ export default function CalendarSummaryContainer(): JSX.Element {
           Diagrama Cliente/Productor
         </Text>
         <ExportSentChart weekStart={weekStart} weekEnd={weekEnd} />
+      </GridItem>
+      <GridItem bg='white' p={6} borderRadius='md' boxShadow={'md'} mb={4}>
+        <SpotPriceComparison exportSentData={filteredExportSent} />
       </GridItem>
     </Grid>
   );

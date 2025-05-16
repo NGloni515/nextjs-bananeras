@@ -33,9 +33,18 @@ const SignInPage = (props: Props): JSX.Element => {
           '2xl': '480px',
         }}
       >
-        <Logo />
-        <Heading fontWeight='bold' fontSize='3xl' mt='24px'>
-          Hey, Hola 👋
+        <Logo width={150} height={150} align='center' />
+        <Heading
+          fontWeight='bold'
+          fontSize='3xl'
+          mt='0px'
+          textAlign={'center'}
+          color={'green.700'}
+        >
+          Exportmétricas
+        </Heading>
+        <Heading fontWeight='bold' fontSize='2xl' mt='32px'>
+          Hey, Bienvenido 👋
         </Heading>
         <Text fontSize='md' mt='8px'>
           Introduce la información que proporcionaste al registrarte.

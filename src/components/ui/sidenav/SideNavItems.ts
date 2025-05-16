@@ -5,6 +5,7 @@ import {
   MdContentCut,
   MdFlightTakeoff,
 } from 'react-icons/md';
+import { PiPackageBold } from 'react-icons/pi';
 import {
   PRODUCER_MENU,
   CLIENT_MENU,
@@ -13,6 +14,7 @@ import {
   getQualityMenu,
   getLiquidationMenu,
   getSettingsMenu,
+  WINERY_MENU,
 } from './navMenus';
 import { SidenavItem } from './sidenav-items';
 
@@ -21,6 +23,7 @@ export interface NavCounts {
   addSupplyShipment: number;
   producerPendingPayments: number;
   clientPendingPayments: number;
+  exportSentCostsPending: number;
 }
 
 export interface SessionUser {
@@ -68,6 +71,24 @@ export function getNavItems(
       allowedRoles: ['EXPORT'],
     },
     {
+      icon: FaCashRegister,
+      label: 'Liquidación',
+      isMenu: true,
+      to: '/dashboard/box-brands',
+      menu: getLiquidationMenu({
+        addSupplyShipment: counts.addSupplyShipment,
+        producerPendingPayments: counts.producerPendingPayments,
+        clientPendingPayments: counts.clientPendingPayments,
+        exportSentCostsPending: counts.exportSentCostsPending,
+      }),
+      count:
+        counts.addSupplyShipment +
+        counts.producerPendingPayments +
+        counts.clientPendingPayments +
+        counts.exportSentCostsPending,
+      allowedRoles: ['ADMINISTRATIVE'],
+    },
+    {
       icon: MdContentCut,
       label: 'Calidad',
       isMenu: true,
@@ -77,27 +98,19 @@ export function getNavItems(
       allowedRoles: ['QUALITY'],
     },
     {
-      icon: FaCashRegister,
-      label: 'Liquidación',
-      isMenu: true,
-      to: '/dashboard/box-brands',
-      menu: getLiquidationMenu({
-        addSupplyShipment: counts.addSupplyShipment,
-        producerPendingPayments: counts.producerPendingPayments,
-        clientPendingPayments: counts.clientPendingPayments,
-      }),
-      count:
-        counts.addSupplyShipment +
-        counts.producerPendingPayments +
-        counts.clientPendingPayments,
-      allowedRoles: ['ADMINISTRATIVE'],
-    },
-    {
       icon: FaCogs,
       label: 'Configuraciones',
       isMenu: true,
       to: '/dashboard/settings',
       menu: getSettingsMenu(session?.exporterId),
+      allowedRoles: ['ADMINISTRATIVE'],
+    },
+    {
+      icon: PiPackageBold,
+      label: 'Bodega',
+      isMenu: true,
+      to: '/dashboard/winery',
+      menu: WINERY_MENU,
       allowedRoles: ['ADMINISTRATIVE'],
     },
   ];

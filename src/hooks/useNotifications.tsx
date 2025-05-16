@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useClientPaymentsPending } from './client-payment/getClientPaymentPending';
 import { useCuttingSheetsPending } from './export/cuttingSheet/getExportsSentPending';
+import { useExportSentCostsPending } from './export/export-sent/getExportSentCostsPending';
 import { useExportsSentPending } from './export/export-sent/getExportsSentPending';
 import { useExportsPending } from './export/getExportsPending';
 export interface NotificationItem {
@@ -24,13 +25,18 @@ export function useNotifications(): {
     useExportsSentPending({ page: 1, limit: 10 });
   const { data: clientPayments, isLoading: isLoadingClientPayments } =
     useClientPaymentsPending({ page: 1, limit: 10 });
+  const {
+    data: exportSentCostsPendingData,
+    isLoading: isExportSentCostsPendingLoading,
+  } = useExportSentCostsPending({ page: 1, limit: 1 });
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const isLoading =
     isLoadingCuttingSheets ||
     isLoadingSupplies ||
     isLoadingPayments ||
-    isLoadingClientPayments;
+    isLoadingClientPayments ||
+    isExportSentCostsPendingLoading;
 
   useEffect(() => {
     const newNotifications: NotificationItem[] = [];
@@ -39,7 +45,7 @@ export function useNotifications(): {
       newNotifications.push(
         ...cuttingSheets.map((sheet: any) => ({
           message: `Hoja de corte pendiente con ID ${sheet.id}`,
-          detail: `Cajas: ${sheet.boxQuantity}, ${sheet.weekDescription}`,
+          detail: `Cajas: ${sheet.export.boxQuantity}, ${sheet.export.weekDescription}`,
           href: `/dashboard/export/add-cutting-sheet/${sheet.id}`,
         }))
       );
@@ -75,8 +81,24 @@ export function useNotifications(): {
       );
     }
 
+    if (exportSentCostsPendingData?.length > 0) {
+      newNotifications.push(
+        ...exportSentCostsPendingData.map((cost: any) => ({
+          message: `Costo de envío pendiente con ID ${cost.id}`,
+          detail: `Productor: ${cost.export?.merchant?.businessName}`,
+          href: `/dashboard/liquidation/add-export-cost/${cost.id}`,
+        }))
+      );
+    }
+
     setNotifications(newNotifications);
-  }, [cuttingSheets, supplies, payments, clientPayments]);
+  }, [
+    cuttingSheets,
+    supplies,
+    payments,
+    clientPayments,
+    exportSentCostsPendingData,
+  ]);
 
   return { notifications, isLoading };
 }
