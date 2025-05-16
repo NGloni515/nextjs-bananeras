@@ -1,5 +1,3 @@
-export const runtime = 'nodejs';
-
 import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
@@ -11,28 +9,24 @@ const roleBasedRoutes = [
   { path: '/dashboard/box-brands/cutting-types', roles: ['QUALITY'] },
   { path: '/dashboard/export/cutting-sheets', roles: ['QUALITY'] },
   { path: '/dashboard/box-brands/verifiers', roles: ['QUALITY'] },
+
   { path: '/dashboard/liquidation', roles: ['ADMINISTRATIVE'] },
+
   { path: '/dashboard/user/update-user', roles: ['ADMINISTRATIVE'] },
   { path: '/dashboard/settings', roles: ['ADMINISTRATIVE'] },
   { path: '/dashboard/producer/upload-logo', roles: ['ADMINISTRATIVE'] },
+
   { path: '/dashboard/producer', roles: ['LOGISTICS', 'EXPORT'] },
   { path: '/dashboard/client', roles: ['LOGISTICS', 'EXPORT'] },
   { path: '/dashboard/box-brands', roles: ['LOGISTICS', 'EXPORT'] },
   { path: '/dashboard/export', roles: ['EXPORT'] },
 ];
 
-export async function middleware(req: NextRequest): Promise<NextResponse> {
-  const { pathname } = req.nextUrl;
-
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/api') ||
-    pathname.includes('.')
-  ) {
-    return NextResponse.next();
-  }
-
+export async function middleware(
+  req: NextRequest
+): Promise<NextResponse<unknown>> {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const { pathname } = req.nextUrl;
 
   if (!token) {
     const signInUrl = new URL('/auth/signin', req.url);
@@ -64,6 +58,6 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
   return NextResponse.next();
 }
 
-// export const config = {
-//   matcher: ['/dashboard/:path*'],
-// };
+export const config = {
+  matcher: ['/dashboard/:path*'],
+};
