@@ -4,25 +4,6 @@ import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { env } from '@/lib/env';
 
-async function refreshToken(token: JWT): Promise<JWT> {
-  const res = await fetch(env.NEXT_PUBLIC_API_URL + '/auth/exporter/refresh', {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${token.refreshToken}`,
-    },
-  });
-
-  const response = await res.json();
-
-  return {
-    ...token,
-    ...response,
-    user: {
-      ...token.user,
-    },
-  };
-}
-
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -35,11 +16,12 @@ export const authOptions: NextAuthOptions = {
         },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) return null;
         const { username, password } = credentials;
+
         const res = await fetch(
-          env.NEXT_PUBLIC_API_URL + '/auth/exporter/login',
+          `${env.NEXT_PUBLIC_API_URL}/auth/exporter/login`,
           {
             method: 'POST',
             body: JSON.stringify({
@@ -51,12 +33,9 @@ export const authOptions: NextAuthOptions = {
             },
           }
         );
-        console.log('res.status: ', res.status);
-        // console.log('res: ', res);
 
-        if (res.status == 201) {
+        if (res.status === 201) {
           const user = await res.json();
-          console.log('user login: ', user);
           return user;
         }
 
@@ -64,27 +43,42 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (trigger === 'update' && session?.onboardingStatus) {
         token.user.onboardingStatus = session.onboardingStatus;
       }
-      if (user) return { ...token, ...user };
-      if (new Date().getTime() < token.exp) return token;
 
-      return await refreshToken(token);
+      if (user) {
+        return {
+          ...token,
+          ...user,
+          exp: Math.floor(Date.now() / 1000) + 60 * 60,
+        };
+      }
+
+      if (Date.now() / 1000 < token.exp) return token;
+
+      return {
+        ...token,
+        exp: Math.floor(Date.now() / 1000) + 60 * 5,
+      };
     },
 
     async session({ token, session }) {
       session.user = token.user;
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
-      session.user.onboardingStatus = token.user.onboardingStatus;
+      session.user.onboardingStatus = token.user?.onboardingStatus;
       return session;
     },
   },
+
   pages: {
     signIn: '/auth/signin',
     signOut: '/auth/signout',
   },
+
+  secret: env.NEXTAUTH_SECRET,
 };
