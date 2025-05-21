@@ -5,7 +5,7 @@ import { MenuItemProps } from './MenuIcon';
 
 export function GetUser():
   | {
-      id: number;
+      id: string;
       email: string;
       name: string;
       exporterId: string;
