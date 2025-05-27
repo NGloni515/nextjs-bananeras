@@ -98,19 +98,19 @@ export function getNavItems(
       allowedRoles: ['QUALITY'],
     },
     {
-      icon: FaCogs,
-      label: 'Configuraciones',
-      isMenu: true,
-      to: '/dashboard/settings',
-      menu: getSettingsMenu(session?.exporterId),
-      allowedRoles: ['ADMINISTRATIVE'],
-    },
-    {
       icon: PiPackageBold,
       label: 'Bodega',
       isMenu: true,
       to: '/dashboard/winery',
       menu: WINERY_MENU,
+      allowedRoles: ['ADMINISTRATIVE'],
+    },
+    {
+      icon: FaCogs,
+      label: 'Configuraciones',
+      isMenu: true,
+      to: '/dashboard/settings',
+      menu: getSettingsMenu(session?.exporterId),
       allowedRoles: ['ADMINISTRATIVE'],
     },
   ];
