@@ -13,12 +13,17 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useUpdateExporter } from '../../hooks/settings/updateExporter';
+import InputFieldCitySelect from '../location/InputFieldCitySelect';
+import InputFieldCountrySelect from '../location/InputFieldCountrySelect';
+import InputFieldProvinceSelect from '../location/InputFieldProvinceSelect';
 import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldText from '../ui/form/InputFieldText';
 
 interface ValuesProps {
   address: string;
-  city: string;
+  countryId: number | '';
+  provinceId: number | '';
+  cityId: number | '';
   dataReviewed: boolean;
 }
 
@@ -28,7 +33,10 @@ interface ExporterDetails {
   businessName: string;
   businessId: string;
   address?: string;
-  city?: string;
+
+  country?: { id: number; name: string };
+  province?: { id: number; name: string };
+  city?: { id: number; name: string };
   onboardingStatus?: string;
   accountStatus: string;
 }
@@ -61,17 +69,22 @@ const UpdateExporterForm = ({
 
   const [formValues, setFormValues] = useState<ValuesProps>({
     address: '',
-    city: '',
+    countryId: 1,
+    provinceId: '',
+    cityId: '',
     dataReviewed: false,
   });
 
   useEffect(() => {
     if (exporterDetails) {
-      setFormValues({
+      setFormValues((prev) => ({
+        ...prev,
         address: exporterDetails.address || '',
-        city: exporterDetails.city || '',
+        countryId: exporterDetails.country?.id || '',
+        provinceId: exporterDetails.province?.id || '',
+        cityId: exporterDetails.city?.id || '',
         dataReviewed: false,
-      });
+      }));
     }
   }, [exporterDetails]);
 
@@ -110,21 +123,20 @@ const UpdateExporterForm = ({
       onSubmit={onSubmit}
       validationSchema={validationSchema}
     >
-      {({}) => (
+      {({ values, setFieldValue }) => (
         <Form>
           <Flex flexDirection='column' gap={2}>
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4}>
-              <Box display='flex' flexDirection='column' gap={4}>
+              <Box display='flex' flexDirection='column' gap={7}>
                 <Heading fontSize={'2xl'} p={'12px'}>
                   Información General
                 </Heading>
 
                 <Text>
-                  <strong>Nombre del Negocio:</strong>{' '}
-                  {exporterDetails.businessName}
+                  <strong>Nombre:</strong> {exporterDetails.businessName}
                 </Text>
                 <Text>
-                  <strong>ID del Negocio:</strong> {exporterDetails.businessId}
+                  <strong>RUC:</strong> {exporterDetails.businessId}
                 </Text>
                 <Text>
                   <strong>Email:</strong> {exporterDetails.email}
@@ -169,7 +181,34 @@ const UpdateExporterForm = ({
                 <Heading fontSize={'2xl'} p={'12px'}>
                   Ubicación
                 </Heading>
-                <InputFieldText name={'city'} label={'Ciudad'} />
+                <InputFieldCountrySelect
+                  name={'countryId'}
+                  label={'País'}
+                  placeholder={'Seleccione el país'}
+                  onChange={(newCountry) => {
+                    setFieldValue('countryId', newCountry?.id || '');
+                    setFieldValue('provinceId', '');
+                    setFieldValue('cityId', '');
+                  }}
+                />
+                <InputFieldProvinceSelect
+                  name={'provinceId'}
+                  label={'Provincia'}
+                  placeholder={'Seleccione la provincia'}
+                  countryId={values.countryId || undefined}
+                  resetOnParentChange={false}
+                  onChange={(newProvince) => {
+                    setFieldValue('provinceId', newProvince?.id || '');
+                    setFieldValue('cityId', '');
+                  }}
+                />
+                <InputFieldCitySelect
+                  name={'cityId'}
+                  label={'Ciudad'}
+                  placeholder={'Seleccione la ciudad'}
+                  provinceId={values.provinceId || undefined}
+                  resetOnParentChange={false}
+                />
                 <InputFieldText name={'address'} label={'Dirección'} />
               </Box>
             </SimpleGrid>
