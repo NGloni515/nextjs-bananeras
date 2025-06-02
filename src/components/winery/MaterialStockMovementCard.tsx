@@ -214,12 +214,16 @@ const MaterialStockMovementGrid = ({ materials }: Props): JSX.Element => {
                       {filteredConsumptions.map((movement) => (
                         <Box key={movement.id}>
                           <Badge colorScheme='red'>
-                            {MOVEMENT_TYPE_LABELS[movement.type] ??
-                              movement.type}
+                            {!movement.exportSentId
+                              ? 'DESCONTADO'
+                              : (MOVEMENT_TYPE_LABELS[movement.type] ??
+                                movement.type)}
                           </Badge>{' '}
-                          {movement.quantity} unidades - (Envío #
-                          {movement.exportSentId}) -{' '}
-                          {format(new Date(movement.createdAt), 'dd/MM/yyyy')}
+                          {movement.quantity} unidades{' '}
+                          {!movement.exportSentId ? null : (
+                            <>- (Envío #{movement.exportSentId})</>
+                          )}{' '}
+                          - {format(new Date(movement.createdAt), 'dd/MM/yyyy')}
                         </Box>
                       ))}
                     </VStack>
