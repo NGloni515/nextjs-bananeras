@@ -77,12 +77,13 @@ export default function WeekSelect({
   const monthStart = startOfMonth(new Date(new Date().getFullYear(), month));
   const monthEnd = endOfMonth(monthStart);
   const weekDates = eachWeekOfInterval({ start: monthStart, end: monthEnd });
-
   const weeksOptions: WeekOption[] = weekDates.map((date) => {
-    const weekNum = getISOWeek(date);
-    return { label: `Semana ${weekNum}`, value: weekNum };
+    let weekNum = getISOWeek(date);
+    if (month === 0 && weekNum === 52) {
+      weekNum = 0;
+    }
+    return { label: `Semana ${weekNum + 1}`, value: weekNum + 1 };
   });
-
   const selectedOption =
     weeksOptions.find((opt) => opt.value === value) ?? null;
 

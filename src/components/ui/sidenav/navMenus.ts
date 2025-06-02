@@ -84,6 +84,12 @@ export const WINERY_MENU: SidenavMenuItem[] = [
   {
     label: 'Trazabilidad de Stock',
     to: '/dashboard/winery/stock-movements',
+    submenu: [
+      {
+        label: 'Ajuste Semanal',
+        to: '/dashboard/winery/adjust-weekly',
+      },
+    ],
   },
 ];
 
