@@ -31,78 +31,82 @@ const TableShippingCompanies = ({
     }
   }, [error, router]);
 
-  const columns = useMemo<MRT_ColumnDef<ShippingCompanyResponse>[]>(() => [
-    {
-      header: 'Compañía Naviera',
-      columns: [
-        { accessorKey: 'name', header: 'Nombre' },
-        { accessorKey: 'code', header: 'Código' },
-        { accessorKey: 'frequencies', header: 'Frecuencia' },
-        { accessorKey: 'cargoType', header: 'Tipo de Carga' },
-        {
-          accessorKey: 'trackingPlatform',
-          header: 'Plataforma Tracking',
-          Cell: ({ cell }): React.ReactNode => {
-            const value = cell.getValue<string>();
-            return value ? (
-              <a href={value} target="_blank" rel="noopener noreferrer">
-                {value}
-              </a>
-            ) : (
-              'No disponible'
-            );
+  const columns = useMemo<MRT_ColumnDef<ShippingCompanyResponse>[]>(
+    () => [
+      {
+        header: 'Compañía Naviera',
+        columns: [
+          { accessorKey: 'name', header: 'Nombre' },
+          { accessorKey: 'code', header: 'Código' },
+          { accessorKey: 'frequencies', header: 'Frecuencia' },
+          { accessorKey: 'cargoType', header: 'Tipo de Carga' },
+          {
+            accessorKey: 'trackingPlatform',
+            header: 'Plataforma Tracking',
+            Cell: ({ cell }): React.ReactNode => {
+              const value = cell.getValue<string>();
+              return value ? (
+                <a href={value} target='_blank' rel='noopener noreferrer'>
+                  {value}
+                </a>
+              ) : (
+                'No disponible'
+              );
+            },
           },
-        },
-      ],
-    },
-    {
-      header: 'Ubicación',
-      columns: [
-        {
-          accessorFn: (row) => row.country.name,
-          header: 'País',
-        },
-      ],
-    },
-    {
-      header: 'Contactos',
-      columns: [
-        {
-          accessorFn: (row) =>
-            row.contacts.map((c) => c.name).join(', ') || 'N/A',
-          header: 'Nombres',
-        },
-        {
-          accessorFn: (row) =>
-            row.contacts.map((c) => c.phone).join(', ') || 'N/A',
-          header: 'Teléfono',
-        },
-      ],
-    },
-    {
-      header: 'Puertos',
-      columns: [
-        {
-          accessorFn: (row): string => {
-            const departures = row?.departureHarbors ?? [];
-            return departures.length > 0
-              ? `${departures.length} asignado${departures.length > 1 ? 's' : ''}`
-              : 'Ninguno';
+        ],
+      },
+      {
+        header: 'Ubicación',
+        columns: [
+          {
+            accessorFn: (row) => row.country.name,
+            header: 'País',
           },
-          header: 'Salidas',
-        },
-        {
-          accessorFn: (row): string => {
-            const destinations = row?.destinationHarbors ?? [];
-            return destinations.length > 0
-              ? `${destinations.length} asignado${destinations.length > 1 ? 's' : ''}`
-              : 'Ninguno';
+        ],
+      },
+      {
+        header: 'Contactos',
+        columns: [
+          {
+            accessorFn: (row) =>
+              row.contacts.map((c) => c.name).join(', ') || 'N/A',
+            header: 'Nombres',
           },
-          header: 'Destinos',
-        },
-      ],
-    },
-  ], []);
+          {
+            accessorFn: (row) =>
+              row.contacts.map((c) => c.phone).join(', ') || 'N/A',
+            header: 'Teléfono',
+          },
+        ],
+      },
+      {
+        header: 'Puertos',
+        columns: [
+          {
+            accessorFn: (row): string => {
+              return row.harbors.length > 0
+                ? `${row.harbors.length} ruta${row.harbors.length > 1 ? 's' : ''}`
+                : 'Ninguna';
+            },
+            header: 'Rutas Asignadas',
+          },
+          {
+            accessorFn: (row): string => {
+              return row.harbors
+                .map(
+                  (h) =>
+                    `${h.harborDeparture.name} → ${h.harborDestination.name}`
+                )
+                .join(', ');
+            },
+            header: 'Origen → Destino',
+          },
+        ],
+      },
+    ],
+    []
+  );
 
   const table = useMaterialReactTable({
     columns,
