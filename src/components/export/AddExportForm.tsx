@@ -24,6 +24,7 @@ import InputFieldShippingCompanySelect from '../shipping-company/InputFieldShipp
 import InputFieldTransportSelect from '../transport/InputFiledTransportSelect';
 import CheckboxForm from '../ui/form/CheckboxForm';
 import InputFieldDate from '../ui/form/InputFieldDate';
+import InputFieldDateTime from '../ui/form/InputFieldDateTime';
 import InputFieldNumber from '../ui/form/InputFieldNumber';
 import InputFieldSelector from '../ui/form/InputFieldSelector';
 import InputFieldText from '../ui/form/InputFieldText';
@@ -84,7 +85,7 @@ const AddExportForm: React.FC = () => {
               Fecha de Corte
             </Heading>
             <Divider mb={'16px'} />
-            <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+            <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={5}>
               <InputFieldDate
                 name={'cuttingDate'}
                 label={'Fecha de Corte'}
@@ -101,6 +102,12 @@ const AddExportForm: React.FC = () => {
                   />
                 </Box>
               )}
+              <InputFieldDateTime
+                name='shippingDateTime'
+                label='Fecha Máxima de Embarque'
+                placeholder='Fecha y Hora de Embarque'
+                flexDirection='row'
+              />
             </SimpleGrid>
             {values.cuttingDate && values.weekCutting && (
               <DateGrid
@@ -156,21 +163,13 @@ const AddExportForm: React.FC = () => {
               />
             </SimpleGrid>
 
-            <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
+            <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={5}>
               <InputFieldText name='shipName' label='Nombre de la Nave' />
               <InputFieldText
                 name='estimatedTravelTime'
                 label='Tiempo estimado de viaje'
               />
-            </SimpleGrid>
-
-            <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
               <InputFieldText name='bookingNumber' label='Número de Booking' />
-              <InputFieldText
-                name='cutOffTime'
-                label='Hora de Corte'
-                unit='HH:mm'
-              />
             </SimpleGrid>
 
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
