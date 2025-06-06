@@ -29,7 +29,7 @@ export type ExportType = {
   shipName: string;
   estimatedTravelTime: string;
   bookingNumber: string;
-  cutOffTime: string;
+  shippingDateTime: Date | '';
   shippingCompanyId: number;
   departureHarborId: number;
   destinationHarborId: number;
