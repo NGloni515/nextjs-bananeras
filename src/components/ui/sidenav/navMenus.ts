@@ -58,21 +58,13 @@ export const CLIENT_MENU: SidenavMenuItem[] = [
 
 export const BOX_BRANDS_MENU: SidenavMenuItem[] = [
   {
-    label: 'Agregar Alicuota',
+    label: 'Agregar Alícuota',
     to: '/dashboard/box-brands/add-box-brand',
-    submenu: [{ label: 'Consultar Marca', to: '/dashboard/box-brands/search' }],
-  },
-  { label: 'Agregar Logo', to: '/dashboard/box-brands/upload-logo' },
-];
-
-export const EXPORT_MENU: SidenavMenuItem[] = [
-  {
-    label: 'Iniciar Exportación',
-    to: '/dashboard/export/add-export',
     submenu: [
-      { label: 'Consultar Exportación', to: '/dashboard/export/search' },
+      { label: 'Consultar Alícuota', to: '/dashboard/box-brands/search' },
     ],
   },
+  { label: 'Agregar Logo', to: '/dashboard/box-brands/upload-logo' },
 ];
 
 export const WINERY_MENU: SidenavMenuItem[] = [
@@ -92,6 +84,31 @@ export const WINERY_MENU: SidenavMenuItem[] = [
     ],
   },
 ];
+
+export function getExportMenu(counts: {
+  addSupplyShipment: number;
+}): SidenavMenuItem[] {
+  return [
+    {
+      label: 'Iniciar Exportación',
+      to: '/dashboard/export/add-export',
+      submenu: [
+        { label: 'Consultar Exportación', to: '/dashboard/export/search' },
+      ],
+    },
+    {
+      label: 'Envío de Insumos',
+      to: '/dashboard/liquidation/add-supply-shipment',
+      count: counts.addSupplyShipment,
+      submenu: [
+        {
+          label: 'Envíos Realizados',
+          to: '/dashboard/liquidation/exports-sent',
+        },
+      ],
+    },
+  ];
+}
 
 export function getQualityMenu(counts: {
   addCuttingSheet: number;
@@ -126,23 +143,11 @@ export function getQualityMenu(counts: {
 }
 
 export function getLiquidationMenu(counts: {
-  addSupplyShipment: number;
   producerPendingPayments: number;
   clientPendingPayments: number;
   exportSentCostsPending: number;
 }): SidenavMenuItem[] {
   return [
-    {
-      label: 'Envío de Insumos',
-      to: '/dashboard/liquidation/add-supply-shipment',
-      count: counts.addSupplyShipment,
-      submenu: [
-        {
-          label: 'Envíos Realizados',
-          to: '/dashboard/liquidation/exports-sent',
-        },
-      ],
-    },
     {
       label: 'Costo de Exportación',
       to: '/dashboard/liquidation/add-export-cost',
