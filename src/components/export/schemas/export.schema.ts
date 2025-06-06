@@ -14,10 +14,10 @@ export interface ValuesProps {
   clientId: number;
   weekCutting: WeekCuttingProps;
   cuttingDate: Date | '';
+  shippingDateTime: Date | '';
   shipName: string;
   estimatedTravelTime: string;
   bookingNumber: string;
-  cutOffTime: string;
   contractType: string;
   numberOfVerifiers: number;
   shippingCompanyId: number;
@@ -36,6 +36,7 @@ export const initialValues: ValuesProps = {
   businessId: 0,
   clientId: 0,
   cuttingDate: '',
+  shippingDateTime: '',
   weekCutting: {
     description: '',
     daysOfWeek: ['', '', '', '', '', '', ''],
@@ -45,7 +46,6 @@ export const initialValues: ValuesProps = {
   shipName: '',
   estimatedTravelTime: '',
   bookingNumber: '',
-  cutOffTime: '',
   contractType: '',
   numberOfVerifiers: 0,
   shippingCompanyId: 0,
@@ -91,6 +91,18 @@ export const validationSchema = Yup.object({
     .moreThan(0, 'Debe ser mayor que 0')
     .required('Requerido'),
   cuttingDate: Yup.date().required('Requerido'),
+  shippingDateTime: Yup.date()
+    .required('Requerido')
+    .typeError('Debe ser una fecha y hora válida')
+    .test(
+      'is-after-cutting',
+      'La fecha de envío no puede ser anterior a la fecha de corte',
+      function (value) {
+        const { cuttingDate } = this.parent;
+        if (!value || !cuttingDate) return true;
+        return new Date(value) >= new Date(cuttingDate);
+      }
+    ),
   weekCutting: weekCuttingSchema.test(
     'boxesOfDay-sum',
     'La sumatoria de cajas por día debe ser igual al total de cajas',
@@ -116,9 +128,6 @@ export const validationSchema = Yup.object({
     .max(50, 'Debe tener 50 caracteres o menos')
     .min(2, 'Debe tener 2 caracteres o más')
     .trim()
-    .required('Requerido'),
-  cutOffTime: Yup.string()
-    .matches(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Debe tener el formato HH:mm')
     .required('Requerido'),
   contractType: Yup.string()
     .max(50, 'Debe tener 50 caracteres o menos')
