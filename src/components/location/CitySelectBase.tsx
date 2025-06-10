@@ -57,11 +57,35 @@ const CitySelectBase: React.FC<CitySelectBaseProps> = ({
   const [internalValue, setInternalValue] = useState<City | null>(null);
   const menuPortalTarget =
     typeof document !== 'undefined' ? document.body : undefined;
+
   useEffect(() => {
-    if (!resetOnParentChange) return;
-    setInternalValue(null);
-    onChange?.(null);
-  }, [provinceId]);
+    if (field?.value) {
+      const selected = data?.find((city) => city.id === field.value) || null;
+      setInternalValue(selected);
+    } else {
+      setInternalValue(null);
+    }
+  }, [field?.value, data]);
+
+  useEffect(() => {
+    if (!provinceId) {
+      if (resetOnParentChange) {
+        setInternalValue(null);
+        onChange?.(null);
+      }
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const selectedCityId = field?.value;
+      const selectedCity = data.find((city) => city.id === selectedCityId);
+
+      if (!selectedCity && resetOnParentChange) {
+        setInternalValue(null);
+        onChange?.(null);
+      }
+    }
+  }, [provinceId, data]);
 
   const handleChange = (newValue: SingleValue<City>): void => {
     setInternalValue(newValue || null);
@@ -87,7 +111,7 @@ const CitySelectBase: React.FC<CitySelectBaseProps> = ({
       onChange={handleChange}
       value={
         field?.value
-          ? data?.find((opt) => opt.id === field.value) || null
+          ? data?.find((opt) => opt.id === field.value) || internalValue
           : internalValue
       }
       placeholder={placeholder}

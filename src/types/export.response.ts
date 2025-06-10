@@ -91,7 +91,7 @@ export interface ExportResponse {
   shipName: string;
   estimatedTravelTime: string;
   bookingNumber: string;
-  cutOffTime: string;
+  shippingDateTime: string;
   cuttingDate: string;
   weekDescription: string;
   weekDaysOfWeek: string[];

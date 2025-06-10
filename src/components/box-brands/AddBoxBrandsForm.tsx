@@ -1168,6 +1168,7 @@ export default function AddBoxBrandsForm(): React.JSX.Element {
                           onClickRemove={() => {
                             remove(index);
                           }}
+                          boxQuantity={values.boxQuantity}
                         />
                         <Divider
                           mt={'16px'}

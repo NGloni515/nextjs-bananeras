@@ -7,19 +7,25 @@ import axios from '@/lib/axios';
 import { MutationConfig } from '@/lib/react-query';
 
 type UpdateExporterDTO = {
-  city: string;
+  cityId: number | string;
+  countryId: number | string;
+  provinceId: number | string;
   address: string;
   exporterId: string;
 };
 
 const updateExporter = async ({
-  city,
+  cityId,
+  countryId,
+  provinceId,
   address,
   exporterId,
 }: UpdateExporterDTO): Promise<AxiosResponse> => {
   try {
     return await axios.post(`/exporter/update/${exporterId}`, {
-      city,
+      cityId,
+      countryId,
+      provinceId,
       address,
     });
   } catch (error: any) {

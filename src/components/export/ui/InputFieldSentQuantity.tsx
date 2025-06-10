@@ -96,7 +96,6 @@ const InputFieldSentQuantity: React.FC<InputFieldSentQuantityProps> = ({
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder || material}
                 textAlign='left'
-                px={'16px'}
               />
             </NumberInput>
           </InputGroup>

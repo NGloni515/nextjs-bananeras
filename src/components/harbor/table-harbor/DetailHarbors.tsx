@@ -21,19 +21,25 @@ const DetailHarbors: React.FC<DetailHarborsProps> = ({ business, width }) => {
       <AccordionItem>
         <Heading>
           <AccordionButton
-            pl="60px"
+            pl='60px'
             width={{
               sm: Number(width.sm),
               md: Number(width.md),
             }}
           >
-            <Box as="span" flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+            <Box
+              as='span'
+              flex='1'
+              textAlign='left'
+              fontSize='md'
+              fontWeight='bold'
+            >
               Detalles del Puerto
             </Box>
             <AccordionIcon />
           </AccordionButton>
         </Heading>
-        <AccordionPanel pb={4} pl="60px">
+        <AccordionPanel pb={4} pl='60px'>
           <Box>
             <Text>
               <strong>Nombre:</strong> {business.name}
@@ -76,7 +82,8 @@ const DetailHarbors: React.FC<DetailHarborsProps> = ({ business, width }) => {
               <strong>Horario de Cierre:</strong> {business.closeTime}
             </Text>
             <Text>
-              <strong>Días de Operación:</strong> {business.daysOfOperation.join(', ')}
+              <strong>Días de Operación:</strong>{' '}
+              {business.daysOfOperation.join(', ')}
             </Text>
           </Box>
         </AccordionPanel>
@@ -85,19 +92,25 @@ const DetailHarbors: React.FC<DetailHarborsProps> = ({ business, width }) => {
         <AccordionItem>
           <Heading>
             <AccordionButton
-              pl="60px"
+              pl='60px'
               width={{
                 sm: Number(width.sm),
                 md: Number(width.md),
               }}
             >
-              <Box as="span" flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+              <Box
+                as='span'
+                flex='1'
+                textAlign='left'
+                fontSize='md'
+                fontWeight='bold'
+              >
                 Clientes
               </Box>
               <AccordionIcon />
             </AccordionButton>
           </Heading>
-          <AccordionPanel pb={4} pl="60px">
+          <AccordionPanel pb={4} pl='60px'>
             <Box>
               {business.clients.map((client) => (
                 <Box key={client.id} mb={4}>
@@ -126,28 +139,36 @@ const DetailHarbors: React.FC<DetailHarborsProps> = ({ business, width }) => {
         <AccordionItem>
           <Heading>
             <AccordionButton
-              pl="60px"
+              pl='60px'
               width={{
                 sm: Number(width.sm),
                 md: Number(width.md),
               }}
             >
-              <Box as="span" flex="1" textAlign="left" fontSize="md" fontWeight="bold">
+              <Box
+                as='span'
+                flex='1'
+                textAlign='left'
+                fontSize='md'
+                fontWeight='bold'
+              >
                 Contactos
               </Box>
               <AccordionIcon />
             </AccordionButton>
           </Heading>
-          <AccordionPanel pb={4} pl="60px">
+          <AccordionPanel pb={4} pl='60px'>
             <Box>
               {business.contacts.map((contact) => (
                 <Box key={contact.id} mb={4}>
                   <Text>
                     <strong>Nombre:</strong> {contact.name}
                   </Text>
-                  <Text>
-                    <strong>Web:</strong> {contact.web}
-                  </Text>
+                  {contact.web && (
+                    <Text>
+                      <strong>Web:</strong> {contact.web}
+                    </Text>
+                  )}
                   <Text>
                     <strong>Correo Electrónico:</strong> {contact.email}
                   </Text>

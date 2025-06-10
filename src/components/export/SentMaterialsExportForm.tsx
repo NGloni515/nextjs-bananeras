@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+'use client';
+
 import {
   Box,
   Button,
@@ -8,13 +9,12 @@ import {
   FormLabel,
   Heading,
   Input,
-  SimpleGrid,
   useToast,
   Text,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import InputFieldSentInsecticides from './ui/InputFieldSentInsecticides';
@@ -23,94 +23,6 @@ import InputFieldSentQuantity from './ui/InputFieldSentQuantity';
 import { useCreateExportSent } from '../../hooks/export/export-sent/createExportSent';
 import { ExportResponse } from '../../types/export.response';
 import CheckboxForm from '../ui/form/CheckboxForm';
-
-interface PesticideProps {
-  pesticideId: number | '';
-  quantity: number | '';
-}
-
-interface InsecticideProps {
-  insecticideId: number | '';
-  quantity: number | '';
-}
-
-interface ValuesProps {
-  exportId: number | '';
-  // materials
-  bottomTypeQuantity: number | '';
-  lidTypeQuantity: number | '';
-  coverTypeQuantity: number | '';
-  cardboardTypeQuantity: number | '';
-  parasealTypeQuantity: number | '';
-  padTypeQuantity: number | '';
-  spongeTypeQuantity: number | '';
-  // select
-  labelQuantity: number | '';
-  bandQuantity: number | '';
-  sachetQuantity: number | '';
-  rubberQuantity: number | '';
-  protectorQuantity: number | '';
-  clusterBagQuantity: number | '';
-  // post harvest
-  pesticideSent: PesticideProps[];
-  // container
-  palletsTypeQuantity: number | '';
-  miniPalletsTypeQuantity: number | '';
-  cornerTypeQuantity: number | '';
-  reinforcementTypeQuantity: number | '';
-  // select
-  stapleQuantity: number | '';
-  strippingQuantity: number | '';
-  thermographQuantity: number | '';
-  sealQuantity: number | '';
-  mettoLabelQuantity: number | '';
-  // additions
-  packingTapeTypeQuantity: number | '';
-  // select
-  latexRemoverQuantity: number | '';
-  blockingSheetQuantity: number | '';
-  insecticideSent: InsecticideProps[];
-  dataReviewed: boolean;
-}
-
-const initialValues: ValuesProps = {
-  exportId: '',
-
-  bottomTypeQuantity: '',
-  lidTypeQuantity: '',
-  coverTypeQuantity: '',
-  cardboardTypeQuantity: '',
-  parasealTypeQuantity: '',
-  padTypeQuantity: '',
-  spongeTypeQuantity: '',
-
-  labelQuantity: '',
-  bandQuantity: '',
-  sachetQuantity: '',
-  rubberQuantity: '',
-  protectorQuantity: '',
-  clusterBagQuantity: '',
-
-  pesticideSent: [{ pesticideId: '', quantity: '' }],
-
-  palletsTypeQuantity: '',
-  miniPalletsTypeQuantity: '',
-  cornerTypeQuantity: '',
-  reinforcementTypeQuantity: '',
-
-  stapleQuantity: '',
-  strippingQuantity: '',
-  thermographQuantity: '',
-  sealQuantity: '',
-  mettoLabelQuantity: '',
-
-  packingTapeTypeQuantity: '',
-
-  latexRemoverQuantity: '',
-  blockingSheetQuantity: '',
-  insecticideSent: [{ insecticideId: '', quantity: '' }],
-  dataReviewed: false,
-};
 
 const pesticideSchema = Yup.object().shape({
   quantity: Yup.number()
@@ -128,120 +40,60 @@ const insecticideSchema = Yup.object().shape({
     .required('Requerido'),
 });
 
-const validationSchema = Yup.object({
-  bottomTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  lidTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  coverTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  cardboardTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  parasealTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  padTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  spongeTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  labelQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  bandQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  sachetQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  rubberQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  protectorQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  clusterBagQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
+const buildValidationSchema = (boxBrand: any, boxQuantity: number): any => {
+  const shape: Record<string, any> = {};
 
-  pesticideSent: Yup.array()
+  const pushIfValid = (key: string, value: any): void => {
+    if (value !== null && value > 0) {
+      shape[key] = Yup.number()
+        .integer('Debe ser un número entero')
+        .min(1, 'Debe ser mayor que 0')
+        .required('Requerido');
+    }
+  };
+
+  pushIfValid('bottomTypeQuantity', boxQuantity);
+  pushIfValid('lidTypeQuantity', boxQuantity);
+  pushIfValid('coverTypeQuantity', boxQuantity);
+  pushIfValid('cardboardTypeQuantity', boxQuantity);
+
+  if (boxBrand) {
+    pushIfValid('parasealTypeQuantity', boxBrand.parasealTypeQuantity);
+    pushIfValid('padTypeQuantity', boxBrand.padTypeQuantity);
+    pushIfValid('spongeTypeQuantity', boxBrand.spongeTypeQuantity);
+    pushIfValid('labelQuantity', boxBrand.labelQuantity);
+    pushIfValid('bandQuantity', boxBrand.bandQuantity);
+    pushIfValid('sachetQuantity', boxBrand.sachetQuantity);
+    pushIfValid('rubberQuantity', boxBrand.rubberQuantity);
+    pushIfValid('protectorQuantity', boxBrand.protectorQuantity);
+    pushIfValid('clusterBagQuantity', boxBrand.clusterBagQuantity);
+    pushIfValid('palletsTypeQuantity', boxBrand.palletsTypeQuantity);
+    pushIfValid('miniPalletsTypeQuantity', boxBrand.miniPalletsTypeQuantity);
+    pushIfValid('cornerTypeQuantity', boxBrand.cornerTypeQuantity);
+    pushIfValid(
+      'reinforcementTypeQuantity',
+      boxBrand.reinforcementTypeQuantity
+    );
+    pushIfValid('stapleQuantity', boxBrand.stapleQuantity);
+    pushIfValid('strippingQuantity', boxBrand.strippingQuantity);
+    pushIfValid('thermographQuantity', boxBrand.thermographQuantity);
+    pushIfValid('sealQuantity', boxBrand.sealQuantity);
+    pushIfValid('mettoLabelQuantity', boxBrand.mettoLabelQuantity);
+    pushIfValid('packingTapeTypeQuantity', boxBrand.packingTapeTypeQuantity);
+    pushIfValid('latexRemoverQuantity', boxBrand.latexRemoverQuantity);
+    pushIfValid('blockingSheetQuantity', boxBrand.blockingSheetQuantity);
+  }
+
+  shape.pesticideSent = Yup.array()
     .of(pesticideSchema)
-    .min(1, 'Debe de tener al menos un pesticida'),
-
-  palletsTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  miniPalletsTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  cornerTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  reinforcementTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  stapleQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  strippingQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  thermographQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  sealQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  mettoLabelQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  packingTapeTypeQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  latexRemoverQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-  blockingSheetQuantity: Yup.number()
-    .integer('Debe ser un número entero')
-    .min(0, 'Debe ser mayor que 0')
-    .required('Requerido'),
-
-  insecticideSent: Yup.array()
-    .of(insecticideSchema)
-    .min(0, 'No puede ser un número negativo pesticida'),
-  dataReviewed: Yup.boolean()
+    .min(1, 'Debe de tener al menos un pesticida');
+  shape.insecticideSent = Yup.array().of(insecticideSchema);
+  shape.dataReviewed = Yup.boolean()
     .oneOf([true], 'Debes revisar los datos antes de enviar')
-    .required('Requerido'),
-});
+    .required();
+
+  return Yup.object().shape(shape);
+};
 
 const SentMaterialsExportForm = ({
   exportSelected,
@@ -249,519 +101,403 @@ const SentMaterialsExportForm = ({
   exportSelected: Partial<ExportResponse>;
   pathname: string;
 }): React.JSX.Element => {
-  const [initialValuesExport, setInitialValuesExport] =
-    useState<ValuesProps>(initialValues);
+  const [initialValuesExport, setInitialValuesExport] = useState<any>({});
   const { createExportSent, isLoading } = useCreateExportSent();
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (exportSelected) {
-      setInitialValuesExport((prevValues) => {
-        const pesticidesSelected: PesticideProps[] =
-          exportSelected.boxBrand?.pesticideCocktail?.map((pesticide) => ({
-            pesticideId: pesticide.pesticide?.id || '',
-            quantity: pesticide.quantity!,
-          })) || [];
+    if (exportSelected?.boxBrand) {
+      const brand = exportSelected.boxBrand;
 
-        const insecticidesSelected: InsecticideProps[] =
-          exportSelected.boxBrand?.insecticideCocktail?.map((insecticide) => ({
-            insecticideId: insecticide.insecticide?.id || '',
-            quantity: insecticide.quantity!,
-          })) || [];
+      const buildValue = (key: string): string => (brand as any)?.[key] ?? '';
 
-        return {
-          ...prevValues,
-          exportId: exportSelected.id!,
-          bottomTypeQuantity: exportSelected.boxQuantity!,
-          lidTypeQuantity: exportSelected.boxQuantity!,
-          coverTypeQuantity: exportSelected.boxQuantity!,
-          cardboardTypeQuantity: exportSelected.boxQuantity!,
-          parasealTypeQuantity:
-            exportSelected.boxBrand?.parasealTypeQuantity || '',
-          padTypeQuantity: exportSelected.boxBrand?.padTypeQuantity || '',
-          spongeTypeQuantity: exportSelected.boxBrand?.spongeTypeQuantity || '',
-          labelQuantity: exportSelected.boxBrand?.labelQuantity || '',
-          bandQuantity: exportSelected.boxBrand?.bandQuantity || '',
-          sachetQuantity: exportSelected.boxBrand?.sachetQuantity || '',
-          rubberQuantity: exportSelected.boxBrand?.rubberQuantity || '',
-          protectorQuantity: exportSelected.boxBrand?.protectorQuantity || '',
-          clusterBagQuantity: exportSelected.boxBrand?.clusterBagQuantity || '',
-
-          pesticideSent: pesticidesSelected,
-
-          palletsTypeQuantity:
-            exportSelected.boxBrand?.palletsTypeQuantity || '',
-          miniPalletsTypeQuantity:
-            exportSelected.boxBrand?.miniPalletsTypeQuantity || '',
-          cornerTypeQuantity: exportSelected.boxBrand?.cornerTypeQuantity || '',
-          reinforcementTypeQuantity:
-            exportSelected.boxBrand?.reinforcementTypeQuantity || '',
-          stapleQuantity: exportSelected.boxBrand?.stapleQuantity || '',
-          strippingQuantity: exportSelected.boxBrand?.strippingQuantity || '',
-          thermographQuantity:
-            exportSelected.boxBrand?.thermographQuantity || '',
-          sealQuantity: exportSelected.boxBrand?.sealQuantity || '',
-          mettoLabelQuantity: exportSelected.boxBrand?.mettoLabelQuantity || '',
-          packingTapeTypeQuantity:
-            exportSelected.boxBrand?.packingTapeTypeQuantity || '',
-          latexRemoverQuantity:
-            exportSelected.boxBrand?.latexRemoverQuantity || '',
-          blockingSheetQuantity:
-            exportSelected.boxBrand?.blockingSheetQuantity || '',
-
-          insecticideSent: insecticidesSelected,
-        };
+      setInitialValuesExport({
+        exportId: exportSelected.id!,
+        bottomTypeQuantity: exportSelected.boxQuantity!,
+        lidTypeQuantity: exportSelected.boxQuantity!,
+        coverTypeQuantity: exportSelected.boxQuantity!,
+        cardboardTypeQuantity: exportSelected.boxQuantity!,
+        parasealTypeQuantity: buildValue('parasealTypeQuantity'),
+        padTypeQuantity: buildValue('padTypeQuantity'),
+        spongeTypeQuantity: buildValue('spongeTypeQuantity'),
+        labelQuantity: buildValue('labelQuantity'),
+        bandQuantity: buildValue('bandQuantity'),
+        sachetQuantity: buildValue('sachetQuantity'),
+        rubberQuantity: buildValue('rubberQuantity'),
+        protectorQuantity: buildValue('protectorQuantity'),
+        clusterBagQuantity: buildValue('clusterBagQuantity'),
+        palletsTypeQuantity: buildValue('palletsTypeQuantity'),
+        miniPalletsTypeQuantity: buildValue('miniPalletsTypeQuantity'),
+        cornerTypeQuantity: buildValue('cornerTypeQuantity'),
+        reinforcementTypeQuantity: buildValue('reinforcementTypeQuantity'),
+        stapleQuantity: buildValue('stapleQuantity'),
+        strippingQuantity: buildValue('strippingQuantity'),
+        thermographQuantity: buildValue('thermographQuantity'),
+        sealQuantity: buildValue('sealQuantity'),
+        mettoLabelQuantity: buildValue('mettoLabelQuantity'),
+        packingTapeTypeQuantity: buildValue('packingTapeTypeQuantity'),
+        latexRemoverQuantity: buildValue('latexRemoverQuantity'),
+        blockingSheetQuantity: buildValue('blockingSheetQuantity'),
+        pesticideSent:
+          brand?.pesticideCocktail?.map((p: any) => ({
+            pesticideId: p.pesticide?.id || '',
+            quantity: p.quantity || '',
+          })) || [],
+        insecticideSent:
+          brand?.insecticideCocktail?.map((i: any) => ({
+            insecticideId: i.insecticide?.id || '',
+            quantity: i.quantity || '',
+          })) || [],
+        dataReviewed: false,
       });
     }
   }, [exportSelected]);
 
   const sentMaterialsExport = async (
-    values: ValuesProps,
+    values: any,
     actions: { resetForm: () => void }
   ): Promise<void> => {
     const { dataReviewed, ...sentMaterialsExportData } = values;
+    dataReviewed;
+    createExportSent(sentMaterialsExportData, {
+      onError: (error: any) => {
+        toast({
+          title: 'Error',
+          description: error?.response?.data?.message || 'Error desconocido',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
 
-    createExportSent(
-      {
-        ...sentMaterialsExportData,
+        if (error?.response?.status === 401) {
+          router.push('/api/auth/signout');
+        }
       },
-      {
-        onError: (error: any) => {
-          const { response } = error;
-          const { data } = response;
-          const { statusCode, message, error: errorTitle, model, prop } = data;
-
-          toast({
-            title: `Error ${statusCode}: ${errorTitle} `,
-            description: `${message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
-
-          if (statusCode === 401) {
-            router.push('/api/auth/signout');
-          }
-        },
-        onSuccess: () => {
-          toast({
-            title: 'Registro de Insumos Enviado con Éxito',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
-          queryClient.invalidateQueries('exports');
-          queryClient.invalidateQueries('exportsSent');
-          queryClient.invalidateQueries('exportsSentPending');
-          queryClient.invalidateQueries('exportsPending');
-          queryClient.invalidateQueries('clientPaymentsPending');
-          queryClient.invalidateQueries('cuttingSheets');
-          queryClient.invalidateQueries('cuttingSheetsPending');
-          queryClient.invalidateQueries('exportSentCostsPending');
-          actions.resetForm();
-          router.push('/dashboard/liquidation/exports-sent');
-        },
-      }
-    );
-
-    return;
+      onSuccess: () => {
+        toast({
+          title: 'Registro de Insumos Enviado con Éxito',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries('exports');
+        queryClient.invalidateQueries('exportsSent');
+        queryClient.invalidateQueries('exportsSentPending');
+        queryClient.invalidateQueries('exportsPending');
+        queryClient.invalidateQueries('clientPaymentsPending');
+        queryClient.invalidateQueries('cuttingSheets');
+        queryClient.invalidateQueries('cuttingSheetsPending');
+        queryClient.invalidateQueries('exportSentCostsPending');
+        actions.resetForm();
+        router.push('/dashboard/liquidation/exports-sent');
+      },
+    });
   };
+
+  const renderMaterialField = (
+    name: keyof typeof initialValuesExport,
+    label: string,
+    material: any,
+    quantity: any,
+    unit = 'C/U'
+  ): JSX.Element | null => {
+    if (!material || !quantity || Number(quantity) <= 0) return null;
+
+    return (
+      <InputFieldSentQuantity
+        key={String(name)}
+        name={String(name)}
+        material={label}
+        materialSelected={material.name || 'N/A'}
+        quantity={Number(quantity)}
+        unit={unit}
+      />
+    );
+  };
+
+  const brand = exportSelected?.boxBrand;
+  const quantity = exportSelected?.boxQuantity || 0;
 
   return (
     <Formik
       initialValues={initialValuesExport}
-      enableReinitialize={true}
+      enableReinitialize
+      validationSchema={buildValidationSchema(brand, quantity)}
       onSubmit={sentMaterialsExport}
-      validationSchema={validationSchema}
     >
-      {({}) => (
-        <Form>
-          <Flex flexDirection='column' gap={3}>
-            <Heading fontSize={'2xl'} p={'12px'}>
-              Exportación
-            </Heading>
-            <Divider mb={'16px'} />
+      <Form>
+        <Flex flexDirection='column' gap={3}>
+          <Heading fontSize='2xl' p='12px'>
+            Exportación
+          </Heading>
+          <Divider mb='16px' />
 
-            {exportSelected?.boxBrand ? (
-              <Box p='4' border='1px' borderRadius='md' borderColor='gray.200'>
-                <Text fontSize='sm'>
-                  <strong>Marca de Caja:</strong>{' '}
-                  {exportSelected.boxBrand.name || 'N/A'}
-                </Text>
-                <Text fontSize='sm'>
-                  <strong>Código de Marca:</strong>{' '}
-                  {exportSelected.boxBrand.brandCode || 'N/A'}
-                </Text>
-                <Text fontSize='sm'>
-                  <strong>Peso Neto (Caja):</strong>{' '}
-                  {exportSelected.boxBrand.netWeightBox} LBS
-                </Text>
-                <Text fontSize='sm'>
-                  <strong>Peso Bruto (Caja):</strong>{' '}
-                  {exportSelected.boxBrand.grossWeightBox} LBS
-                </Text>
-                <Text fontSize='sm'>
-                  <strong>Marca Principal:</strong>{' '}
-                  {exportSelected.boxBrand.brand?.name || 'N/A'}
-                </Text>
-              </Box>
-            ) : (
-              <Text>No se ha seleccionado una marca de caja.</Text>
-            )}
+          <Box p='4' border='1px' borderRadius='md' borderColor='gray.200'>
+            <Text fontSize='sm'>
+              <strong>Marca de Caja:</strong> {brand?.name || 'N/A'}
+            </Text>
+            <Text fontSize='sm'>
+              <strong>Código de Marca:</strong> {brand?.brandCode || 'N/A'}
+            </Text>
+            <Text fontSize='sm'>
+              <strong>Peso Neto (Caja):</strong> {brand?.netWeightBox} LBS
+            </Text>
+            <Text fontSize='sm'>
+              <strong>Peso Bruto (Caja):</strong> {brand?.grossWeightBox} LBS
+            </Text>
+            <Text fontSize='sm'>
+              <strong>Marca Principal:</strong> {brand?.brand?.name || 'N/A'}
+            </Text>
+          </Box>
 
-            <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
-              <Box mt={'16px'}>
-                <FormLabel>Cantidad de cajas</FormLabel>
-                <Input
-                  value={exportSelected?.boxQuantity || ''}
-                  isReadOnly={true}
-                  focusBorderColor='gray.200'
-                  _hover={{ borderColor: 'gray.200' }}
-                  cursor={'not-allowed'}
-                  textAlign='right'
-                  opacity={0.8}
-                />
-              </Box>
-            </SimpleGrid>
+          <Box mt='16px'>
+            <FormLabel>Cantidad de cajas</FormLabel>
+            <Input
+              value={quantity}
+              isReadOnly
+              focusBorderColor='gray.200'
+              _hover={{ borderColor: 'gray.200' }}
+              cursor='not-allowed'
+              textAlign='right'
+              opacity={0.8}
+            />
+          </Box>
 
-            {!!exportSelected && (
-              <>
-                <Heading fontSize={'2xl'} p={'12px'}>
-                  Materiales para las cajas
-                </Heading>
-                <Divider mb={'16px'} />
-                {/* materials */}
-                <InputFieldSentQuantity
-                  name={'bottomTypeQuantity'}
-                  material={'Fondo'}
-                  materialSelected={
-                    exportSelected.boxBrand?.bottomType?.name || ''
-                  }
-                  quantity={exportSelected.boxQuantity!}
-                  unit='C/U'
-                />
+          <Heading fontSize='2xl' p='12px'>
+            Materiales para las cajas
+          </Heading>
+          <Divider mb='16px' />
 
-                <InputFieldSentQuantity
-                  name={'lidTypeQuantity'}
-                  material={'Tapa'}
-                  materialSelected={
-                    exportSelected.boxBrand?.lidType?.name || ''
-                  }
-                  quantity={exportSelected.boxQuantity!}
-                  unit='C/U'
-                />
+          {renderMaterialField(
+            'bottomTypeQuantity',
+            'Fondo',
+            brand?.bottomType,
+            quantity
+          )}
+          {renderMaterialField(
+            'lidTypeQuantity',
+            'Tapa',
+            brand?.lidType,
+            quantity
+          )}
+          {renderMaterialField(
+            'coverTypeQuantity',
+            'Funda',
+            brand?.coverType,
+            quantity
+          )}
+          {renderMaterialField(
+            'cardboardTypeQuantity',
+            'Cartulina',
+            brand?.cardboardType,
+            quantity
+          )}
+          {renderMaterialField(
+            'parasealTypeQuantity',
+            'ParaSeal',
+            brand?.parasealType,
+            brand?.parasealTypeQuantity
+          )}
+          {renderMaterialField(
+            'padTypeQuantity',
+            'Pad',
+            brand?.padType,
+            brand?.padTypeQuantity
+          )}
+          {renderMaterialField(
+            'spongeTypeQuantity',
+            'Esponja',
+            brand?.spongeType,
+            brand?.spongeTypeQuantity
+          )}
+          {renderMaterialField(
+            'labelQuantity',
+            'Etiqueta',
+            brand?.label,
+            brand?.labelQuantity
+          )}
+          {renderMaterialField(
+            'bandQuantity',
+            'Banda',
+            brand?.band,
+            brand?.bandQuantity
+          )}
+          {renderMaterialField(
+            'sachetQuantity',
+            'Sachet',
+            brand?.sachet,
+            brand?.sachetQuantity
+          )}
+          {renderMaterialField(
+            'rubberQuantity',
+            'Liga',
+            brand?.rubber,
+            brand?.rubberQuantity
+          )}
+          {renderMaterialField(
+            'protectorQuantity',
+            'Protector',
+            brand?.protector,
+            brand?.protectorQuantity
+          )}
+          {renderMaterialField(
+            'clusterBagQuantity',
+            'Cluster Bag',
+            brand?.clusterBag,
+            brand?.clusterBagQuantity
+          )}
+          {(brand?.palletsTypeQuantity ||
+            brand?.miniPalletsTypeQuantity ||
+            brand?.cornerTypeQuantity ||
+            brand?.reinforcementTypeQuantity ||
+            brand?.stapleQuantity ||
+            brand?.strippingQuantity ||
+            brand?.thermographQuantity ||
+            brand?.sealQuantity ||
+            brand?.mettoLabelQuantity) && (
+            <>
+              <Heading fontSize='2xl' p='12px'>
+                Materiales para contenedor
+              </Heading>
+              <Divider mb='16px' />
+            </>
+          )}
+          {renderMaterialField(
+            'palletsTypeQuantity',
+            'Pallet',
+            brand?.palletsType,
+            brand?.palletsTypeQuantity,
+            'C/C'
+          )}
+          {renderMaterialField(
+            'miniPalletsTypeQuantity',
+            'Mini Pallet',
+            brand?.miniPalletsType,
+            brand?.miniPalletsTypeQuantity,
+            'C/C'
+          )}
+          {renderMaterialField(
+            'cornerTypeQuantity',
+            'Esquinero',
+            brand?.cornerType,
+            brand?.cornerTypeQuantity,
+            'C/C'
+          )}
+          {renderMaterialField(
+            'reinforcementTypeQuantity',
+            'Refuerzo',
+            brand?.reinforcementType,
+            brand?.reinforcementTypeQuantity,
+            'C/C'
+          )}
+          {renderMaterialField(
+            'stapleQuantity',
+            'Grapa',
+            brand?.staple,
+            brand?.stapleQuantity,
+            'C/C'
+          )}
+          {renderMaterialField(
+            'strippingQuantity',
+            'Zuncho',
+            brand?.stripping,
+            brand?.strippingQuantity,
+            'C/C'
+          )}
+          {renderMaterialField(
+            'thermographQuantity',
+            'Termógrafo',
+            brand?.thermograph,
+            brand?.thermographQuantity,
+            'C/C'
+          )}
+          {renderMaterialField(
+            'sealQuantity',
+            'Sello',
+            brand?.seal,
+            brand?.sealQuantity,
+            'C/C'
+          )}
+          {renderMaterialField(
+            'mettoLabelQuantity',
+            'Etiqueta Metto',
+            brand?.mettoLabel,
+            brand?.mettoLabelQuantity,
+            'C/C'
+          )}
+          {(brand?.packingTapeTypeQuantity ||
+            brand?.latexRemoverQuantity ||
+            brand?.blockingSheetQuantity) && (
+            <>
+              <Heading fontSize='2xl' p='12px'>
+                Materiales adicionales
+              </Heading>
+              <Divider mb='16px' />
+            </>
+          )}
+          {renderMaterialField(
+            'packingTapeTypeQuantity',
+            'Cinta de embalaje',
+            brand?.packingTapeType,
+            brand?.packingTapeTypeQuantity,
+            'U/C'
+          )}
+          {renderMaterialField(
+            'latexRemoverQuantity',
+            'Removedor de Látex',
+            brand?.latexRemover,
+            brand?.latexRemoverQuantity,
+            'U/C'
+          )}
+          {renderMaterialField(
+            'blockingSheetQuantity',
+            'Lámina de Bloque',
+            brand?.blockingSheet,
+            brand?.blockingSheetQuantity,
+            'U/C'
+          )}
+          <Heading fontSize={'2xl'} p={'12px'}>
+            Materiales para post cosecha
+          </Heading>
+          <Heading fontSize='xl' p='10px'>
+            Pesticidas
+          </Heading>
+          <Divider mb='16px' />
+          <InputFieldSentPesticides
+            name='pesticideSent'
+            pesticideCocktailSelected={brand?.pesticideCocktail || []}
+          />
 
-                <InputFieldSentQuantity
-                  name={'coverTypeQuantity'}
-                  material={'Funda'}
-                  materialSelected={
-                    exportSelected.boxBrand?.coverType?.name || ''
-                  }
-                  quantity={exportSelected.boxQuantity!}
-                  unit='C/U'
-                />
-
-                <InputFieldSentQuantity
-                  name={'cardboardTypeQuantity'}
-                  material={'Cartulina'}
-                  materialSelected={
-                    exportSelected.boxBrand?.cardboardType?.name || ''
-                  }
-                  quantity={exportSelected.boxQuantity!}
-                  unit='C/U'
-                />
-
-                <InputFieldSentQuantity
-                  name={'parasealTypeQuantity'}
-                  material={'ParaSeal'}
-                  materialSelected={
-                    exportSelected.boxBrand?.parasealType?.name || ''
-                  }
-                  quantity={exportSelected.boxBrand?.parasealTypeQuantity || ''}
-                  unit='C/U'
-                />
-
-                <InputFieldSentQuantity
-                  name={'padTypeQuantity'}
-                  material={'Pad'}
-                  materialSelected={
-                    exportSelected.boxBrand?.padType?.name || ''
-                  }
-                  quantity={exportSelected.boxBrand?.padTypeQuantity || ''}
-                  unit='C/U'
-                />
-
-                <InputFieldSentQuantity
-                  name={'spongeTypeQuantity'}
-                  material={'Esponja'}
-                  materialSelected={
-                    exportSelected.boxBrand?.spongeType?.name || ''
-                  }
-                  quantity={exportSelected.boxBrand?.spongeTypeQuantity || ''}
-                  unit='C/U'
-                />
-
-                <InputFieldSentQuantity
-                  name={'labelQuantity'}
-                  material={'Etiqueta'}
-                  materialSelected={exportSelected.boxBrand?.label?.name || ''}
-                  quantity={Number(
-                    exportSelected.boxBrand?.labelQuantity || ''
-                  )}
-                  unit='C/U'
-                />
-
-                <InputFieldSentQuantity
-                  name={'bandQuantity'}
-                  material={'Banda'}
-                  materialSelected={exportSelected.boxBrand?.band?.name || ''}
-                  quantity={Number(exportSelected.boxBrand?.bandQuantity || '')}
-                  unit='C/U'
-                />
-
-                <InputFieldSentQuantity
-                  name={'sachetQuantity'}
-                  material={'Sachet'}
-                  materialSelected={exportSelected.boxBrand?.sachet?.name || ''}
-                  quantity={Number(
-                    exportSelected.boxBrand?.sachetQuantity || ''
-                  )}
-                  unit='C/U'
-                />
-
-                <InputFieldSentQuantity
-                  name={'rubberQuantity'}
-                  material={'Liga'}
-                  materialSelected={exportSelected.boxBrand?.rubber?.name || ''}
-                  quantity={Number(
-                    exportSelected.boxBrand?.rubberQuantity || ''
-                  )}
-                  unit='C/U'
-                />
-
-                <InputFieldSentQuantity
-                  name={'protectorQuantity'}
-                  material={'Protector'}
-                  materialSelected={
-                    exportSelected.boxBrand?.protector?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.protectorQuantity || ''
-                  )}
-                  unit='C/U'
-                />
-
-                <InputFieldSentQuantity
-                  name={'clusterBagQuantity'}
-                  material={'Cluster Bag'}
-                  materialSelected={
-                    exportSelected.boxBrand?.clusterBag?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.clusterBagQuantity || ''
-                  )}
-                  unit='C/U'
-                />
-
-                <Heading fontSize={'2xl'} p={'12px'}>
-                  Materiales para post cosecha
-                </Heading>
-                <Divider mb={'16px'} />
-
-                <Heading fontSize={'xl'} p={'10px'}>
-                  Pesticidas
-                </Heading>
-                <Divider mb={'16px'} />
-
-                <InputFieldSentPesticides
-                  name={'pesticideSent'}
-                  pesticideCocktailSelected={
-                    exportSelected.boxBrand?.pesticideCocktail || []
-                  }
-                />
-
-                <Heading fontSize={'2xl'} p={'12px'}>
-                  Materiales para contenedor
-                </Heading>
-                <Divider mb={'16px'} />
-                {/* container */}
-                <InputFieldSentQuantity
-                  name={'palletsTypeQuantity'}
-                  material={'Pallet'}
-                  materialSelected={
-                    exportSelected.boxBrand?.palletsType?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.palletsTypeQuantity || ''
-                  )}
-                  unit='C/C'
-                />
-
-                <InputFieldSentQuantity
-                  name={'miniPalletsTypeQuantity'}
-                  material={'Mini pallet'}
-                  materialSelected={
-                    exportSelected.boxBrand?.miniPalletsType?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.miniPalletsTypeQuantity || ''
-                  )}
-                  unit='C/C'
-                />
-
-                <InputFieldSentQuantity
-                  name={'cornerTypeQuantity'}
-                  material={'Esquinero'}
-                  materialSelected={
-                    exportSelected.boxBrand?.cornerType?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.cornerTypeQuantity || ''
-                  )}
-                  unit='C/C'
-                />
-
-                <InputFieldSentQuantity
-                  name={'reinforcementTypeQuantity'}
-                  material={'Refuerzo/Mini esquinero'}
-                  materialSelected={
-                    exportSelected.boxBrand?.reinforcementType?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.reinforcementTypeQuantity || ''
-                  )}
-                  unit='C/C'
-                />
-
-                <InputFieldSentQuantity
-                  name={'stapleQuantity'}
-                  material={'Grapa'}
-                  materialSelected={exportSelected.boxBrand?.staple?.name || ''}
-                  quantity={Number(
-                    exportSelected.boxBrand?.stapleQuantity || ''
-                  )}
-                  unit='C/C'
-                />
-
-                <InputFieldSentQuantity
-                  name={'strippingQuantity'}
-                  material={'Zuncho'}
-                  materialSelected={
-                    exportSelected.boxBrand?.stripping?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.strippingQuantity || ''
-                  )}
-                  unit='C/C'
-                />
-
-                <InputFieldSentQuantity
-                  name={'thermographQuantity'}
-                  material={'Termografo'}
-                  materialSelected={
-                    exportSelected.boxBrand?.thermograph?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.thermographQuantity || ''
-                  )}
-                  unit='C/C'
-                />
-
-                <InputFieldSentQuantity
-                  name={'sealQuantity'}
-                  material={'Sello'}
-                  materialSelected={exportSelected.boxBrand?.seal?.name || ''}
-                  quantity={Number(exportSelected.boxBrand?.sealQuantity || '')}
-                  unit='C/C'
-                />
-
-                <InputFieldSentQuantity
-                  name={'mettoLabelQuantity'}
-                  material={'Etiqueta Metto'}
-                  materialSelected={
-                    exportSelected.boxBrand?.mettoLabel?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.mettoLabelQuantity || ''
-                  )}
-                  unit='C/C'
-                />
-                <Heading fontSize={'2xl'} p={'12px'}>
-                  Materiales adicionales
-                </Heading>
-                <Divider mb={'16px'} />
-                {/* additions */}
-                <InputFieldSentQuantity
-                  name={'packingTapeTypeQuantity'}
-                  material={'Cinta de embalaje'}
-                  materialSelected={
-                    exportSelected.boxBrand?.packingTapeType?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.packingTapeTypeQuantity || ''
-                  )}
-                  unit='U/C'
-                />
-
-                <InputFieldSentQuantity
-                  name={'latexRemoverQuantity'}
-                  material={'Removedor de latex'}
-                  materialSelected={
-                    exportSelected.boxBrand?.latexRemover?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.latexRemoverQuantity || ''
-                  )}
-                  unit='U/C'
-                />
-
-                <InputFieldSentQuantity
-                  name={'blockingSheetQuantity'}
-                  material={'Lamina de bloque'}
-                  materialSelected={
-                    exportSelected.boxBrand?.blockingSheet?.name || ''
-                  }
-                  quantity={Number(
-                    exportSelected.boxBrand?.blockingSheetQuantity || ''
-                  )}
-                  unit='U/C'
-                />
-
-                <Heading fontSize={'xl'} p={'10px'}>
+          {brand?.insecticideCocktail &&
+            brand.insecticideCocktail.length > 0 && (
+              <Box>
+                <Heading fontSize='xl' p='10px'>
                   Insecticidas
                 </Heading>
-                <Divider mb={'16px'} />
-
+                <Divider mb='16px' />
                 <InputFieldSentInsecticides
-                  name={'insecticideSent'}
-                  insecticideCocktailSelected={
-                    exportSelected.boxBrand?.insecticideCocktail || []
-                  }
+                  name='insecticideSent'
+                  insecticideCocktailSelected={brand.insecticideCocktail}
                 />
-
-                <SimpleGrid columns={{ base: 1, sm: 1 }}>
-                  <CheckboxForm
-                    name='dataReviewed'
-                    label='He revisado los datos agregados'
-                  />
-                  <Button
-                    mt='12px'
-                    py='8px'
-                    px='16px'
-                    type='submit'
-                    colorScheme='teal'
-                    isLoading={isLoading}
-                  >
-                    Enviar
-                  </Button>
-                </SimpleGrid>
-              </>
+              </Box>
             )}
-          </Flex>
-        </Form>
-      )}
+
+          <CheckboxForm
+            name='dataReviewed'
+            label='He revisado los datos agregados'
+          />
+          <Button
+            mt='12px'
+            type='submit'
+            colorScheme='teal'
+            isLoading={isLoading}
+          >
+            Enviar
+          </Button>
+        </Flex>
+      </Form>
     </Formik>
   );
 };

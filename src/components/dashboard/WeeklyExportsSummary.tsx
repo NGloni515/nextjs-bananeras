@@ -152,7 +152,7 @@ export default function WeeklyExportsSummary({
                       </Text>
                       <Text>
                         <strong>Cut-Off:</strong>{' '}
-                        {exp.cutOffTime ?? 'Sin hora asignada'}
+                        {exp.shippingDateTime ?? 'Sin hora asignada'}
                       </Text>
                       <Text>
                         <strong>Productor:</strong>{' '}

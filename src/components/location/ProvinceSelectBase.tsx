@@ -57,16 +57,48 @@ const ProvinceSelectBase: React.FC<ProvinceSelectBaseProps> = ({
   const [internalValue, setInternalValue] = useState<Province | null>(null);
   const menuPortalTarget =
     typeof document !== 'undefined' ? document.body : undefined;
+
   useEffect(() => {
-    if (!resetOnParentChange) return;
-    setInternalValue(null);
-    field?.onChange({
-      target: {
-        name,
-        value: '',
-      },
-    });
-  }, [countryId]);
+    if (field?.value) {
+      const selected =
+        data?.find((province) => province.id === field.value) || null;
+      setInternalValue(selected);
+    } else {
+      setInternalValue(null);
+    }
+  }, [field?.value, data]);
+
+  useEffect(() => {
+    if (!countryId) {
+      if (resetOnParentChange) {
+        setInternalValue(null);
+        field?.onChange({
+          target: {
+            name,
+            value: '',
+          },
+        });
+      }
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const selectedProvinceId = field?.value;
+      const selectedProvince = data.find(
+        (province) => province.id === selectedProvinceId
+      );
+
+      if (!selectedProvince && resetOnParentChange) {
+        setInternalValue(null);
+        field?.onChange({
+          target: {
+            name,
+            value: '',
+          },
+        });
+      }
+    }
+  }, [countryId, data]);
 
   const handleChange = (newValue: SingleValue<Province>): void => {
     setInternalValue(newValue || null);
@@ -92,7 +124,7 @@ const ProvinceSelectBase: React.FC<ProvinceSelectBaseProps> = ({
       onChange={handleChange}
       value={
         field?.value
-          ? data?.find((opt) => opt.id === field.value) || null
+          ? data?.find((opt) => opt.id === field.value) || internalValue
           : internalValue
       }
       placeholder={placeholder}

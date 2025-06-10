@@ -11,6 +11,7 @@ interface SelectPesticideProps {
   pesticideSelect?: Partial<PesticideType>;
   setPesticideSelect?: (pesticide: Partial<PesticideType> | null) => void;
   onClickRemove?: () => void;
+  boxQuantity?: number | '';
 }
 
 const SelectPesticide: React.FC<SelectPesticideProps> = ({
@@ -20,6 +21,7 @@ const SelectPesticide: React.FC<SelectPesticideProps> = ({
   pesticideSelect,
   setPesticideSelect,
   onClickRemove,
+  boxQuantity,
 }) => {
   const [pesticide, setPesticide] = useState<Partial<PesticideType> | null>(
     null
@@ -71,7 +73,16 @@ const SelectPesticide: React.FC<SelectPesticideProps> = ({
         />
       </Box>
 
-      <InputFieldQuantity name={name2} label={'Cantidad'} unit='U/C' />
+      <InputFieldQuantity
+        name={name2}
+        label={'Cantidad'}
+        unit='U/C'
+        quantity={
+          pesticide?.dose && boxQuantity
+            ? Number(pesticide.dose) * Number(boxQuantity)
+            : ''
+        }
+      />
 
       <Box display='flex' alignItems='flex-end'>
         <Button

@@ -50,7 +50,7 @@ export default function ExportCardWithPopover({
         <PopoverBody>
           <Text>
             <strong>Cut-Off:</strong>{' '}
-            {exportData.cutOffTime ?? 'Sin hora asignada'}
+            {exportData.shippingDateTime ?? 'Sin hora asignada'}
           </Text>
           <Text>
             <strong>Productor:</strong>{' '}
