@@ -104,7 +104,7 @@ export function ExportSentChart({
     if (!groupedData[groupKey]) {
       groupedData[groupKey] = {
         groupKey,
-        label: `${boxBrand.name} (Prod: ${merchantId} - Cli: ${clientId})`,
+        label: `${boxBrand.name} \n (Prod: ${merchantId} - Cli: ${clientId})`,
         producerTotal: 0,
         clientTotal: 0,
       };
@@ -124,6 +124,50 @@ export function ExportSentChart({
 
   const chartData: ChartData[] = Object.values(groupedData);
 
+  function splitTextByLength(text: string, maxLineLength: number): string[] {
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    for (const word of words) {
+      if ((currentLine + ' ' + word).trim().length > maxLineLength) {
+        lines.push(currentLine.trim());
+        currentLine = word;
+      } else {
+        currentLine += ' ' + word;
+      }
+    }
+
+    if (currentLine) {
+      lines.push(currentLine.trim());
+    }
+
+    return lines;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const CustomTick = ({ x, y, payload }: any): React.JSX.Element => {
+    const [brandLine, producerLine, clientLine] = String(payload.value).split(
+      '\n'
+    );
+
+    const brandLines = splitTextByLength(brandLine, 14);
+
+    const lines = [...brandLines, producerLine, clientLine];
+
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text textAnchor='middle' fontSize={10}>
+          {lines.map((line, index) => (
+            <tspan key={index} x={0} dy={index === 0 ? 0 : 14}>
+              {line}
+            </tspan>
+          ))}
+        </text>
+      </g>
+    );
+  };
+
   return (
     <Box width='100%' height='400px'>
       <ResponsiveContainer width='100%' height='100%'>
@@ -142,7 +186,13 @@ export function ExportSentChart({
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray='3 3' />
-          <XAxis dataKey='label' />
+          <XAxis
+            dataKey='label'
+            tick={<CustomTick />}
+            interval={0}
+            height={80}
+            tickMargin={10}
+          />
           <YAxis />
           <Tooltip />
           <Legend />

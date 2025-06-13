@@ -14,7 +14,18 @@ export interface UserProfile {
     businessId: string;
     email: string;
     address?: string;
-    city?: string;
+    country?: {
+      id: number;
+      name: string;
+    };
+    province?: {
+      id: number;
+      name: string;
+    };
+    city?: {
+      id: number;
+      name: string;
+    };
     accountStatus: string;
     updatedAt: string;
     logoUrl?: string;

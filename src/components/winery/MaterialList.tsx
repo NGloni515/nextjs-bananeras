@@ -3,17 +3,22 @@
 import {
   Box,
   Button,
-  Card,
-  CardBody,
-  Heading,
+  Center,
+  CloseButton,
+  Flex,
   Input,
   Select,
-  SimpleGrid,
   Spinner,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
   Text,
-  Center,
-  Flex,
-  CloseButton,
+  SimpleGrid,
+  TableContainer,
+  Heading,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { useState, useMemo } from 'react';
@@ -89,7 +94,6 @@ export function MaterialList(): JSX.Element {
               ) : null
             )}
           </Select>
-
           {filterType !== 'ALL' ? (
             <CloseButton
               onClick={() => setFilterType('ALL')}
@@ -122,52 +126,67 @@ export function MaterialList(): JSX.Element {
         </Flex>
       </SimpleGrid>
 
-      <SimpleGrid columns={{ base: 1, sm: 2, md: 3, xl: 4 }} spacing={4}>
-        {filteredMaterials.map((material) => (
-          <Card
-            key={`${material.materialType}-${material.id}`}
-            border='1px solid #E2E8F0'
-            borderRadius='md'
-            p={2}
-          >
-            <CardBody>
-              <Box
-                w={'100%'}
-                display='flex'
-                justifyContent='space-between'
-                alignItems='center'
-              >
+      <TableContainer w='100%' overflowX='auto'>
+        <Table variant='simple' size='sm'>
+          <Thead>
+            <Tr>
+              <Th>
                 <Heading size='sm' mb={2}>
-                  {material.name}
+                  Nombre
                 </Heading>
-                <Text fontSize='sm' color='gray.600'>
-                  ID: {material.id}
-                </Text>
-              </Box>
-              <Text fontSize='sm' color='gray.600'>
-                Tipo:{' '}
-                {MATERIAL_TYPE_LABELS[material.materialType] ??
-                  material.materialType}
-              </Text>
-              <Text fontSize='sm' color='gray.600'>
-                Código: {material.code}
-              </Text>
-              <Button
-                size='sm'
-                mt={4}
-                colorScheme='teal'
-                onClick={() =>
-                  router.push(
-                    `/dashboard/winery/add-material/${material.materialType}-${material.id}`
-                  )
-                }
-              >
-                Agregar stock
-              </Button>
-            </CardBody>
-          </Card>
-        ))}
-      </SimpleGrid>
+              </Th>
+              <Th pr={24}>
+                <Heading size='sm' mb={2}>
+                  ID
+                </Heading>
+              </Th>
+              <Th>
+                <Heading size='sm' mb={2}>
+                  Tipo
+                </Heading>
+              </Th>
+              <Th>
+                <Heading size='sm' mb={2}>
+                  Código
+                </Heading>
+              </Th>
+              <Th textAlign={'center'}>
+                <Heading size='sm' mb={2}>
+                  Stock
+                </Heading>
+              </Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {filteredMaterials.map((material) => (
+              <Tr key={`${material.materialType}-${material.id}`}>
+                <Td>{material.name}</Td>
+                <Td>{material.id}</Td>
+                <Td>
+                  {MATERIAL_TYPE_LABELS[material.materialType] ??
+                    material.materialType}
+                </Td>
+                <Td>{material.code}</Td>
+                <Td>
+                  <Flex justifyContent='center'>
+                    <Button
+                      size='sm'
+                      colorScheme='teal'
+                      onClick={() =>
+                        router.push(
+                          `/dashboard/winery/add-material/${material.materialType}-${material.id}`
+                        )
+                      }
+                    >
+                      Agregar stock
+                    </Button>
+                  </Flex>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
 
       {filteredMaterials.length === 0 && (
         <Text mt={6} textAlign='center'>

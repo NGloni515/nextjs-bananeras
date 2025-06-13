@@ -38,7 +38,7 @@ const InputFieldQuantity: React.FC<InputFieldProps> = ({
   quantity,
   isReadOnly = false,
   min = 0,
-  max = 10000,
+  max = 40000,
   step = 1,
   flexDirection = 'column',
   size = 'md',

@@ -1,4 +1,4 @@
-export type StockMovementType = 'TRANSFER' | 'CONSUMPTION';
+export type StockMovementType = 'TRANSFER' | 'CONSUMPTION' | 'ADJUSTMENT';
 
 export interface StockMovement {
   id: number;
@@ -10,8 +10,22 @@ export interface StockMovement {
   toBusinessStockId: number | null;
   fromBusinessStockId: number | null;
   exportSentId: number | null;
+  exportSent?: ExportSent | null;
 }
 
+export interface ExportSent {
+  id: number;
+  createdAt: string;
+  materialCosts: MaterialCost[];
+}
+export interface MaterialCost {
+  id: number;
+  createdAt: string;
+  exportSentId: number;
+  businessMaterialStockId: number;
+  quantity: number;
+  unitCost: number;
+}
 export interface ExporterMaterialStock {
   id: number;
   createdAt: string;

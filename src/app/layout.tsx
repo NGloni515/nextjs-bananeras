@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): React.JSX.Element {
   return (
-    <html lang='en'>
+    <html lang='es'>
       <body className={inter.className}>
         <Providers>{children}</Providers>
       </body>

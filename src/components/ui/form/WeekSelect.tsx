@@ -10,6 +10,12 @@ import {
   CSSObjectWithLabel,
   SingleValue,
 } from 'chakra-react-select';
+import {
+  getISOWeek,
+  startOfMonth,
+  endOfMonth,
+  eachWeekOfInterval,
+} from 'date-fns';
 import { FaAngleDown } from 'react-icons/fa6';
 
 interface WeekOption {
@@ -18,15 +24,11 @@ interface WeekOption {
 }
 
 interface WeekSelectProps {
-  value: number;
-  onChange: (value: number) => void;
+  value: number | null;
+  onChange: (value: number | null) => void;
   placeholder?: string;
+  month: number;
 }
-
-const weeksOptions: WeekOption[] = Array.from({ length: 52 }, (_, i) => ({
-  label: `Semana ${i + 1}`,
-  value: i + 1,
-}));
 
 const chakraStyles: ChakraStylesConfig<
   WeekOption,
@@ -70,11 +72,27 @@ export default function WeekSelect({
   value,
   onChange,
   placeholder = 'Filtrar por semana',
+  month,
 }: WeekSelectProps): JSX.Element {
-  const selectedOption = weeksOptions.find((opt) => opt.value === value);
+  const monthStart = startOfMonth(new Date(new Date().getFullYear(), month));
+  const monthEnd = endOfMonth(monthStart);
+  const weekDates = eachWeekOfInterval({ start: monthStart, end: monthEnd });
+  const weeksOptions: WeekOption[] = weekDates.map((date) => {
+    let weekNum = getISOWeek(date);
+    if (month === 0 && weekNum === 52) {
+      weekNum = 0;
+    }
+    return { label: `Semana ${weekNum + 1}`, value: weekNum + 1 };
+  });
+  const selectedOption =
+    weeksOptions.find((opt) => opt.value === value) ?? null;
 
   const handleChange = (option: SingleValue<WeekOption>): void => {
-    if (option) onChange(option.value);
+    if (option) {
+      onChange(option.value);
+    } else {
+      onChange(null);
+    }
   };
 
   return (
@@ -85,6 +103,7 @@ export default function WeekSelect({
       value={selectedOption}
       onChange={handleChange}
       placeholder={placeholder}
+      isClearable
       chakraStyles={chakraStyles}
       components={components}
       menuPortalTarget={

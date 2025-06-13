@@ -1,3 +1,5 @@
+'use client';
+
 import { useToast } from '@chakra-ui/react';
 import { FormikHelpers } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -30,6 +32,7 @@ export function useSubmitExport(): {
     const {
       weekCutting,
       cuttingDate,
+      shippingDateTime,
       boxQuantity,
       dataReviewed,
       ...restExportData
@@ -38,6 +41,7 @@ export function useSubmitExport(): {
     const exportData = {
       ...restExportData,
       cuttingDate,
+      shippingDateTime,
       weekDescription: weekCutting.description,
       weekDaysOfWeek: weekCutting.daysOfWeek,
       weekBoxesOfDay: weekCutting.boxesOfDay,

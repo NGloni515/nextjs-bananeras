@@ -10,11 +10,11 @@ import {
   PRODUCER_MENU,
   CLIENT_MENU,
   BOX_BRANDS_MENU,
-  EXPORT_MENU,
   getQualityMenu,
   getLiquidationMenu,
   getSettingsMenu,
   WINERY_MENU,
+  getExportMenu,
 } from './navMenus';
 import { SidenavItem } from './sidenav-items';
 
@@ -67,7 +67,10 @@ export function getNavItems(
       label: 'Exportaciones',
       isMenu: true,
       to: '/dashboard/export',
-      menu: EXPORT_MENU,
+      menu: getExportMenu({
+        addSupplyShipment: counts.addSupplyShipment,
+      }),
+      count: counts.addSupplyShipment,
       allowedRoles: ['EXPORT'],
     },
     {
@@ -76,13 +79,11 @@ export function getNavItems(
       isMenu: true,
       to: '/dashboard/box-brands',
       menu: getLiquidationMenu({
-        addSupplyShipment: counts.addSupplyShipment,
         producerPendingPayments: counts.producerPendingPayments,
         clientPendingPayments: counts.clientPendingPayments,
         exportSentCostsPending: counts.exportSentCostsPending,
       }),
       count:
-        counts.addSupplyShipment +
         counts.producerPendingPayments +
         counts.clientPendingPayments +
         counts.exportSentCostsPending,
@@ -98,19 +99,19 @@ export function getNavItems(
       allowedRoles: ['QUALITY'],
     },
     {
-      icon: FaCogs,
-      label: 'Configuraciones',
-      isMenu: true,
-      to: '/dashboard/settings',
-      menu: getSettingsMenu(session?.exporterId),
-      allowedRoles: ['ADMINISTRATIVE'],
-    },
-    {
       icon: PiPackageBold,
       label: 'Bodega',
       isMenu: true,
       to: '/dashboard/winery',
       menu: WINERY_MENU,
+      allowedRoles: ['ADMINISTRATIVE'],
+    },
+    {
+      icon: FaCogs,
+      label: 'Configuraciones',
+      isMenu: true,
+      to: '/dashboard/settings',
+      menu: getSettingsMenu(session?.exporterId),
       allowedRoles: ['ADMINISTRATIVE'],
     },
   ];
