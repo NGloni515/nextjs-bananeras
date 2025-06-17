@@ -21,6 +21,18 @@ export interface Insecticide {
   dose: number;
 }
 
+export interface Sticker {
+  id: number;
+  name: string;
+  code: string;
+}
+
+export interface Sheet {
+  id: number;
+  name: string;
+  code: string;
+}
+
 export interface PesticideSent {
   id: number;
   pesticide: Pesticide;
@@ -30,6 +42,18 @@ export interface PesticideSent {
 export interface InsecticideSent {
   id: number;
   insecticide: Insecticide;
+  quantity: number;
+}
+
+export interface StickerSent {
+  id: number;
+  sticker: Sticker;
+  quantity: number;
+}
+
+export interface SheetSent {
+  id: number;
+  sheet: Sheet;
   quantity: number;
 }
 
@@ -114,7 +138,12 @@ export interface ExportSentType {
   packingTapeTypeQuantity: number;
   latexRemoverQuantity: number;
   blockingSheetQuantity: number;
+  containerSealPlasticQuantity: number;
+  securityKitQuantity: number;
+  boardingCardQuantity: number;
   pesticideSent: PesticideSent[];
   insecticideSent: InsecticideSent[];
+  stickerSent: StickerSent[];
+  sheetSent: SheetSent[];
   pendingProducerPayment?: boolean;
 }

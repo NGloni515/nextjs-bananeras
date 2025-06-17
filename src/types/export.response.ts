@@ -79,15 +79,22 @@ export interface BoxBrandResponse {
   latexRemover: { id: number; name: string };
   latexRemoverQuantity: number;
   insecticideCocktail: any[];
+  stickerCocktail: any[];
+  sheetCocktail: any[];
   blockingSheet: { id: number; name: string };
   blockingSheetQuantity: number;
+  containerSealPlastic: { id: number; name: string };
+  containerSealPlasticQuantity: number;
+  securityKit: { id: number; name: string };
+  securityKitQuantity: number;
+  boardingCard: { id: number; name: string };
+  boardingCardQuantity: number;
 }
 
 export interface ExportResponse {
   id: number;
   boxQuantity: number;
   pendingExportSent: boolean | null;
-  exportSent: boolean | null;
   shipName: string;
   estimatedTravelTime: string;
   bookingNumber: string;
@@ -177,5 +184,8 @@ export interface ExportResponse {
     ruc: string;
     address: string;
     contacts: Contact[];
+  };
+  exportSent: {
+    id: number;
   };
 }

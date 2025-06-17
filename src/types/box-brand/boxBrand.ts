@@ -1,6 +1,11 @@
 import { BlockingSheetType } from './additions/blockingSheet';
+import { BoardingCardType } from './additions/boardingCard';
+import { ContainerSealPlasticType } from './additions/containerSealPlastic';
 import { InsecticideCocktailPart } from './additions/insecticideCocktailPart';
 import { LatexRemoverType } from './additions/latexRemover';
+import { SecurityKitType } from './additions/securityKit';
+import { SheetCocktail } from './additions/sheet';
+import { StickerCocktail } from './additions/sticker';
 import { MettoLabelType } from './container/mettoLabel';
 import { SealType } from './container/seal';
 import { StapleType } from './container/staple';
@@ -117,5 +122,16 @@ export type BoxBrandType = {
   blockingSheet?: Partial<BlockingSheetType>;
   blockingSheetId: number | '';
   blockingSheetQuantity: number | '';
+  containerSealPlastic?: Partial<ContainerSealPlasticType>;
+  containerSealPlasticId: number | '';
+  containerSealPlasticQuantity: number | '';
+  securityKit?: Partial<SecurityKitType>;
+  securityKitId: number | '';
+  securityKitQuantity: number | '';
+  boardingCard?: Partial<BoardingCardType>;
+  boardingCardId: number | '';
+  boardingCardQuantity: number | '';
   insecticideCocktail?: Partial<InsecticideCocktailPart>[];
+  stickerCocktail?: Partial<StickerCocktail>[];
+  sheetCocktail?: Partial<SheetCocktail>[];
 };
