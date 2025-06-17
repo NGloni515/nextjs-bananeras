@@ -1,4 +1,6 @@
 import { InsecticideType } from './box-brand/additions/insecticide';
+import { SheetCocktail } from './box-brand/additions/sheet';
+import { StickerCocktail } from './box-brand/additions/sticker';
 import { PesticideType } from './box-brand/post-harvest/pesticide';
 import { ExportType } from './export';
 import { ProducerPaymentType } from './producerPayment';
@@ -52,8 +54,12 @@ export type ExportSentType = {
   // select
   latexRemoverQuantity: number | '';
   blockingSheetQuantity: number | '';
+  containerSealPlasticQuantity: number | '';
+  securityKitQuantity: number | '';
+  boardingCardQuantity: number | '';
   insecticideSent: Partial<InsecticideSentPartType>[];
-
+  stickerSent: Partial<StickerCocktail>[];
+  sheetSent: Partial<SheetCocktail>[];
   pendingProducerPayment: boolean;
   pendingClientPayment: boolean;
   producerPayment: ProducerPaymentType;

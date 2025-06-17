@@ -26,6 +26,11 @@ export const MATERIAL_TYPE_ORDER: string[] = [
   'BLOCKING_SHEET',
   'PESTICIDE',
   'INSECTICIDE',
+  'STICKER',
+  'SHEET',
+  'CONTAINER_SEAL_PLASTIC',
+  'SECURITY_KIT',
+  'BOARDING_CARD',
 ];
 
 export const MATERIAL_TYPE_LABELS: Record<string, string> = {
@@ -56,4 +61,9 @@ export const MATERIAL_TYPE_LABELS: Record<string, string> = {
   LATEX_REMOVER: 'Removedor de Látex',
   INSECTICIDE: 'Insecticida',
   BLOCKING_SHEET: 'Lámina de Bloqueo',
+  STICKER: 'Sticker',
+  SHEET: 'Hoja',
+  CONTAINER_SEAL_PLASTIC: 'Plástico de Cierre Contenedor',
+  SECURITY_KIT: 'Kit de Seguridad',
+  BOARDING_CARD: 'Tarjeta de Embarque',
 };
