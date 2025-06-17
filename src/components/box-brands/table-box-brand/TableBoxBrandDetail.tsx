@@ -8,6 +8,8 @@ import {
 import React, { useMemo, useState } from 'react';
 import ExpandDetail from './ExpandDetail';
 import { InsecticideCocktailPart } from '../../../types/box-brand/additions/insecticideCocktailPart';
+import { SheetCocktail } from '../../../types/box-brand/additions/sheet';
+import { StickerCocktail } from '../../../types/box-brand/additions/sticker';
 import { PesticideCocktailPart } from '../../../types/box-brand/post-harvest/pesticideCocktailPart';
 import { RequiredCertificateType } from '../../../types/box-brand/specifications/requiredCertificate';
 
@@ -34,7 +36,9 @@ interface DetailType {
   array?:
     | PesticideCocktailPart[]
     | InsecticideCocktailPart[]
-    | RequiredCertificateType[];
+    | RequiredCertificateType[]
+    | StickerCocktail[]
+    | SheetCocktail[];
 }
 
 interface TableSizeProps {

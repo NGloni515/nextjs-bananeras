@@ -3,6 +3,8 @@ import { Box, VStack } from '@chakra-ui/react';
 import React from 'react';
 import TableBoxBrandDetail from './TableBoxBrandDetail';
 import { InsecticideCocktailPart } from '../../../types/box-brand/additions/insecticideCocktailPart';
+import { SheetCocktail } from '../../../types/box-brand/additions/sheet';
+import { StickerCocktail } from '../../../types/box-brand/additions/sticker';
 import { BoxBrandType } from '../../../types/box-brand/boxBrand';
 import { PesticideCocktailPart } from '../../../types/box-brand/post-harvest/pesticideCocktailPart';
 import { RequiredCertificateType } from '../../../types/box-brand/specifications/requiredCertificate';
@@ -48,6 +50,8 @@ const DetailBoxBrand = ({
           | RequiredCertificateType[]
           | PesticideCocktailPart[]
           | InsecticideCocktailPart[]
+          | StickerCocktail[]
+          | SheetCocktail[]
           | any[]
           | any = inputObject[key];
 
@@ -60,7 +64,7 @@ const DetailBoxBrand = ({
         ) {
           outputArray.push({
             ['name']: 'Certificados',
-            ['quantity']: 1,
+            ['quantity']: inputObject[key].length,
             ['array']: inputObject[key],
           });
         }
@@ -76,7 +80,7 @@ const DetailBoxBrand = ({
         ) {
           outputArray.push({
             ['name']: 'Cóctel de Pesticidas',
-            ['quantity']: 1,
+            ['quantity']: inputObject[key].length,
             ['array']: inputObject[key],
           });
         }
@@ -92,7 +96,39 @@ const DetailBoxBrand = ({
         ) {
           outputArray.push({
             ['name']: 'Cóctel de Insecticidas',
-            ['quantity']: 1,
+            ['quantity']: inputObject[key].length,
+            ['array']: inputObject[key],
+          });
+        }
+
+        if (
+          Array.isArray(inputObject[key]) &&
+          arrayValue.every(
+            (item: StickerCocktail) =>
+              item.id !== undefined &&
+              item.quantity !== undefined &&
+              item.sticker !== undefined
+          )
+        ) {
+          outputArray.push({
+            ['name']: 'Pegatinas',
+            ['quantity']: inputObject[key].length,
+            ['array']: inputObject[key],
+          });
+        }
+
+        if (
+          Array.isArray(inputObject[key]) &&
+          arrayValue.every(
+            (item: SheetCocktail) =>
+              item.id !== undefined &&
+              item.quantity !== undefined &&
+              item.sheet !== undefined
+          )
+        ) {
+          outputArray.push({
+            ['name']: 'Hojas',
+            ['quantity']: inputObject[key].length,
             ['array']: inputObject[key],
           });
         }

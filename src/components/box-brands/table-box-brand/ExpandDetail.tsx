@@ -9,6 +9,8 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { InsecticideCocktailPart } from '../../../types/box-brand/additions/insecticideCocktailPart';
+import { SheetCocktail } from '../../../types/box-brand/additions/sheet';
+import { StickerCocktail } from '../../../types/box-brand/additions/sticker';
 import { PesticideCocktailPart } from '../../../types/box-brand/post-harvest/pesticideCocktailPart';
 import { RequiredCertificateType } from '../../../types/box-brand/specifications/requiredCertificate';
 
@@ -93,6 +95,32 @@ const isInsecticideCocktailPartArray = (
   );
 };
 
+const isStickerCocktailArray = (detail: any): detail is StickerCocktail[] => {
+  return (
+    Array.isArray(detail) &&
+    detail.every(
+      (item) =>
+        typeof item === 'object' &&
+        (typeof item.id === 'number' || item.id === '') &&
+        (typeof item.quantity === 'number' || item.quantity === '') &&
+        typeof item.sticker === 'object'
+    )
+  );
+};
+
+const isSheetCocktailArray = (detail: any): detail is SheetCocktail[] => {
+  return (
+    Array.isArray(detail) &&
+    detail.every(
+      (item) =>
+        typeof item === 'object' &&
+        (typeof item.id === 'number' || item.id === '') &&
+        (typeof item.quantity === 'number' || item.quantity === '') &&
+        typeof item.sheet === 'object'
+    )
+  );
+};
+
 const ExpandDetail = ({
   detail,
 }: {
@@ -100,7 +128,9 @@ const ExpandDetail = ({
     | DetailType
     | PesticideCocktailPart[]
     | InsecticideCocktailPart[]
-    | RequiredCertificateType[];
+    | RequiredCertificateType[]
+    | StickerCocktail[]
+    | SheetCocktail[];
 }): React.JSX.Element | undefined => {
   if (isDetailType(detail)) {
     return (
@@ -320,6 +350,72 @@ const ExpandDetail = ({
                 Cantidad:{' '}
                 <Text as={'span'} fontWeight={'normal'}>
                   {insecticide.quantity}
+                </Text>
+              </Heading>
+            </SimpleGrid>
+            <Divider
+              mt={'16px'}
+              mb={'8px'}
+              borderWidth={'2px'}
+              variant={'dashed'}
+              borderColor={'whitesmoke'}
+            />
+          </Box>
+        ))}
+      </VStack>
+    );
+  }
+
+  if (isSheetCocktailArray(detail)) {
+    return (
+      <VStack>
+        {detail.map((sheet) => (
+          <Box key={sheet.id}>
+            <SimpleGrid columns={2} spacing={0} width={'100%'} ml={'0px'}>
+              <Heading fontSize={'md'} fontWeight={'bold'} p={'16px'}>
+                Nombre:{' '}
+                <Text as={'span'} fontWeight={'normal'}>
+                  {sheet.sheet.name}
+                </Text>
+              </Heading>
+
+              <Heading fontSize={'md'} fontWeight={'bold'} p={'16px'}>
+                Cantidad:{' '}
+                <Text as={'span'} fontWeight={'normal'}>
+                  {sheet.quantity}
+                </Text>
+              </Heading>
+            </SimpleGrid>
+            <Divider
+              mt={'16px'}
+              mb={'8px'}
+              borderWidth={'2px'}
+              variant={'dashed'}
+              borderColor={'whitesmoke'}
+            />
+          </Box>
+        ))}
+      </VStack>
+    );
+  }
+
+  if (isStickerCocktailArray(detail)) {
+    return (
+      <VStack>
+        {detail.map((sticker) => (
+          <Box key={sticker.id}>
+            <SimpleGrid columns={2} spacing={0} width={'100%'} ml={'0px'}>
+              <Heading fontSize={'md'} fontWeight={'bold'} p={'16px'}>
+                Nombre:{' '}
+                <Text as={'span'} fontWeight={'normal'}>
+                  {sticker.sticker.name}
+                </Text>
+              </Heading>
+
+              <Heading fontSize={'md'} fontWeight={'bold'} p={'16px'}>
+                Cantidad:{' '}
+                <Text as={'span'} fontWeight={'normal'}>
+                  {sticker.quantity}
                 </Text>
               </Heading>
             </SimpleGrid>
