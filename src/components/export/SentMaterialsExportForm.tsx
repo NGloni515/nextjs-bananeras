@@ -20,6 +20,8 @@ import * as Yup from 'yup';
 import InputFieldSentInsecticides from './ui/InputFieldSentInsecticides';
 import InputFieldSentPesticides from './ui/InputFieldSentPesticides';
 import InputFieldSentQuantity from './ui/InputFieldSentQuantity';
+import InputFieldSentSheets from './ui/InputFieldSentSheets';
+import InputFieldSentStickers from './ui/InputFieldSentStickers';
 import { useCreateExportSent } from '../../hooks/export/export-sent/createExportSent';
 import { ExportResponse } from '../../types/export.response';
 import CheckboxForm from '../ui/form/CheckboxForm';
@@ -33,6 +35,22 @@ const pesticideSchema = Yup.object().shape({
 });
 
 const insecticideSchema = Yup.object().shape({
+  quantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 cajas')
+    .required('Requerido'),
+});
+
+const stickerSchema = Yup.object().shape({
+  quantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 cajas')
+    .required('Requerido'),
+});
+
+const sheetSchema = Yup.object().shape({
   quantity: Yup.number()
     .integer('Debe ser un número entero')
     .moreThan(0, 'Debe ser mayor que 0')
@@ -82,12 +100,20 @@ const buildValidationSchema = (boxBrand: any, boxQuantity: number): any => {
     pushIfValid('packingTapeTypeQuantity', boxBrand.packingTapeTypeQuantity);
     pushIfValid('latexRemoverQuantity', boxBrand.latexRemoverQuantity);
     pushIfValid('blockingSheetQuantity', boxBrand.blockingSheetQuantity);
+    pushIfValid(
+      'containerSealPlasticQuantity',
+      boxBrand.containerSealPlasticQuantity
+    );
+    pushIfValid('securityKitQuantity', boxBrand.securityKitQuantity);
+    pushIfValid('boardingCardQuantity', boxBrand.boardingCardQuantity);
   }
 
   shape.pesticideSent = Yup.array()
     .of(pesticideSchema)
     .min(1, 'Debe de tener al menos un pesticida');
   shape.insecticideSent = Yup.array().of(insecticideSchema);
+  shape.stickerSent = Yup.array().of(stickerSchema);
+  shape.sheetSent = Yup.array().of(sheetSchema);
   shape.dataReviewed = Yup.boolean()
     .oneOf([true], 'Debes revisar los datos antes de enviar')
     .required();
@@ -140,6 +166,11 @@ const SentMaterialsExportForm = ({
         packingTapeTypeQuantity: buildValue('packingTapeTypeQuantity'),
         latexRemoverQuantity: buildValue('latexRemoverQuantity'),
         blockingSheetQuantity: buildValue('blockingSheetQuantity'),
+        containerSealPlasticQuantity: buildValue(
+          'containerSealPlasticQuantity'
+        ),
+        securityKitQuantity: buildValue('securityKitQuantity'),
+        boardingCardQuantity: buildValue('boardingCardQuantity'),
         pesticideSent:
           brand?.pesticideCocktail?.map((p: any) => ({
             pesticideId: p.pesticide?.id || '',
@@ -149,6 +180,16 @@ const SentMaterialsExportForm = ({
           brand?.insecticideCocktail?.map((i: any) => ({
             insecticideId: i.insecticide?.id || '',
             quantity: i.quantity || '',
+          })) || [],
+        stickerSent:
+          brand?.stickerCocktail?.map((s: any) => ({
+            stickerId: s.sticker?.id || '',
+            quantity: s.quantity || '',
+          })) || [],
+        sheetSent:
+          brand?.sheetCocktail?.map((s: any) => ({
+            sheetId: s.sheet?.id || '',
+            quantity: s.quantity || '',
           })) || [],
         dataReviewed: false,
       });
@@ -233,7 +274,6 @@ const SentMaterialsExportForm = ({
             Exportación
           </Heading>
           <Divider mb='16px' />
-
           <Box p='4' border='1px' borderRadius='md' borderColor='gray.200'>
             <Text fontSize='sm'>
               <strong>Marca de Caja:</strong> {brand?.name || 'N/A'}
@@ -251,7 +291,6 @@ const SentMaterialsExportForm = ({
               <strong>Marca Principal:</strong> {brand?.brand?.name || 'N/A'}
             </Text>
           </Box>
-
           <Box mt='16px'>
             <FormLabel>Cantidad de cajas</FormLabel>
             <Input
@@ -264,12 +303,10 @@ const SentMaterialsExportForm = ({
               opacity={0.8}
             />
           </Box>
-
           <Heading fontSize='2xl' p='12px'>
             Materiales para las cajas
           </Heading>
           <Divider mb='16px' />
-
           {renderMaterialField(
             'bottomTypeQuantity',
             'Fondo',
@@ -458,6 +495,41 @@ const SentMaterialsExportForm = ({
             brand?.blockingSheetQuantity,
             'U/C'
           )}
+          {renderMaterialField(
+            'containerSealPlasticQuantity',
+            'Plástico de Cierre Contenedor',
+            brand?.containerSealPlastic,
+            brand?.containerSealPlasticQuantity,
+            'U/C'
+          )}
+          {renderMaterialField(
+            'securityKitQuantity',
+            'Kit de Seguridad',
+            brand?.securityKit,
+            brand?.securityKitQuantity,
+            'U/C'
+          )}
+          {renderMaterialField(
+            'boardingCardQuantity',
+            'Tarjeta de Embarque',
+            brand?.boardingCard,
+            brand?.boardingCardQuantity,
+            'U/C'
+          )}
+          {brand?.stickerCocktail && brand.stickerCocktail.length > 0 && (
+            <InputFieldSentStickers
+              name='stickerSent'
+              stickerCocktailSelected={brand?.stickerCocktail || []}
+              unit='U/C'
+            />
+          )}
+          {brand?.sheetCocktail && brand.sheetCocktail.length > 0 && (
+            <InputFieldSentSheets
+              name='sheetSent'
+              sheetCocktailSelected={brand?.sheetCocktail || []}
+              unit='U/C'
+            />
+          )}
           <Heading fontSize={'2xl'} p={'12px'}>
             Materiales para post cosecha
           </Heading>
@@ -469,7 +541,6 @@ const SentMaterialsExportForm = ({
             name='pesticideSent'
             pesticideCocktailSelected={brand?.pesticideCocktail || []}
           />
-
           {brand?.insecticideCocktail &&
             brand.insecticideCocktail.length > 0 && (
               <Box>
@@ -483,7 +554,6 @@ const SentMaterialsExportForm = ({
                 />
               </Box>
             )}
-
           <CheckboxForm
             name='dataReviewed'
             label='He revisado los datos agregados'

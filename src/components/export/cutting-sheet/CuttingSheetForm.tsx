@@ -91,6 +91,14 @@ const emptyExportData: ExportResponse = {
     insecticideCocktail: [],
     blockingSheet: { id: 0, name: '' },
     blockingSheetQuantity: 0,
+    stickerCocktail: [],
+    sheetCocktail: [],
+    containerSealPlastic: { id: 0, name: '' },
+    containerSealPlasticQuantity: 0,
+    securityKit: { id: 0, name: '' },
+    securityKitQuantity: 0,
+    boardingCard: { id: 0, name: '' },
+    boardingCardQuantity: 0,
   },
   merchant: {
     id: 0,
@@ -141,7 +149,9 @@ const emptyExportData: ExportResponse = {
       },
     },
   },
-  exportSent: false,
+  exportSent: {
+    id: 0,
+  },
   pendingExportSent: false,
   cuttingDate: '',
   weekDescription: '',
@@ -869,6 +879,9 @@ const CuttingSheetForm = ({
           exportSentSelected?.packingTapeTypeQuantity,
           exportSentSelected?.latexRemoverQuantity,
           exportSentSelected?.blockingSheetQuantity,
+          exportSentSelected?.containerSealPlasticQuantity,
+          exportSentSelected?.securityKitQuantity,
+          exportSentSelected?.boardingCardQuantity,
         ].some((v) => typeof v === 'number' && v > 0) && (
           <>
             <Heading size='sm' mt='4' mb='2'>
@@ -901,6 +914,47 @@ const CuttingSheetForm = ({
                 'Cant. Lámina',
                 exportSentSelected?.blockingSheetQuantity
               )}
+
+              {renderNameField(
+                'Plástico de Cierre Contenedor',
+                finalValues.exportData?.boxBrand?.containerSealPlastic?.name
+              )}
+              {renderQuantityField(
+                'Cant. Plástico de Cierre Contenedor',
+                exportSentSelected?.containerSealPlasticQuantity
+              )}
+              {renderNameField(
+                'Kit de Seguridad',
+                finalValues.exportData?.boxBrand?.securityKit?.name
+              )}
+              {renderQuantityField(
+                'Cant. Kit de Seguridad',
+                exportSentSelected?.securityKitQuantity
+              )}
+              {renderNameField(
+                'Tarjeta de Embarque',
+                finalValues.exportData?.boxBrand?.boardingCard?.name
+              )}
+              {renderQuantityField(
+                'Cant. Tarjeta de Embarque',
+                exportSentSelected?.boardingCardQuantity
+              )}
+            </SimpleGrid>
+            <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2' mt='2'>
+              {exportSentSelected?.stickerSent?.map((item, index) => (
+                <DisplayField
+                  key={index}
+                  label={`Sticker ${index + 1}`}
+                  value={`${item?.sticker?.name} (Cant: ${item.quantity})`}
+                />
+              ))}
+              {exportSentSelected?.sheetSent?.map((item, index) => (
+                <DisplayField
+                  key={index}
+                  label={`Hoja ${index + 1}`}
+                  value={`${item?.sheet?.name} (Cant: ${item.quantity})`}
+                />
+              ))}
             </SimpleGrid>
           </>
         )}
