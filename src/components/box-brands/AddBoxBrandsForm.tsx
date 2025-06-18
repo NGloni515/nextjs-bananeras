@@ -17,8 +17,13 @@ import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreateBoxBrand } from '@/hooks/box-brand/createBoxBrand';
 import BlockingSheetSelectBanContainer from './additions/blocking-sheet/BlockingSheetSelectBanContainer';
+import BoardingCardSelectBanContainer from './additions/boarding-card/BoardingCardBanContainer';
+import ContainerSealPlasticSelectBanContainer from './additions/container-seal-plastic/ContainerSealPlasticBanContainer';
 import SelectInsecticideBanContainer from './additions/insecticide/SelectInsecticideBanContainer';
 import LatexRemoverSelectBanContainer from './additions/latex-remover/LatexRemoverSelectBanContainer';
+import SecurityKitSelectBanContainer from './additions/security-kit/SecurityKitBanContainer';
+import SheetSelectBanContainer from './additions/sheet/SheetSelectBanContainer';
+import StickerSelectBanContainer from './additions/sticker/StickerSelectBanContainer';
 import MettoLabelSelectBanContainer from './container/metto-label/MettoLabelSelectBanContainer';
 import SealSelectBanContainer from './container/seal/SealSelectBanContainer';
 import StapleSelectBanContainer from './container/staple/StapleSelectBanContainer';
@@ -57,6 +62,16 @@ interface PesticideProps {
 
 export interface InsecticideProps {
   insecticideId: number | '';
+  quantity: number | '';
+}
+
+export interface StickerProps {
+  stickerId: number | '';
+  quantity: number | '';
+}
+
+export interface SheetProps {
+  sheetId: number | '';
   quantity: number | '';
 }
 
@@ -130,8 +145,16 @@ interface ValuesProps {
   latexRemoverId: number | '';
   latexRemoverQuantity: number | '';
   insecticides: InsecticideProps[];
+  stickers: StickerProps[];
+  sheets: SheetProps[];
   blockingSheetId: number | '';
   blockingSheetQuantity: number | '';
+  containerSealPlasticId: number | '';
+  containerSealPlasticQuantity: number | '';
+  securityKitId: number | '';
+  securityKitQuantity: number | '';
+  boardingCardId: number | '';
+  boardingCardQuantity: number | '';
   dataReviewed: boolean;
 }
 
@@ -200,8 +223,16 @@ const initialValues: ValuesProps = {
   latexRemoverId: '',
   latexRemoverQuantity: '',
   insecticides: [],
+  stickers: [],
+  sheets: [],
   blockingSheetId: '',
   blockingSheetQuantity: '',
+  containerSealPlasticId: '',
+  containerSealPlasticQuantity: '',
+  securityKitId: '',
+  securityKitQuantity: '',
+  boardingCardId: '',
+  boardingCardQuantity: '',
   dataReviewed: false,
 };
 
@@ -213,7 +244,7 @@ const pesticideSchema = Yup.object().shape({
   quantity: Yup.number()
     .integer('Debe ser un número entero')
     .moreThan(0, 'Debe ser mayor que 0')
-    .lessThan(10000, 'Debe ser menor que 10000 cajas')
+    .lessThan(10000, 'Debe ser menor que 10000 ')
     .required('Requerido'),
 });
 
@@ -225,7 +256,31 @@ const insecticideSchema = Yup.object().shape({
   quantity: Yup.number()
     .integer('Debe ser un número entero')
     .moreThan(0, 'Debe ser mayor que 0')
-    .lessThan(10000, 'Debe ser menor que 10000 cajas')
+    .lessThan(10000, 'Debe ser menor que 10000 ')
+    .required('Requerido'),
+});
+
+const stickerSchema = Yup.object().shape({
+  stickerId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  quantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(100000, 'Debe ser menor que 100000 ')
+    .required('Requerido'),
+});
+
+const sheetSchema = Yup.object().shape({
+  sheetId: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .required('Requerido'),
+  quantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .moreThan(0, 'Debe ser mayor que 0')
+    .lessThan(10000, 'Debe ser menor que 10000 ')
     .required('Requerido'),
 });
 
@@ -837,6 +892,79 @@ const validationSchema = Yup.object({
         return value > 0;
       }
     ),
+  containerSealPlasticId: Yup.mixed().when('containerSealPlasticQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
+  containerSealPlasticQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no se selecciona una opción',
+      function (value) {
+        const { containerSealPlasticId } = this.parent;
+        if (
+          containerSealPlasticId === undefined ||
+          containerSealPlasticId === null ||
+          containerSealPlasticId === ''
+        ) {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  securityKitId: Yup.mixed().when('securityKitQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
+  securityKitQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no se selecciona una opción',
+      function (value) {
+        const { securityKitId } = this.parent;
+        if (
+          securityKitId === undefined ||
+          securityKitId === null ||
+          securityKitId === ''
+        ) {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  boardingCardId: Yup.mixed().when('boardingCardQuantity', {
+    is: (value: number) => value > 0,
+    then: (schema) => schema.required('Requerido'),
+    otherwise: (schema) => schema.nullable(),
+  }),
+  boardingCardQuantity: Yup.number()
+    .integer('Debe ser un número entero')
+    .required('Requerido')
+    .test(
+      'is-zero-when-no-option',
+      'Debe ser 0 si no se selecciona una opción',
+      function (value) {
+        const { boardingCardId } = this.parent;
+        if (
+          boardingCardId === undefined ||
+          boardingCardId === null ||
+          boardingCardId === ''
+        ) {
+          return value === 0;
+        }
+        return value > 0;
+      }
+    ),
+  stickers: Yup.array()
+    .of(stickerSchema)
+    .min(0, 'Debe de tener 0 o más stickers'),
+  sheets: Yup.array().of(sheetSchema).min(0, 'Debe de tener 0 o más sheets'),
   insecticides: Yup.array()
     .of(insecticideSchema)
     .min(0, 'Debe de tener 0 o más pesticidas'),
@@ -918,6 +1046,11 @@ export default function AddBoxBrandsForm(): React.JSX.Element {
         // Adicionales
         latexRemoverId: !!values.latexRemoverId ? values.latexRemoverId : 0,
         blockingSheetId: !!values.blockingSheetId ? values.blockingSheetId : 0,
+        containerSealPlasticId: !!values.containerSealPlasticId
+          ? values.containerSealPlasticId
+          : 0,
+        securityKitId: !!values.securityKitId ? values.securityKitId : 0,
+        boardingCardId: !!values.boardingCardId ? values.boardingCardId : 0,
         packingTapeTypeId: !!values.packingTapeTypeId
           ? values.packingTapeTypeId
           : 0,
@@ -1315,8 +1448,39 @@ export default function AddBoxBrandsForm(): React.JSX.Element {
                   placeholder2={'Cantidad'}
                   unit='U/C'
                 />
+                <ContainerSealPlasticSelectBanContainer
+                  name1={'containerSealPlasticId'}
+                  label1={'Plástico de Cierre Contenedor'}
+                  placeholder1={'Seleccione el Plástico de Cierre Contenedor'}
+                  name2={'containerSealPlasticQuantity'}
+                  label2={'Plásticos de Cierre Contenedor/Contenedor'}
+                  placeholder2={'Cantidad'}
+                  unit='U/C'
+                />
+                <SecurityKitSelectBanContainer
+                  name1={'securityKitId'}
+                  label1={'Kit de Seguridad'}
+                  placeholder1={'Seleccione el Kit de Seguridad'}
+                  name2={'securityKitQuantity'}
+                  label2={'Kits de Seguridad/Contenedor'}
+                  placeholder2={'Cantidad'}
+                  unit='U/C'
+                />
+                <BoardingCardSelectBanContainer
+                  name1={'boardingCardId'}
+                  label1={'Tarjeta de Embarque'}
+                  placeholder1={'Seleccione la Tarjeta de Embarque'}
+                  name2={'boardingCardQuantity'}
+                  label2={'Tarjetas de Embarque/Contenedor'}
+                  placeholder2={'Cantidad'}
+                  unit='U/C'
+                />
               </SimpleGrid>
-
+              <StickerSelectBanContainer
+                name={'stickers'}
+                stickers={values.stickers}
+              />
+              <SheetSelectBanContainer name={'sheets'} sheets={values.sheets} />
               <SelectInsecticideBanContainer
                 name={'insecticides'}
                 insecticides={values.insecticides}

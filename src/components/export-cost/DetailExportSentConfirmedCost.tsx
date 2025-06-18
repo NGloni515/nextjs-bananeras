@@ -12,6 +12,7 @@ import {
   Text,
   Divider,
   VStack,
+  Flex,
 } from '@chakra-ui/react';
 import { ExportSentConfirmedCost } from '../../types/export-sent/exportSentConfirmedCost';
 
@@ -103,30 +104,30 @@ export default function DetailExportSentConfirmedCost({
               No se registraron materiales utilizados.
             </Text>
           ) : (
-            <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={4}>
+            <VStack align='stretch' spacing={2}>
+              {/* Encabezado */}
+              <Flex fontWeight='bold' gap={4}>
+                <Box flex='1'>Nombre</Box>
+                <Box flex='1'>Código</Box>
+                <Box flex='1'>Cantidad</Box>
+                <Box flex='1'>Costo Unitario</Box>
+                <Box flex='1'>Costo Total</Box>
+              </Flex>
+              <Divider />
+              {/* Filas de materiales */}
               {item.exportSentMaterials.map((m) => {
                 const mat = m.businessMaterialStock.exporterMaterialStock;
                 return (
-                  <Box
-                    key={m.id}
-                    borderWidth='1px'
-                    borderRadius='md'
-                    p={3}
-                    boxShadow='sm'
-                  >
-                    <VStack align='start' spacing={1}>
-                      <Text fontWeight='bold'>{mat.materialDetail.name}</Text>
-                      <Text>Código: {mat.materialDetail.code}</Text>
-                      <Text>Cantidad: {m.quantity}</Text>
-                      <Text>Costo Unitario: ${m.unitCost.toFixed(2)}</Text>
-                      <Text>
-                        Costo Total: ${(m.unitCost * m.quantity).toFixed(2)}
-                      </Text>
-                    </VStack>
-                  </Box>
+                  <Flex key={m.id} gap={4}>
+                    <Box flex='1'>{mat.materialDetail.name}</Box>
+                    <Box flex='1'>{mat.materialDetail.code}</Box>
+                    <Box flex='1'>{m.quantity}</Box>
+                    <Box flex='1'>${m.unitCost.toFixed(2)}</Box>
+                    <Box flex='1'>${(m.unitCost * m.quantity).toFixed(2)}</Box>
+                  </Flex>
                 );
               })}
-            </SimpleGrid>
+            </VStack>
           )}
         </AccordionPanel>
       </AccordionItem>

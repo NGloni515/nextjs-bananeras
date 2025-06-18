@@ -26,7 +26,7 @@ const CuttingSheetPage = (): React.JSX.Element => {
     isLoading: isLoadingSent,
     error: errorSent,
   } = useExportSent({
-    exportSentId: params.id,
+    exportSentId: data?.exportSent?.id?.toString() ?? '',
   });
   const pendingCuttingSheet = data as Partial<ExportResponse>;
   const exportSent = exportSentData as Partial<ExportSentType>;

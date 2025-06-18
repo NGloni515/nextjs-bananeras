@@ -29,7 +29,7 @@ const PendingCuttingSheetCard = ({
 
   const handleClick = (): void => {
     console.log(`export ${exportItem.id}: `, exportItem);
-    router.push(`${pathname}/${exportItem.id}`);
+    router.push(`${pathname}/${exportItem.export.id}`);
   };
 
   const details = [
