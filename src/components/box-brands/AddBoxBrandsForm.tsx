@@ -823,7 +823,7 @@ const validationSchema = Yup.object({
         return value > 0;
       }
     ),
-  packingTapeTypeId: Yup.mixed().when('reinforcementTypeQuantity', {
+  packingTapeTypeId: Yup.mixed().when('packingTapeTypeQuantity', {
     is: (value: number) => value > 0,
     then: (schema) => schema.required('Requerido'),
     otherwise: (schema) => schema.nullable(),
@@ -1184,7 +1184,7 @@ export default function AddBoxBrandsForm(): React.JSX.Element {
 
                 <CardboardSelectBanContanier
                   name1={'cardboardTypeId'}
-                  label1={'Cartulina'}
+                  label1={'Cartulina/Pad'}
                   placeholder1={'Seleccione la Cartulina'}
                   name2={'cardboardTypeQuantity'}
                   label2={'Cartulinas/Caja'}
@@ -1205,7 +1205,7 @@ export default function AddBoxBrandsForm(): React.JSX.Element {
 
                 <PadSelectBanContainer
                   name1={'padTypeId'}
-                  label1={'Pad'}
+                  label1={'Mini Pad'}
                   placeholder1={'Seleccione el Pad'}
                   name2={'padTypeQuantity'}
                   label2={'Pads/Caja'}
@@ -1497,7 +1497,7 @@ export default function AddBoxBrandsForm(): React.JSX.Element {
                   px='16px'
                   type='submit'
                   colorScheme='teal'
-                  isLoading={isLoading}
+                  isLoading={isSubmitting || isLoading}
                   onClick={() => console.log('values: ', values)}
                 >
                   Enviar
