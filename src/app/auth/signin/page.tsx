@@ -67,6 +67,15 @@ const SignInPage = (props: Props): JSX.Element => {
             </Link>
           </Text>
         </Center>
+
+        <Center>
+          <Text mt='10px'>
+            ¿Olvidaste tu contraseña?{' '}
+            <Link as={Link_Next} color='teal.500' href='/auth/forgot-password'>
+              Restablecer contraseña
+            </Link>
+          </Text>
+        </Center>
       </Flex>
     </Center>
   );
