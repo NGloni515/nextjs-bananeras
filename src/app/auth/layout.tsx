@@ -1,4 +1,5 @@
-import { Box, Flex, Text, theme } from '@chakra-ui/react';
+'use client';
+import { Box, Flex, Text, theme, useColorModeValue } from '@chakra-ui/react';
 import Image from 'next/image';
 
 export default function AuthLayout({
@@ -6,6 +7,9 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>): JSX.Element {
+  const scrollbarThumbColor = useColorModeValue('#2a9d5aff', '#1d573aff');
+  const scrollbarThumbHover = useColorModeValue('#1d7c49ff', '#4da06dff');
+
   return (
     <Flex minH='100vh'>
       {/* Parte izquierda */}
@@ -63,7 +67,41 @@ export default function AuthLayout({
       </Box>
 
       {/* Parte derecha */}
-      <Box w={{ base: '100%', xl: '50%', '2xl': '50%' }}>{children}</Box>
+      <Box
+        w={{ base: '100%', xl: '50%', '2xl': '50%' }}
+        h='100vh'
+        overflowY='auto'
+        px={{ base: 4, md: 8 }}
+        py={{ base: 6, md: 8 }}
+        css={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          '&::-webkit-scrollbar': {
+            width: '8px',
+            opacity: 0,
+            transition: 'opacity 0.3s',
+          },
+          '&:hover::-webkit-scrollbar': {
+            opacity: 1,
+          },
+
+          '&::-webkit-scrollbar-track': {
+            background: 'rgba(0, 0, 0, 0.05)',
+          },
+
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: scrollbarThumbColor,
+            borderRadius: '8px',
+            border: '2px solid transparent',
+            backgroundClip: 'content-box',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: scrollbarThumbHover,
+          },
+        }}
+      >
+        {children}
+      </Box>
     </Flex>
   );
 }
