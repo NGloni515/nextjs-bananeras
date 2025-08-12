@@ -25,6 +25,12 @@ const typesOpt = [
   { name: 'Intermediario', id: 'Intermediario' },
 ];
 
+const ShippingMethodOptions = [
+  { name: 'Marítimo', id: 'Marítimo' },
+  { name: 'Aéreo', id: 'Aéreo' },
+  { name: 'Terrestre', id: 'Terrestre' },
+];
+
 export default function AddClientForm(): React.JSX.Element {
   const { onSubmit, initialValues, validationSchema, isLoading } =
     useSubmitClient();
@@ -63,7 +69,11 @@ export default function AddClientForm(): React.JSX.Element {
                 name='paymentConditions'
                 label='Condiciones de Pago'
               />
-              <InputFieldText name='shippingMethod' label='Método de Envío' />
+              <InputFieldSelector
+                name={'shippingMethod'}
+                label={'Método de Envío'}
+                options={ShippingMethodOptions}
+              />
               <InputFieldCountrySelect
                 name='countryId'
                 label='País'
