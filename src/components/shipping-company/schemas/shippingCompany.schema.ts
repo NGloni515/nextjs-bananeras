@@ -85,7 +85,6 @@ export const validationSchema = Yup.object({
         cost: Yup.number()
           .typeError('Debe ser un número válido con punto decimal')
           .positive('Debe ser positivo')
-          .required('Costo requerido')
           .test(
             'no-comma',
             'Usa punto como separador decimal (ej. 1.23)',

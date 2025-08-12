@@ -8,6 +8,7 @@ import { useQueryClient } from 'react-query';
 import * as Yup from 'yup';
 import { useCreatePesticide } from '../../../../hooks/box-brand/post-harvest/pesticide/createPesticide';
 import InputFieldNumber from '../../../ui/form/InputFieldNumber';
+import InputFieldSelector from '../../../ui/form/InputFieldSelector';
 import InputFieldText from '../../../ui/form/InputFieldText';
 
 interface AddPesticideFormProps {
@@ -149,6 +150,21 @@ const AddPesticideForm = ({
     return;
   };
 
+  const PresentationOptions = [
+    { id: 'Mililitro (mL / cc)', name: 'Mililitro (mL / cc)' },
+    { id: 'Centilitro (cL)', name: 'Centilitro (cL)' },
+    { id: 'Decilitro (dL)', name: 'Decilitro (dL)' },
+    { id: 'Litro (L)', name: 'Litro (L)' },
+    { id: 'Galón (US gal)', name: 'Galón (US gal)' },
+    { id: 'Miligramo (mg)', name: 'Miligramo (mg)' },
+    { id: 'Gramo (g)', name: 'Gramo (g)' },
+    { id: 'Kilogramo (kg)', name: 'Kilogramo (kg)' },
+    { id: 'Onza (oz)', name: 'Onza (oz)' },
+    { id: 'Libra (lb)', name: 'Libra (lb)' },
+    { id: 'Quintal (qq)', name: 'Quintal (qq)' },
+    { id: 'Unidad (un)', name: 'Unidad (un)' },
+  ];
+
   return (
     <>
       <Formik
@@ -171,8 +187,11 @@ const AddPesticideForm = ({
                 label={'Ingrediente activo'}
               />
               <InputFieldNumber name={'dose'} label={'Dosis'} />
-              <InputFieldText name={'presentation'} label={'Presentacion'} />
-
+              <InputFieldSelector
+                name={'presentation'}
+                label={'Presentación'}
+                options={PresentationOptions}
+              />
               <Button
                 mt='32px'
                 py='8px'
