@@ -33,7 +33,7 @@ export default function AddShippingCompanyForm(): React.JSX.Element {
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
               <InputFieldText
                 name='name'
-                label='Nombre'
+                label='Nombre de la Naviera'
                 placeholder='Nombre de la Naviera'
               />
               <InputFieldText

@@ -30,39 +30,86 @@ export function useSubmitShippingCompany(): {
     values: ValuesProps,
     formikHelpers: FormikHelpers<ValuesProps>
   ): Promise<void> => {
-    const { dataReviewed, ...companyData } = values;
+    const { dataReviewed, harbors, contacts, ...rest } = values;
     dataReviewed;
-    createShippingCompany(
-      { ...companyData },
-      {
-        onError: (error: AxiosError<ServerErrorResponse>) => {
-          const data = error.response?.data;
-          if (!data) return;
-          const { statusCode, message, errors: errorTitle } = data;
-          toast({
-            title: `Error ${statusCode}: ${errorTitle}`,
-            description: message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
-          if (statusCode === 401) {
-            router.push('/api/auth/signout');
-          }
-        },
-        onSuccess: () => {
-          toast({
-            title: 'Naviero Creado con éxito',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          });
-          queryClient.invalidateQueries('shipping-companies');
-          formikHelpers.resetForm();
-          router.push('/dashboard/client/shipping-companies');
-        },
-      }
-    );
+    const toNumberOrZero = (v: number | '' | null | undefined): number =>
+      v === '' || v == null ? 0 : Number(v);
+
+    const toNumber = (v: number | '' | null | undefined): number | null =>
+      v === '' || v == null ? null : Number(v);
+
+    const normalizedHarbors =
+      (harbors || [])
+        .map((h) => ({
+          harborDepartureId: toNumber(h.harborDepartureId),
+          harborDestinationId: toNumber(h.harborDestinationId),
+          estDuration: (h.estDuration || '').trim(),
+          cost: toNumberOrZero(h.cost),
+        }))
+        .filter(
+          (h) =>
+            h.harborDepartureId !== null &&
+            h.harborDestinationId !== null &&
+            h.estDuration.length > 0
+        )
+        .map((h) => ({
+          harborDepartureId: h.harborDepartureId as number,
+          harborDestinationId: h.harborDestinationId as number,
+          estDuration: h.estDuration,
+          cost: h.cost,
+        })) || undefined;
+
+    const normalizedContacts = (contacts || []).map((c) => ({
+      name: (c.name || '').trim(),
+      email: (c.email || '').trim(),
+      phone: (c.phone || '').trim(),
+    }));
+
+    const trackingPlatform = (rest.trackingPlatform || '').trim() || undefined;
+
+    const payload = {
+      name: rest.name.trim(),
+      code: rest.code.trim(),
+      countryId: Number(rest.countryId),
+      frequencies: rest.frequencies.trim(),
+      cargoType: rest.cargoType as
+        | 'Contenedores Refrigerados'
+        | 'Carga al Granel',
+      trackingPlatform,
+      contacts: normalizedContacts,
+      ...(normalizedHarbors && normalizedHarbors.length
+        ? { harbors: normalizedHarbors }
+        : {}),
+    };
+
+    createShippingCompany(payload, {
+      onError: (error: AxiosError<ServerErrorResponse>) => {
+        const data = error.response?.data;
+        if (!data) return;
+        const { statusCode, message, errors: errorTitle } = data;
+        toast({
+          title: `Error ${statusCode}: ${errorTitle}`,
+          description: message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+        if (statusCode === 401) {
+          router.push('/api/auth/signout');
+        }
+      },
+      onSuccess: () => {
+        toast({
+          title: 'Naviero Creado con éxito',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        queryClient.invalidateQueries('shipping-companies');
+        formikHelpers.resetForm();
+        router.push('/dashboard/client/shipping-companies');
+      },
+    });
   };
 
   return {
