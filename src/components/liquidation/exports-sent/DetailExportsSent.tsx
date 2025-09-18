@@ -63,7 +63,7 @@ const DetailExportSent = ({
             <strong>Tipo de Fruta:</strong> {ex.business.fruitType}
           </p>
           <p>
-            <strong>Área Cultivada:</strong> {ex.business.area} m²
+            <strong>Área Cultivada:</strong> {ex.business.area} ha
           </p>
         </AccordionPanel>
       </AccordionItem>
@@ -88,11 +88,11 @@ const DetailExportSent = ({
             <strong>Cantidad Total:</strong> {ex.boxQuantity} cajas
           </p>
           <p>
-            <strong>Peso Neto por Caja:</strong> {ex.boxBrand.netWeightBox} kg
+            <strong>Peso Neto por Caja:</strong> {ex.boxBrand.netWeightBox} lbs
           </p>
           <p>
             <strong>Peso Bruto por Caja:</strong> {ex.boxBrand.grossWeightBox}{' '}
-            kg
+            lbs
           </p>
         </AccordionPanel>
       </AccordionItem>

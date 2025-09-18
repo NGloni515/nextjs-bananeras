@@ -19,7 +19,8 @@ import InputFieldText from '../ui/form/InputFieldText';
 import InputFieldCertificateMultiSelect from '../utils/InputFieldCertificateMultiSelect';
 
 export default function AddBusinessForm(): React.JSX.Element {
-  const { onSubmit, initialValues, validationSchema, isLoading } = useSubmitBusiness();
+  const { onSubmit, initialValues, validationSchema, isLoading } =
+    useSubmitBusiness();
   const FruitTypeOpt = [
     { name: 'Convencional', id: 'Convencional' },
     { name: 'Orgánica', id: 'Orgánica' },
@@ -46,7 +47,7 @@ export default function AddBusinessForm(): React.JSX.Element {
 
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
               <InputFieldText name={'name'} label={'Nombre'} />
-              <InputFieldNumber name={'area'} label={'Área'} unit='m²' />
+              <InputFieldNumber name={'area'} label={'Área'} unit='ha' />
               <InputFieldText name={'codeMAGAP'} label={'Código MAGAP'} />
               <InputFieldText
                 name={'codeAGROCALIDAD'}
@@ -57,9 +58,23 @@ export default function AddBusinessForm(): React.JSX.Element {
                 label={'Tipo de Fruta'}
                 options={FruitTypeOpt}
               />
-              <InputFieldCountrySelect name={'countryId'} label={'País'} placeholder={'Seleccione el país'} />
-              <InputFieldProvinceSelect name={'provinceId'} label={'Provincia'} placeholder={'Seleccione la provincia'} countryId={values.countryId || undefined} />
-              <InputFieldCitySelect name={'cityId'} label={'Ciudad'} placeholder={'Seleccione la ciudad'} provinceId={values.provinceId || undefined} />
+              <InputFieldCountrySelect
+                name={'countryId'}
+                label={'País'}
+                placeholder={'Seleccione el país'}
+              />
+              <InputFieldProvinceSelect
+                name={'provinceId'}
+                label={'Provincia'}
+                placeholder={'Seleccione la provincia'}
+                countryId={values.countryId || undefined}
+              />
+              <InputFieldCitySelect
+                name={'cityId'}
+                label={'Ciudad'}
+                placeholder={'Seleccione la ciudad'}
+                provinceId={values.provinceId || undefined}
+              />
               <InputFieldText name={'address'} label={'Dirección'} />
               <InputFieldCertificateMultiSelect
                 name={'certificates'}
@@ -190,4 +205,4 @@ export default function AddBusinessForm(): React.JSX.Element {
       )}
     </Formik>
   );
-};
+}

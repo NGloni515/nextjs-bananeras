@@ -75,7 +75,7 @@ const DetailCuttingSheet = ({
             <strong>Finca:</strong> {ex.business.name}
           </Text>
           <Text>
-            <strong>Área:</strong> {ex.business.area} m²
+            <strong>Área:</strong> {ex.business.area} ha
           </Text>
           <Text>
             <strong>Fruta:</strong> {ex.business.fruitType}
@@ -162,10 +162,10 @@ const DetailCuttingSheet = ({
             <strong>Código:</strong> {ex.boxBrand.brandCode}
           </Text>
           <Text>
-            <strong>Peso Neto:</strong> {ex.boxBrand.netWeightBox} kg
+            <strong>Peso Neto:</strong> {ex.boxBrand.netWeightBox} lbs
           </Text>
           <Text>
-            <strong>Peso Bruto:</strong> {ex.boxBrand.grossWeightBox} kg
+            <strong>Peso Bruto:</strong> {ex.boxBrand.grossWeightBox} lbs
           </Text>
           <Text>
             <strong>Cantidad de Cajas:</strong> {ex.boxQuantity}

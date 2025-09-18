@@ -191,13 +191,14 @@ export default function WeeklyExportsCalendar({
         </Flex>
       </Flex>
 
-      <SimpleGrid columns={7} spacing={4}>
+      <SimpleGrid columns={7} spacing={4} h='100%' gridAutoRows='1fr'>
         {weekDaysOfWeek.map((dayLabel, dayIndex) => {
           const exportsForDay = boxesMatrix[dayIndex] || [];
           const dayTotal = exportsForDay.reduce(
             (acc, box) => acc + box.boxQuantity,
             0
           );
+
           return (
             <Box
               key={dayIndex}
@@ -207,13 +208,16 @@ export default function WeeklyExportsCalendar({
               borderWidth='1px'
               boxShadow='sm'
               minH='200px'
+              h='100%'
               display='flex'
               flexDirection='column'
+              minW={0}
             >
-              <Text fontSize='md' fontWeight='semibold' mb={2}>
+              <Text fontSize='md' fontWeight='semibold' mb={2} noOfLines={1}>
                 {dayLabel}
               </Text>
-              <Box flex='1'>
+
+              <Box flex='1' minH={0} overflowY='auto'>
                 {exportsForDay.map((box, idx) => (
                   <ExportCardWithPopover
                     key={`${box.exportId}-${idx}`}
@@ -223,7 +227,15 @@ export default function WeeklyExportsCalendar({
                   />
                 ))}
               </Box>
-              <Text mt={4} textAlign='center' fontWeight='bold'>
+
+              <Text
+                mt='auto'
+                pt={2}
+                textAlign='center'
+                fontWeight='bold'
+                borderTop='1px'
+                borderColor='gray.100'
+              >
                 {dayTotal} Cajas
               </Text>
             </Box>
