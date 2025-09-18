@@ -18,7 +18,8 @@ import InputFieldText from '../ui/form/InputFieldText';
 import InputFieldCertificateMultiSelect from '../utils/InputFieldCertificateMultiSelect';
 
 export default function OnboardingForm(): React.JSX.Element {
-  const { onSubmit, initialValues, validationSchema, isLoading } = useSubmitOnboarding();
+  const { onSubmit, initialValues, validationSchema, isLoading } =
+    useSubmitOnboarding();
 
   const ContractOpt = [
     { name: 'FOB (FREE ON BOARD)', id: 'FOB' },
@@ -58,13 +59,17 @@ export default function OnboardingForm(): React.JSX.Element {
               <InputFieldCountrySelect
                 name={'countryId'}
                 label={'País'}
-                placeholder={'Seleccione el país'} />
+                placeholder={'Seleccione el país'}
+              />
               <InputFieldProvinceSelect
                 name={'provinceId'}
-                label={'Provincia'} placeholder={'Seleccione la provincia'}
-                countryId={values.countryId || undefined} />
+                label={'Provincia'}
+                placeholder={'Seleccione la provincia'}
+                countryId={values.countryId || undefined}
+              />
               <InputFieldCitySelect
-                name={'cityId'} label={'Ciudad'}
+                name={'cityId'}
+                label={'Ciudad'}
                 placeholder={'Seleccione la ciudad'}
                 provinceId={values.provinceId || undefined}
               />
@@ -78,7 +83,11 @@ export default function OnboardingForm(): React.JSX.Element {
 
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4}>
               <InputFieldText name={'businesses[0].name'} label={'Nombre'} />
-              <InputFieldNumber name={'businesses[0].area'} label={'Área'} unit='m²' />
+              <InputFieldNumber
+                name={'businesses[0].area'}
+                label={'Área'}
+                unit='ha'
+              />
               <InputFieldText
                 name={'businesses[0].codeMAGAP'}
                 label={'Código MAGAP'}
@@ -95,15 +104,20 @@ export default function OnboardingForm(): React.JSX.Element {
               <InputFieldCountrySelect
                 name={'businesses[0].countryId'}
                 label={'País'}
-                placeholder={'Seleccione el país'} />
+                placeholder={'Seleccione el país'}
+              />
               <InputFieldProvinceSelect
                 name={'businesses[0].provinceId'}
-                label={'Provincia'} placeholder={'Seleccione la provincia'}
-                countryId={values.businesses[0].countryId || undefined} />
+                label={'Provincia'}
+                placeholder={'Seleccione la provincia'}
+                countryId={values.businesses[0].countryId || undefined}
+              />
               <InputFieldCitySelect
-                name={'businesses[0].cityId'} label={'Ciudad'}
+                name={'businesses[0].cityId'}
+                label={'Ciudad'}
                 placeholder={'Seleccione la ciudad'}
-                provinceId={values.businesses[0].provinceId || undefined} />
+                provinceId={values.businesses[0].provinceId || undefined}
+              />
               <InputFieldText
                 name={'businesses[0].address'}
                 label={'Dirección'}
@@ -245,4 +259,4 @@ export default function OnboardingForm(): React.JSX.Element {
       )}
     </Formik>
   );
-}  
+}

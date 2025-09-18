@@ -63,18 +63,18 @@ const TableBoxBrand = ({
           },
           {
             accessorKey: 'netWeightBox',
-            header: 'Peso Neto por Caja (kg)',
+            header: 'Peso Neto por Caja (lbs)',
             Cell: ({ cell }): React.JSX.Element | string => {
               const value = cell.getValue<number>();
-              return value ? `${value} kg` : 'N/A';
+              return value ? `${value} lbs` : 'N/A';
             },
           },
           {
             accessorKey: 'grossWeightBox',
-            header: 'Peso Bruto por Caja (kg)',
+            header: 'Peso Bruto por Caja (lbs)',
             Cell: ({ cell }): React.JSX.Element | string => {
               const value = cell.getValue<number>();
-              return value ? `${value} kg` : 'N/A';
+              return value ? `${value} lbs` : 'N/A';
             },
           },
           {
