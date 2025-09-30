@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { useDisclosure } from '@chakra-ui/react';
 import { createContext, useContext } from 'react';
 
@@ -7,7 +5,7 @@ const SidenavContext = createContext<ReturnType<typeof useDisclosure> | null>(
   null
 );
 
-export function useSidenav() {
+export function useSidenav(): ReturnType<typeof useDisclosure> {
   const sidebar = useContext(SidenavContext);
   if (!sidebar) {
     throw new Error('Cannot use `sidebar context` outside SidebarProvider');
@@ -20,7 +18,7 @@ export function SidenavProvider({
   ...props
 }: {
   children: React.ReactNode;
-}) {
+}): React.JSX.Element {
   const disclosure = useDisclosure();
   return (
     <SidenavContext.Provider value={{ ...disclosure }} {...props}>

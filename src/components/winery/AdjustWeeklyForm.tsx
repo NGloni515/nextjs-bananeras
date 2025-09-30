@@ -34,6 +34,31 @@ const MOVEMENT_TYPE_LABELS: Record<string, string> = {
   CONSUMPTION: 'CONSUMIDO',
 };
 
+const clamp = (x: number, min: number, max: number): number =>
+  Math.max(min, Math.min(max, x));
+
+const clampUnits = (current: number, units: number): number => {
+  const maxUnits = current < 0 ? Math.abs(current) : Math.max(0, current);
+  const safeUnits = clamp(Number(units) || 0, 0, maxUnits);
+  return safeUnits;
+};
+
+const computeProjectedStock = (current: number, units: number): number => {
+  const u = clampUnits(current, units);
+  if (current < 0) return Math.min(0, current + u);
+  return Math.max(0, current - u);
+};
+
+const computeMaterialDiscount = (
+  current: number,
+  units: number,
+  unitCost: number
+): number => {
+  const cost = Number.isFinite(unitCost) ? unitCost : 0;
+  const u = clampUnits(current, units);
+  return u * cost;
+};
+
 const getValidationSchema = (): Yup.ObjectSchema<{
   dataReviewed: boolean;
   stocks: { id: number; real: number; current: number }[];
@@ -47,20 +72,22 @@ const getValidationSchema = (): Yup.ObjectSchema<{
       .of(
         Yup.object({
           id: Yup.number().required(),
+          current: Yup.number().required(),
           real: Yup.number()
             .required('Requerido')
             .min(0, 'No puede ser negativo')
-            .test('max-current', function (value) {
-              const { current } = this.parent;
-              if (value > current) {
+            .test('max-by-current-sign', function (value) {
+              const { current } = this.parent as { current: number };
+              const max =
+                current < 0 ? Math.abs(current) : Math.max(0, current);
+              if ((value ?? 0) > max) {
                 return this.createError({
-                  message: `No puede ser mayor a ${current}`,
+                  message: `No puede exceder ${max} unidades a ajustar`,
                 });
               }
               return true;
             })
             .typeError('Debe ser un número'),
-          current: Yup.number().required(),
         })
       )
       .required()
@@ -87,7 +114,7 @@ const AdjustWeeklyForm = ({
       code: item.materialDetail.code,
       assigned: item.assignedStock,
       current: item.currentStock,
-      real: item.currentStock,
+      real: 0,
       currentCost: item.currentCost,
       transfers: item.stockMovementsFromExporter.filter(
         (m) => getISOWeek(parseISO(m.createdAt)) === week
@@ -100,14 +127,24 @@ const AdjustWeeklyForm = ({
   };
 
   const handleSubmit = async (values: typeof initialValues): Promise<void> => {
-    const updates = values.stocks.filter((item) => item.real !== item.current);
+    const updates = values.stocks
+      .map((item) => ({
+        id: item.id,
+        current: item.current,
+        units: clampUnits(item.current, item.real),
+        projected: computeProjectedStock(item.current, item.real),
+      }))
+      .filter((x) => x.units > 0);
+
     if (updates.length === 0) {
       toast({ title: 'No hay cambios para ajustar.', status: 'info' });
       return;
     }
+
     const realStocks = Object.fromEntries(
-      updates.map((item) => [item.id, item.real])
+      updates.map((u) => [u.id, u.projected])
     );
+
     try {
       await mutation.mutateAsync({ realStocks });
       toast({
@@ -140,10 +177,9 @@ const AdjustWeeklyForm = ({
       >
         {({ values, isSubmitting, setFieldValue }) => {
           const totalDiscount = values.stocks.reduce((acc, item) => {
-            const diff = item.current - item.real;
             const cost =
               values.selectedCosts[String(item.id)] ?? item.currentCost ?? 0;
-            return acc + (diff > 0 ? diff * cost : 0);
+            return acc + computeMaterialDiscount(item.current, item.real, cost);
           }, 0);
 
           return (
@@ -154,6 +190,7 @@ const AdjustWeeklyForm = ({
                     {values.stocks.length === 0 && (
                       <Text>No hay materiales disponibles.</Text>
                     )}
+
                     {values.stocks.map((item, index) => {
                       const uniqueCosts = new Set<number>();
                       uniqueCosts.add(item.currentCost ?? 0);
@@ -169,9 +206,17 @@ const AdjustWeeklyForm = ({
                         values.selectedCosts[String(item.id)] ??
                         item.currentCost ??
                         0;
-                      const diff = item.current - item.real;
-                      const materialDiscount =
-                        diff > 0 ? diff * selectedCost : 0;
+
+                      const unitsClamped = clampUnits(item.current, item.real);
+                      const projected = computeProjectedStock(
+                        item.current,
+                        item.real
+                      );
+                      const materialDiscount = computeMaterialDiscount(
+                        item.current,
+                        item.real,
+                        selectedCost
+                      );
 
                       return (
                         <Box
@@ -196,14 +241,20 @@ const AdjustWeeklyForm = ({
                             </Text>
                             <Flex direction='column' gap={1}>
                               <Text>
-                                <strong>Stock Ajustado:</strong>
+                                <strong>Unidades a Ajustar:</strong>
                               </Text>
                               <InputFieldNumber
                                 name={`stocks[${index}].real`}
                                 value={item.real}
-                                placeholder='Cantidad Real'
+                                placeholder='Unidades a Ajustar'
                                 isDecimal={false}
                               />
+                              <Text fontSize='sm' color='gray.600'>
+                                Stock Proyectado: <strong>{projected}</strong>
+                                {' - '}
+                                Unidades Consideradas:{' '}
+                                <strong>{unitsClamped}</strong>
+                              </Text>
                             </Flex>
                           </Grid>
 
@@ -236,14 +287,21 @@ const AdjustWeeklyForm = ({
                                 </option>
                               ))}
                             </Select>
-                            <Box></Box>
+                            <Box>
+                              {item.current < 0 && (
+                                <Badge colorScheme='red' mb={2}>
+                                  Stock negativo actual: {projected}/
+                                  {item.current}
+                                </Badge>
+                              )}
+                            </Box>
                             <Text
                               mt={1}
                               color={
                                 materialDiscount === 0 ? 'black' : 'red.600'
                               }
                             >
-                              <strong>Descuento estimado:</strong> $
+                              <strong>Descuento Estimado:</strong> $
                               {materialDiscount.toFixed(2)}
                             </Text>
                           </SimpleGrid>
@@ -315,7 +373,7 @@ const AdjustWeeklyForm = ({
                           fontWeight='bold'
                           color={totalDiscount === 0 ? 'black' : 'red.500'}
                         >
-                          Total descuento estimado: ${totalDiscount.toFixed(2)}
+                          Total Descuento Estimado: ${totalDiscount.toFixed(2)}
                         </Text>
 
                         <SimpleGrid columns={1} spacing={2}>

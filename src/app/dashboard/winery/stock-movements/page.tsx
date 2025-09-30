@@ -5,40 +5,63 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Center,
+  HStack,
   Heading,
+  Icon,
+  Text,
+  Badge,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import React from 'react';
+import { MdTimeline } from 'react-icons/md';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 import StockMovementsSelector from '../../../../components/winery/StockMovementsSelector';
 
 function StockMovementsPage(): React.JSX.Element {
+  const bgColor = useColorModeValue('gray.50', 'gray.900');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const headingColor = useColorModeValue('gray.900', 'gray.100');
+  const textColor = useColorModeValue('gray.700', 'gray.200');
+  const headBg = useColorModeValue('gray.50', 'gray.750');
+
   return (
-    <Box my={'20px'} mx={'auto'} w={'95%'}>
-      <Center>
+    <Box minH="100vh" bg={bgColor} p={{ base: 4, md: 6, lg: 8 }}>
+      <Box maxW="8xl" mx="auto">
         <Card
-          w={{
-            base: '95%',
-            sm: '95%',
-            md: '90%',
-            lg: '100%',
-            xl: '100%',
-          }}
-          mb={'20px'}
+          bg={cardBg}
+          borderColor={borderColor}
+          borderRadius="xl"
+          boxShadow="lg"
+          overflow="hidden"
+          border="1px solid"
         >
-          <CardHeader
-            w={'100%'}
-            display='flex'
-            justifyContent='space-between'
-            alignItems='center'
-          >
-            <Heading>Movimientos de Materiales por Finca</Heading>
+          <CardHeader bg={headBg}>
+            <HStack spacing={3} align="center">
+              <Box p={2} bg="green.100" borderRadius="lg" color="green.600">
+                <Icon as={MdTimeline} boxSize={5} />
+              </Box>
+              <Box>
+                <HStack spacing={3} align="center">
+                  <Heading size="lg" color={headingColor} fontWeight="bold">
+                    Trazabilidad de Stock
+                  </Heading>
+                  <Badge colorScheme="green" variant="subtle" borderRadius="full" px={3} py={1}>
+                    Herramienta
+                  </Badge>
+                </HStack>
+                <Text fontSize="sm" color={textColor} mt={1}>
+                  Consulta los movimientos de materiales por finca
+                </Text>
+              </Box>
+            </HStack>
           </CardHeader>
-          <CardBody w='100%'>
+
+          <CardBody>
             <StockMovementsSelector />
           </CardBody>
         </Card>
-      </Center>
+      </Box>
     </Box>
   );
 }

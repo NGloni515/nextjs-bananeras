@@ -1,12 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+
 import {
+  Badge,
   Box,
   Center,
   Heading,
   SimpleGrid,
   Text,
   VStack,
+  useColorModeValue,
 } from '@chakra-ui/react';
+import { isAxiosError } from 'axios';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import PendingPaymentCard from './PendingPaymentCard';
@@ -14,84 +18,102 @@ import { useClientPaymentsPending } from '../../hooks/client-payment/getClientPa
 import { usePagination } from '../../hooks/usePagination';
 import { ExportSentType } from '../../types/exportSent';
 
+type ApiErrorData = {
+  statusCode?: number;
+  message?: string;
+  error?: string;
+};
+
 const PendingPaymentList = (): React.JSX.Element => {
   const { paginationParams } = usePagination();
-  const {
-    data = [],
-    isLoading,
-    error,
-  } = useClientPaymentsPending(paginationParams);
+  const { data = [], isLoading, error } = useClientPaymentsPending(paginationParams);
+
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    if (!!error) {
-      const { response } = error as any;
-      const { data: dataRes } = response;
-      const { statusCode } = dataRes;
+  const headingColor = useColorModeValue('gray.900', 'gray.100');
+  const textColor = useColorModeValue('gray.700', 'gray.300');
 
+  useEffect(() => {
+    if (error && isAxiosError<ApiErrorData>(error)) {
+      const statusCode = error.response?.data?.statusCode;
       if (statusCode === 401) {
         router.push('/api/auth/signout');
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error]);
+  }, [error, router]);
 
   if (isLoading) {
     return (
-      <Box mx={'auto'} my={'200px'}>
-        <Center>
-          <Heading>Cargando...</Heading>
-        </Center>
+      <Box minH="40vh" display="flex" alignItems="center" justifyContent="center">
+        <Heading>Cargando...</Heading>
       </Box>
     );
   }
 
-  if (!!error) {
-    const { response } = error as any;
-    const { data: dataRes } = response;
-    const { statusCode, message, error: errorTitle } = dataRes;
-
-    return (
-      <Box mx={'auto'} my={'200px'}>
-        <Center>
-          <VStack spacing={2} align='center'>
+  if (error) {
+    if (isAxiosError<ApiErrorData>(error)) {
+      const { statusCode, message, error: errorTitle } = error.response?.data ?? {};
+      return (
+        <Box minH="40vh" display="flex" alignItems="center" justifyContent="center">
+          <VStack spacing={2} align="center">
             <Heading>
-              {statusCode} - {errorTitle}
+              {statusCode ?? 'Error'}
+              {errorTitle ? ` - ${errorTitle}` : ''}
             </Heading>
-            <Text>{message}</Text>
+            <Text color={textColor}>{message ?? 'Ocurrió un error inesperado'}</Text>
           </VStack>
-        </Center>
+        </Box>
+      );
+    }
+    return (
+      <Box minH="40vh" display="flex" alignItems="center" justifyContent="center">
+        <VStack spacing={2} align="center">
+          <Heading>Error</Heading>
+          <Text color={textColor}>Ocurrió un error inesperado</Text>
+        </VStack>
       </Box>
     );
   }
+
+  const items = data as Partial<ExportSentType>[];
 
   return (
-    <>
-      <VStack spacing={4} alignItems='center' justifyContent='center'>
-        <Heading width='100%' textAlign='center'>
-          Lista de Cobros Pendientes
+    <VStack spacing={4} align="stretch">
+      <Box
+        display="flex"
+        alignItems="center"
+        gap={3}
+        justifyContent="space-between"
+        w="100%"
+      >
+        <Heading size="md" color={headingColor}>
+          Cobros Pendientes
         </Heading>
-        {data.length === 0 ? (
-          <Center p={6}>
-            <Text>No existen cobros pendientes</Text>
-          </Center>
-        ) : (
-          <SimpleGrid
-            columns={{ base: 1, sm: 1, md: 1, lg: 2, xl: 3 }}
-            spacing={4}
-          >
-            {(data as Partial<ExportSentType>[]).map((item) => (
-              <PendingPaymentCard
-                key={item.id}
-                exportSentItem={item}
-                pathname={pathname}
-              />
-            ))}
-          </SimpleGrid>
-        )}
-      </VStack>
-    </>
+        <Badge colorScheme="green" variant="subtle" px={3} py={1} borderRadius="full">
+          {items.length} {items.length === 1 ? 'pendiente' : 'pendientes'}
+        </Badge>
+      </Box>
+
+      {items.length === 0 ? (
+        <Center py={10}>
+          <VStack spacing={1}>
+            <Heading size="sm" color={headingColor}>
+              No existen cobros pendientes
+            </Heading>
+            <Text fontSize="sm" color={textColor}>
+              Cuando existan, aparecerán aquí.
+            </Text>
+          </VStack>
+        </Center>
+      ) : (
+        <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={{ base: 4, md: 6 }}>
+          {items.map((item) => (
+            <PendingPaymentCard key={item.id} exportSentItem={item} pathname={pathname} />
+          ))}
+        </SimpleGrid>
+      )}
+    </VStack>
   );
 };
 

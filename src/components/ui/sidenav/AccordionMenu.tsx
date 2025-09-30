@@ -1,115 +1,302 @@
-import { Badge, Box, Button, Flex, Icon, Link, Text } from '@chakra-ui/react';
+'use client';
+
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Flex,
+  Icon,
+  Link,
+  Text,
+  Badge,
+  Tooltip,
+  IconButton,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
-import { SidenavItem } from './sidenav-items';
+import { FiPlus } from 'react-icons/fi';
+import { SidenavItem, SidenavMenuItem } from './sidenav-items';
 
 interface AccordionMenuProps {
   item: SidenavItem;
+  isCollapsed?: boolean;
 }
 
-export const AccordionMenu = ({
+export function AccordionMenu({
   item,
-}: AccordionMenuProps): React.JSX.Element => {
+  isCollapsed = false,
+}: AccordionMenuProps): React.JSX.Element {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(pathname.includes(item.to));
+  const isAble = pathname !== '/dashboard/onboarding';
 
-  const isAble: boolean = pathname !== '/dashboard/onboarding';
+  const isItemActive = (p: string): boolean =>
+    pathname === p || pathname.startsWith(p + '/');
 
-  const toggleAccordion = (): void => {
-    setIsOpen(!isOpen);
+  const isMenuItemActive = (it: SidenavItem): boolean =>
+    it.menu?.some((m) => isItemActive(m.to)) || false;
+
+  const normalize = (s: string): string =>
+    s
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+
+  const singular = (s: string): string => {
+    if (s.endsWith('es')) return s.slice(0, -2);
+    if (s.endsWith('s')) return s.slice(0, -1);
+    return s;
   };
 
-  const renderBadge = (count?: number): React.JSX.Element | null => {
-    if (count && count > 0) {
-      return (
-        <Badge colorScheme='red' ml='auto' mr={2.5}>
-          {count}
-        </Badge>
-      );
+  const isAdd = (label: string): boolean => /^(agregar|añadir|crear)\b/i.test(label);
+  const addEntityFrom = (label: string): string =>
+    singular(
+      normalize(
+        label.replace(/^(agregar|añadir|crear)\s+/i, '').trim()
+      )
+    );
+
+  const viewEntityFrom = (label: string): string => singular(normalize(label));
+
+  const renderBadgeCombined = (
+    badge?: SidenavItem['badge'] | SidenavMenuItem['badge'],
+    count?: number
+  ): React.JSX.Element | null => {
+    const c =
+      typeof count === 'number' && count > 0
+        ? count
+        : badge?.count && badge.count > 0
+          ? badge.count
+          : undefined;
+    if (!c) return null;
+    return (
+      <Badge
+        ml='auto'
+        variant={badge?.variant || 'solid'}
+        colorScheme={badge?.color || 'red'}
+        fontSize='xs'
+        borderRadius='full'
+        minW='20px'
+        h='20px'
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        fontWeight='semibold'
+      >
+        {c}
+      </Badge>
+    );
+  };
+
+  const renderNewIndicator = (isNew?: boolean): React.JSX.Element | null =>
+    isNew ? (
+      <Box w='6px' h='6px' bg='orange.400' borderRadius='full' ml='2' animation='pulse 2s infinite' />
+    ) : null;
+
+  const groups: { key: string; view?: SidenavMenuItem; add?: SidenavMenuItem }[] = [];
+  const singles: SidenavMenuItem[] = [];
+  const map = new Map<string, { key: string; view?: SidenavMenuItem; add?: SidenavMenuItem }>();
+
+  (item.menu ?? []).forEach((mi) => {
+    const label = mi.label ?? '';
+    if (isAdd(label)) {
+      const key = addEntityFrom(label);
+      const g = map.get(key) || ((): { key: string; view?: SidenavMenuItem; add?: SidenavMenuItem } => { const x = { key }; map.set(key, x); groups.push(x); return x; })();
+      g.add = mi;
+    } else {
+      const key = viewEntityFrom(label);
+      const g = map.get(key) || ((): { key: string; view?: SidenavMenuItem; add?: SidenavMenuItem } => { const x = { key }; map.set(key, x); groups.push(x); return x; })();
+      if (!g.view) g.view = mi;
     }
-    return null;
-  };
+  });
+
+  groups.forEach((g) => {
+    if (!(g.view && g.add)) {
+      if (g.view) singles.push(g.view);
+      if (g.add) singles.push(g.add);
+    }
+  });
+
+  const activeBg = useColorModeValue('green.50', 'green.900');
+  const hoverBg = useColorModeValue('green.50', 'green.700');
+  const borderColor = useColorModeValue('green.200', 'green.600');
+  const titleColor = useColorModeValue('gray.700', 'gray.200');
+  const activeTitleColor = useColorModeValue('green.700', 'green.200');
+
+  const defaultIndex = isMenuItemActive(item) ? [0] : [];
 
   return (
-    <>
-      <Button
-        onClick={toggleAccordion}
-        px='10px'
-        py='12px'
-        _hover={{
-          bg: 'green.300',
-          color: 'white',
-        }}
-        bgColor={isOpen ? 'green.300' : 'transparent'}
-        color={isOpen ? 'white' : 'black'}
-        borderRadius='md'
-        w={'full'}
-        display={'flex'}
-        justifyContent={'space-between'}
-        h={'48px'}
-      >
-        <Flex align='center'>
-          <Icon as={item.icon} boxSize='16px' />
-          <Flex ml={2} align='center' justify='between' w='full'>
-            <Text fontSize='md'>{item.label}</Text>
+    <Accordion allowToggle w='full' borderY='0px' defaultIndex={defaultIndex}>
+      <AccordionItem borderY='0px'>
+        <AccordionButton
+          px={isCollapsed ? 2 : '16px'}
+          py={isCollapsed ? 2 : '14px'}
+          bgColor={isMenuItemActive(item) ? 'green.50' : 'green.50'}
+          borderRadius='lg'
+          _hover={{ bg: 'green.50', borderColor: 'green.300', transform: 'translateX(2px)' }}
+          transition='all 0.2s ease'
+          border='1px solid'
+          borderColor={isMenuItemActive(item) ? 'green.200' : 'green.200'}
+          opacity={item.disabled ? 0.5 : 1}
+          cursor={item.disabled ? 'not-allowed' : 'pointer'}
+          position='relative'
+          overflow='hidden'
+        >
+          {isMenuItemActive(item) && (
+            <Box position='absolute' left='0' top='0' bottom='0' w='2px' bg='green.500' borderRadius='0 1px 1px 0' />
+          )}
+
+          <Flex align='center' flex='1' gap={isCollapsed ? 0 : 3} justify={isCollapsed ? 'center' : 'flex-start'}>
+            <Icon boxSize={5} as={item.icon} color={isMenuItemActive(item) ? 'green.600' : 'gray.600'} />
+            {!isCollapsed && (
+              <>
+                <Text ml={1} fontWeight={isMenuItemActive(item) ? 'semibold' : 'medium'} color={isMenuItemActive(item) ? 'green.700' : 'gray.700'}>
+                  {item.label}
+                </Text>
+                {renderNewIndicator(item.isNew)}
+                {renderBadgeCombined(item.badge, item.count)}
+              </>
+            )}
           </Flex>
-        </Flex>
-        {renderBadge(item.count)}
-        <Icon as={isOpen ? IoIosArrowDown : IoIosArrowForward} />
-      </Button>
-      {isOpen &&
-        item.menu?.map((menuItem, index) => (
-          <Box key={index}>
-            <Link
-              display="block"
-              as={Link_Next}
-              href={isAble ? menuItem.to : ''}
-              w="full"
-              borderRadius="md"
-              color={pathname === menuItem.to ? 'green.800' : 'black'}
-            >
-              <Flex alignItems="center" justifyContent="start" h="48px" p="0" pl="8px">
+          {!isCollapsed && <AccordionIcon />}
+        </AccordionButton>
+
+        <AccordionPanel pb={2} pl={isCollapsed ? 0 : 4} pr={isCollapsed ? 0 : 2}>
+          {groups
+            .filter((g) => g.view && g.add)
+            .map((g, idx) => {
+              const view = g.view!;
+              const add = g.add!;
+              const activeView = isItemActive(view.to);
+              const activeAdd = isItemActive(add.to);
+              const active = activeView || activeAdd;
+
+              const groupBadge =
+                renderBadgeCombined(add.badge, (add).count) ||
+                renderBadgeCombined(view.badge, (view).count);
+
+              return (
                 <Box
-                  bg={pathname.includes(menuItem.to) ? 'green.300' : 'green.100'}
-                  w="3px"
-                  h="100%"
-                  rounded="base"
-                />
-                <Text ml={2}>{menuItem.label}</Text>
-                {renderBadge(menuItem.count)}
-              </Flex>
-            </Link>
-            {menuItem.submenu &&
-              menuItem.submenu.map((subItem, subIndex) => (
-                <Link
-                  key={`${index}-${subIndex}`}
-                  display="block"
-                  as={Link_Next}
-                  href={isAble ? subItem.to : ''}
-                  w="full"
-                  borderRadius="md"
-                  color={pathname === subItem.to ? 'green.800' : 'black'}
+                  key={`grp-${idx}-${g.key}`}
+                  borderRadius='md'
+                  bg={active ? activeBg : 'transparent'}
+                  border='1px solid'
+                  borderColor={active ? borderColor : 'transparent'}
+                  mb={1.5}
+                  position='relative'
+                  overflow='hidden'
+                  transition='all 0.2s ease'
+                  _hover={{ bg: active ? activeBg : hoverBg }}
                 >
-                  <Flex
-                    alignItems="center"
-                    justifyContent="start"
-                    h="48px"
-                    p="0"
-                    pl="32px"
-                  >
-                    <Box
-                      h="40%"
-                      rounded="base"
-                    />
-                    <Text ml={2}>{subItem.label}</Text>
-                    {renderBadge(subItem.count)}
+                  {active && <Box position='absolute' left='0' top='0' bottom='0' w='2px' bg='green.500' />}
+
+                  <Flex align='center' gap={3} px={3} py={2.5} minW={0}>
+                    <Box flex='1' minW={0}>
+                      <Link
+                        as={Link_Next}
+                        href={!isAble || view.disabled ? '#' : view.to}
+                        display='flex'
+                        alignItems='center'
+                        _hover={{ textDecoration: 'none' }}
+                        cursor={!isAble || view.disabled ? 'not-allowed' : 'pointer'}
+                        opacity={view.disabled ? 0.5 : 1}
+                      >
+                        <Box
+                          w='4px'
+                          h='4px'
+                          bg={activeView ? 'green.500' : 'gray.300'}
+                          borderRadius='full'
+                          mr={3}
+                          flexShrink={0}
+                        />
+                        <Text
+                          fontSize='sm'
+                          fontWeight={activeView ? 'semibold' : 'medium'}
+                          color={activeView ? activeTitleColor : titleColor}
+                          flex='1'
+                          minW={0}
+                          whiteSpace='normal'
+                          lineHeight='1.2'
+                        >
+                          {view.label}
+                        </Text>
+                      </Link>
+                    </Box>
+
+                    {groupBadge && (
+                      <Box flexShrink={0}>
+                        {groupBadge}
+                      </Box>
+                    )}
+                    <Flex align='center' gap={2} mr='auto' flexShrink={0}>
+                      <IconButton
+                        as={Link_Next}
+                        href={!isAble || add.disabled ? '#' : add.to}
+                        aria-label={add.label}
+                        icon={<FiPlus />}
+                        size='sm'
+                        borderRadius='md'
+                        variant='ghost'
+                        color={activeAdd ? 'green.600' : 'green.500'}
+                        bg={activeAdd ? 'green.100' : 'transparent'}
+                        border={activeAdd ? '1px solid var(--chakra-colors-green-200)' : 'none'}
+                        _hover={{ bg: activeAdd ? 'green.200' : 'green.100', color: activeAdd ? 'white' : 'green.600' }}
+                        _active={{ bg: 'green.200', transform: 'scale(0.96)' }}
+                        cursor={!isAble || add.disabled ? 'not-allowed' : 'pointer'}
+                      />
+                    </Flex>
+                  </Flex>
+
+                </Box>
+              );
+            })}
+
+          {singles.map((menuItem, index) => {
+            const active = isItemActive(menuItem.to);
+            return (
+              <Tooltip
+                key={`single-${index}`}
+                label={menuItem.disabled ? 'Funcionalidad no disponible' : ''}
+                placement='right'
+                isDisabled={!menuItem.disabled}
+              >
+                <Link
+                  display='block'
+                  as={Link_Next}
+                  href={!isAble || menuItem.disabled ? '#' : menuItem.to}
+                  _focus={{ bg: 'green.50', outline: 'none' }}
+                  _hover={{ bg: menuItem.disabled ? 'transparent' : 'green.50', transform: menuItem.disabled ? 'none' : 'translateX(4px)' }}
+                  bg={active ? 'green.100' : 'transparent'}
+                  w='full'
+                  borderRadius='md'
+                  mb={1}
+                  transition='all 0.2s ease'
+                  cursor={!isAble || menuItem.disabled ? 'not-allowed' : 'pointer'}
+                  opacity={menuItem.disabled ? 0.5 : 1}
+                  position='relative'
+                  overflow='hidden'
+                >
+                  {active && <Box position='absolute' left='0' top='0' bottom='0' w='2px' bg='green.500' />}
+                  <Flex alignItems='center' p={3} py={2.5}>
+                    <Box w='4px' h='4px' bg={active ? 'green.500' : 'gray.300'} borderRadius='full' mr={3} textAlign={'start'} />
+                    {!isCollapsed && (
+                      <Text fontSize='sm' fontWeight={active ? 'semibold' : 'medium'} color={active ? 'green.700' : 'gray.600'}>
+                        {menuItem.label}
+                      </Text>
+                    )}
                   </Flex>
                 </Link>
-              ))}
-          </Box>
-        ))}
-    </>
+              </Tooltip>
+            );
+          })}
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
   );
-};
+}
+
+export default AccordionMenu;

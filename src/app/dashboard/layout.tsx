@@ -1,18 +1,9 @@
-'use client';
-import { Box, Flex } from '@chakra-ui/react';
-import SidenavBar from '../../components/ui/SidenavBar';
-interface DashboardProviderProps {
-  children: React.ReactNode;
-}
+import ClientLayoutWrapper from '../../components/ui/ClientLayoutWrapper';
 
-export default function DashboardProvider({
+export default async function DashBoardLayout({
   children,
-}: DashboardProviderProps): JSX.Element {
-  return (
-    <Box as='div' bgColor={'gray.50'}>
-      <Flex>
-        <SidenavBar>{children}</SidenavBar>
-      </Flex>
-    </Box>
-  );
+}: {
+  children: React.ReactNode;
+}): Promise<React.ReactNode> {
+  return <ClientLayoutWrapper>{children}</ClientLayoutWrapper>;
 }

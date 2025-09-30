@@ -17,7 +17,7 @@ export const Logo = ({
   const logoSrc =
     user?.exporterDetails?.logoUrl && !isLoading
       ? user.exporterDetails.logoUrl
-      : '/Banana.svg';
+      : '/Banana.png';
 
   const justifyContentMap = {
     center: 'center',

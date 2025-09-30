@@ -1,41 +1,62 @@
 'use client';
+
 import {
   Box,
   Card,
   CardBody,
   CardHeader,
-  Center,
+  HStack,
   Heading,
+  Icon,
+  Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import React from 'react';
+import { MdImage } from 'react-icons/md';
 import UploadLogoForm from '../../../../components/producer/UploadLogoForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 function UploadLogoPage(): React.JSX.Element {
+  const bgColor = useColorModeValue('gray.50', 'gray.900');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const headBg = useColorModeValue('gray.50', 'gray.750');
+  const headingColor = useColorModeValue('gray.900', 'gray.100');
+  const textColor = useColorModeValue('gray.700', 'gray.200');
+
   return (
-    <>
-      <Box my={'20px'} mx={'auto'} w={'95%'}>
-        <Center>
-          <Card
-            w={{
-              base: '95%',
-              sm: '95%',
-              md: '90%',
-              lg: '100%',
-              xl: '100%',
-            }}
-            mb={'20px'}
-          >
-            <CardHeader w={'100%'}>
-              <Heading>Agregar Nuevo Logo</Heading>
-            </CardHeader>
-            <CardBody w='100%'>
-              <UploadLogoForm />
-            </CardBody>
-          </Card>
-        </Center>
+    <Box minH="100vh" bg={bgColor} p={{ base: 4, md: 6, lg: 8 }}>
+      <Box maxW="7xl" mx="auto">
+        <Card
+          bg={cardBg}
+          borderColor={borderColor}
+          borderRadius="xl"
+          boxShadow="lg"
+          overflow="hidden"
+          border="1px solid"
+        >
+          <CardHeader bg={headBg}>
+            <HStack spacing={3} align="center">
+              <Box p={2} bg="green.100" borderRadius="lg" color="green.600">
+                <Icon as={MdImage} boxSize={5} />
+              </Box>
+              <Box>
+                <Heading size="lg" color={headingColor} fontWeight="bold">
+                  Logo Productores
+                </Heading>
+                <Text fontSize="sm" color={textColor} mt={1}>
+                  Sube o actualiza el logo que se utilizará para los productores.
+                </Text>
+              </Box>
+            </HStack>
+          </CardHeader>
+
+          <CardBody>
+            <UploadLogoForm />
+          </CardBody>
+        </Card>
       </Box>
-    </>
+    </Box>
   );
 }
 
