@@ -363,22 +363,19 @@ const CuttingSheetForm = ({
   };
   const palletsOptions =
     finalValues.exportData.boxBrand?.palletsType?.name &&
-    finalValues.exportData.boxBrand?.palletsTypeQuantity !== 0
+      finalValues.exportData.boxBrand?.palletsTypeQuantity !== 0
       ? [
-          { id: 'PALETS 8 DE ALTO', name: 'PALETS 8 DE ALTO' },
-          { id: 'PALETS 9 DE ALTO', name: 'PALETS 9 DE ALTO' },
-          { id: 'PALETS 10 DE ALTO', name: 'PALETS 10 DE ALTO' },
-        ]
+        { id: 'PALETS 8 DE ALTO', name: 'PALETS 8 DE ALTO' },
+        { id: 'PALETS 9 DE ALTO', name: 'PALETS 9 DE ALTO' },
+        { id: 'PALETS 10 DE ALTO', name: 'PALETS 10 DE ALTO' },
+      ]
       : [{ id: 'N/A', name: 'N/A' }];
 
   return (
     <Box>
-      <Heading mb='4' size='lg'>
-        Información de la Exportación
-      </Heading>
-      <Box mb='6' p='4' borderWidth='1px' borderRadius='md'>
+      <Box>
         <Heading size='md' mb='4'>
-          Información General
+          Información de la Exportación
         </Heading>
         <Divider mb={'16px'} />
         <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2'>
@@ -429,13 +426,13 @@ const CuttingSheetForm = ({
             value={
               finalValues.exportData?.shippingDateTime
                 ? format(
-                    toZonedTime(
-                      finalValues.exportData?.shippingDateTime,
-                      timeZone
-                    ),
-                    'yyyy-MM-dd HH:mm:ss',
-                    { timeZone }
-                  )
+                  toZonedTime(
+                    finalValues.exportData?.shippingDateTime,
+                    timeZone
+                  ),
+                  'yyyy-MM-dd HH:mm:ss',
+                  { timeZone }
+                )
                 : ''
             }
           />
@@ -650,130 +647,130 @@ const CuttingSheetForm = ({
           exportSentSelected?.rubberQuantity ||
           exportSentSelected?.protectorQuantity ||
           exportSentSelected?.clusterBagQuantity) && (
-          <>
-            <Heading size='sm' mt='4' mb='2'>
-              Materiales de Caja
-            </Heading>
-            <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2'>
-              {renderNameField(
-                'Fondo',
-                finalValues.exportData.boxBrand.bottomType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Fondo',
-                exportSentSelected?.bottomTypeQuantity
-              )}
+            <>
+              <Heading size='sm' mt='4' mb='2'>
+                Materiales de Caja
+              </Heading>
+              <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2'>
+                {renderNameField(
+                  'Fondo',
+                  finalValues.exportData.boxBrand.bottomType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Fondo',
+                  exportSentSelected?.bottomTypeQuantity
+                )}
 
-              {renderNameField(
-                'Tapa',
-                finalValues.exportData.boxBrand.lidType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Tapa',
-                exportSentSelected?.lidTypeQuantity
-              )}
+                {renderNameField(
+                  'Tapa',
+                  finalValues.exportData.boxBrand.lidType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Tapa',
+                  exportSentSelected?.lidTypeQuantity
+                )}
 
-              {renderNameField(
-                'Funda',
-                finalValues.exportData.boxBrand.coverType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Funda',
-                exportSentSelected?.coverTypeQuantity
-              )}
+                {renderNameField(
+                  'Funda',
+                  finalValues.exportData.boxBrand.coverType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Funda',
+                  exportSentSelected?.coverTypeQuantity
+                )}
 
-              {renderNameField(
-                'Cartulina',
-                finalValues.exportData.boxBrand.cardboardType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Cartulina',
-                exportSentSelected?.cardboardTypeQuantity
-              )}
+                {renderNameField(
+                  'Cartulina',
+                  finalValues.exportData.boxBrand.cardboardType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Cartulina',
+                  exportSentSelected?.cardboardTypeQuantity
+                )}
 
-              {renderNameField(
-                'ParaSeal',
-                finalValues.exportData.boxBrand.parasealType?.name
-              )}
-              {renderQuantityField(
-                'Cant. ParaSeal',
-                exportSentSelected?.parasealTypeQuantity
-              )}
+                {renderNameField(
+                  'ParaSeal',
+                  finalValues.exportData.boxBrand.parasealType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. ParaSeal',
+                  exportSentSelected?.parasealTypeQuantity
+                )}
 
-              {renderNameField(
-                'Pad',
-                finalValues.exportData.boxBrand.padType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Pad',
-                exportSentSelected?.padTypeQuantity
-              )}
+                {renderNameField(
+                  'Pad',
+                  finalValues.exportData.boxBrand.padType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Pad',
+                  exportSentSelected?.padTypeQuantity
+                )}
 
-              {renderNameField(
-                'Esponja',
-                finalValues.exportData.boxBrand.spongeType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Esponja',
-                exportSentSelected?.spongeTypeQuantity
-              )}
+                {renderNameField(
+                  'Esponja',
+                  finalValues.exportData.boxBrand.spongeType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Esponja',
+                  exportSentSelected?.spongeTypeQuantity
+                )}
 
-              {renderNameField(
-                'Etiqueta',
-                finalValues.exportData.boxBrand.label?.name
-              )}
-              {renderQuantityField(
-                'Cant. Etiqueta',
-                exportSentSelected?.labelQuantity
-              )}
+                {renderNameField(
+                  'Etiqueta',
+                  finalValues.exportData.boxBrand.label?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Etiqueta',
+                  exportSentSelected?.labelQuantity
+                )}
 
-              {renderNameField(
-                'Banda',
-                finalValues.exportData.boxBrand.band?.name
-              )}
-              {renderQuantityField(
-                'Cant. Banda',
-                exportSentSelected?.bandQuantity
-              )}
+                {renderNameField(
+                  'Banda',
+                  finalValues.exportData.boxBrand.band?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Banda',
+                  exportSentSelected?.bandQuantity
+                )}
 
-              {renderNameField(
-                'Sachet',
-                finalValues.exportData.boxBrand.sachet?.name
-              )}
-              {renderQuantityField(
-                'Cant. Sachet',
-                exportSentSelected?.sachetQuantity
-              )}
+                {renderNameField(
+                  'Sachet',
+                  finalValues.exportData.boxBrand.sachet?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Sachet',
+                  exportSentSelected?.sachetQuantity
+                )}
 
-              {renderNameField(
-                'Liga',
-                finalValues.exportData.boxBrand.rubber?.name
-              )}
-              {renderQuantityField(
-                'Cant. Liga',
-                exportSentSelected?.rubberQuantity
-              )}
+                {renderNameField(
+                  'Liga',
+                  finalValues.exportData.boxBrand.rubber?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Liga',
+                  exportSentSelected?.rubberQuantity
+                )}
 
-              {renderNameField(
-                'Protector',
-                finalValues.exportData.boxBrand.protector?.name
-              )}
-              {renderQuantityField(
-                'Cant. Protector',
-                exportSentSelected?.protectorQuantity
-              )}
+                {renderNameField(
+                  'Protector',
+                  finalValues.exportData.boxBrand.protector?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Protector',
+                  exportSentSelected?.protectorQuantity
+                )}
 
-              {renderNameField(
-                'Cluster Bag',
-                finalValues.exportData.boxBrand.clusterBag?.name
-              )}
-              {renderQuantityField(
-                'Cant. Cluster Bag',
-                exportSentSelected?.clusterBagQuantity
-              )}
-            </SimpleGrid>
-          </>
-        )}
+                {renderNameField(
+                  'Cluster Bag',
+                  finalValues.exportData.boxBrand.clusterBag?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Cluster Bag',
+                  exportSentSelected?.clusterBagQuantity
+                )}
+              </SimpleGrid>
+            </>
+          )}
 
         {[
           exportSentSelected?.palletsTypeQuantity,
@@ -786,94 +783,94 @@ const CuttingSheetForm = ({
           exportSentSelected?.sealQuantity,
           exportSentSelected?.mettoLabelQuantity,
         ].some((v) => typeof v === 'number' && v > 0) && (
-          <>
-            <Heading size='sm' mt='4' mb='2'>
-              Materiales por Contenedor
-            </Heading>
-            <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2'>
-              {renderNameField(
-                'Pallets',
-                finalValues.exportData?.boxBrand?.palletsType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Pallets',
-                exportSentSelected?.palletsTypeQuantity
-              )}
+            <>
+              <Heading size='sm' mt='4' mb='2'>
+                Materiales por Contenedor
+              </Heading>
+              <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2'>
+                {renderNameField(
+                  'Pallets',
+                  finalValues.exportData?.boxBrand?.palletsType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Pallets',
+                  exportSentSelected?.palletsTypeQuantity
+                )}
 
-              {renderNameField(
-                'Mini Pallets',
-                finalValues.exportData?.boxBrand?.miniPalletsType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Mini Pallets',
-                exportSentSelected?.miniPalletsTypeQuantity
-              )}
+                {renderNameField(
+                  'Mini Pallets',
+                  finalValues.exportData?.boxBrand?.miniPalletsType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Mini Pallets',
+                  exportSentSelected?.miniPalletsTypeQuantity
+                )}
 
-              {renderNameField(
-                'Esquinero',
-                finalValues.exportData?.boxBrand?.cornerType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Esquinero',
-                exportSentSelected?.cornerTypeQuantity
-              )}
+                {renderNameField(
+                  'Esquinero',
+                  finalValues.exportData?.boxBrand?.cornerType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Esquinero',
+                  exportSentSelected?.cornerTypeQuantity
+                )}
 
-              {renderNameField(
-                'Refuerzo',
-                finalValues.exportData?.boxBrand?.reinforcementType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Refuerzo',
-                exportSentSelected?.reinforcementTypeQuantity
-              )}
+                {renderNameField(
+                  'Refuerzo',
+                  finalValues.exportData?.boxBrand?.reinforcementType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Refuerzo',
+                  exportSentSelected?.reinforcementTypeQuantity
+                )}
 
-              {renderNameField(
-                'Grapa',
-                finalValues.exportData?.boxBrand?.staple?.name
-              )}
-              {renderQuantityField(
-                'Cant. Grapa',
-                exportSentSelected?.stapleQuantity
-              )}
+                {renderNameField(
+                  'Grapa',
+                  finalValues.exportData?.boxBrand?.staple?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Grapa',
+                  exportSentSelected?.stapleQuantity
+                )}
 
-              {renderNameField(
-                'Zuncho',
-                finalValues.exportData?.boxBrand?.stripping?.name
-              )}
-              {renderQuantityField(
-                'Cant. Zuncho',
-                exportSentSelected?.strippingQuantity
-              )}
+                {renderNameField(
+                  'Zuncho',
+                  finalValues.exportData?.boxBrand?.stripping?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Zuncho',
+                  exportSentSelected?.strippingQuantity
+                )}
 
-              {renderNameField(
-                'Termógrafo',
-                finalValues.exportData?.boxBrand?.thermograph?.name
-              )}
-              {renderQuantityField(
-                'Cant. Termógrafo',
-                exportSentSelected?.thermographQuantity
-              )}
+                {renderNameField(
+                  'Termógrafo',
+                  finalValues.exportData?.boxBrand?.thermograph?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Termógrafo',
+                  exportSentSelected?.thermographQuantity
+                )}
 
-              {renderNameField(
-                'Sello',
-                finalValues.exportData?.boxBrand?.seal?.name
-              )}
-              {renderQuantityField(
-                'Cant. Sello',
-                exportSentSelected?.sealQuantity
-              )}
+                {renderNameField(
+                  'Sello',
+                  finalValues.exportData?.boxBrand?.seal?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Sello',
+                  exportSentSelected?.sealQuantity
+                )}
 
-              {renderNameField(
-                'Etiqueta Metto',
-                finalValues.exportData?.boxBrand?.mettoLabel?.name
-              )}
-              {renderQuantityField(
-                'Cant. Etiqueta Metto',
-                exportSentSelected?.mettoLabelQuantity
-              )}
-            </SimpleGrid>
-          </>
-        )}
+                {renderNameField(
+                  'Etiqueta Metto',
+                  finalValues.exportData?.boxBrand?.mettoLabel?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Etiqueta Metto',
+                  exportSentSelected?.mettoLabelQuantity
+                )}
+              </SimpleGrid>
+            </>
+          )}
 
         {[
           exportSentSelected?.packingTapeTypeQuantity,
@@ -883,81 +880,81 @@ const CuttingSheetForm = ({
           exportSentSelected?.securityKitQuantity,
           exportSentSelected?.boardingCardQuantity,
         ].some((v) => typeof v === 'number' && v > 0) && (
-          <>
-            <Heading size='sm' mt='4' mb='2'>
-              Adicionales
-            </Heading>
-            <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2'>
-              {renderNameField(
-                'Cinta',
-                finalValues.exportData?.boxBrand?.packingTapeType?.name
-              )}
-              {renderQuantityField(
-                'Cant. Cinta',
-                exportSentSelected?.packingTapeTypeQuantity
-              )}
+            <>
+              <Heading size='sm' mt='4' mb='2'>
+                Adicionales
+              </Heading>
+              <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2'>
+                {renderNameField(
+                  'Cinta',
+                  finalValues.exportData?.boxBrand?.packingTapeType?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Cinta',
+                  exportSentSelected?.packingTapeTypeQuantity
+                )}
 
-              {renderNameField(
-                'Removedor',
-                finalValues.exportData?.boxBrand?.latexRemover?.name
-              )}
-              {renderQuantityField(
-                'Cant. Removedor',
-                exportSentSelected?.latexRemoverQuantity
-              )}
+                {renderNameField(
+                  'Removedor',
+                  finalValues.exportData?.boxBrand?.latexRemover?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Removedor',
+                  exportSentSelected?.latexRemoverQuantity
+                )}
 
-              {renderNameField(
-                'Lámina',
-                finalValues.exportData?.boxBrand?.blockingSheet?.name
-              )}
-              {renderQuantityField(
-                'Cant. Lámina',
-                exportSentSelected?.blockingSheetQuantity
-              )}
+                {renderNameField(
+                  'Lámina',
+                  finalValues.exportData?.boxBrand?.blockingSheet?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Lámina',
+                  exportSentSelected?.blockingSheetQuantity
+                )}
 
-              {renderNameField(
-                'Plástico de Cierre Contenedor',
-                finalValues.exportData?.boxBrand?.containerSealPlastic?.name
-              )}
-              {renderQuantityField(
-                'Cant. Plástico de Cierre Contenedor',
-                exportSentSelected?.containerSealPlasticQuantity
-              )}
-              {renderNameField(
-                'Kit de Seguridad',
-                finalValues.exportData?.boxBrand?.securityKit?.name
-              )}
-              {renderQuantityField(
-                'Cant. Kit de Seguridad',
-                exportSentSelected?.securityKitQuantity
-              )}
-              {renderNameField(
-                'Tarjeta de Embarque',
-                finalValues.exportData?.boxBrand?.boardingCard?.name
-              )}
-              {renderQuantityField(
-                'Cant. Tarjeta de Embarque',
-                exportSentSelected?.boardingCardQuantity
-              )}
-            </SimpleGrid>
-            <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2' mt='2'>
-              {exportSentSelected?.stickerSent?.map((item, index) => (
-                <DisplayField
-                  key={index}
-                  label={`Sticker ${index + 1}`}
-                  value={`${item?.sticker?.name} (Cant: ${item.quantity})`}
-                />
-              ))}
-              {exportSentSelected?.sheetSent?.map((item, index) => (
-                <DisplayField
-                  key={index}
-                  label={`Hoja ${index + 1}`}
-                  value={`${item?.sheet?.name} (Cant: ${item.quantity})`}
-                />
-              ))}
-            </SimpleGrid>
-          </>
-        )}
+                {renderNameField(
+                  'Plástico de Cierre Contenedor',
+                  finalValues.exportData?.boxBrand?.containerSealPlastic?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Plástico de Cierre Contenedor',
+                  exportSentSelected?.containerSealPlasticQuantity
+                )}
+                {renderNameField(
+                  'Kit de Seguridad',
+                  finalValues.exportData?.boxBrand?.securityKit?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Kit de Seguridad',
+                  exportSentSelected?.securityKitQuantity
+                )}
+                {renderNameField(
+                  'Tarjeta de Embarque',
+                  finalValues.exportData?.boxBrand?.boardingCard?.name
+                )}
+                {renderQuantityField(
+                  'Cant. Tarjeta de Embarque',
+                  exportSentSelected?.boardingCardQuantity
+                )}
+              </SimpleGrid>
+              <SimpleGrid columns={{ base: 1, md: 4 }} spacing='2' mt='2'>
+                {exportSentSelected?.stickerSent?.map((item, index) => (
+                  <DisplayField
+                    key={index}
+                    label={`Sticker ${index + 1}`}
+                    value={`${item?.sticker?.name} (Cant: ${item.quantity})`}
+                  />
+                ))}
+                {exportSentSelected?.sheetSent?.map((item, index) => (
+                  <DisplayField
+                    key={index}
+                    label={`Hoja ${index + 1}`}
+                    value={`${item?.sheet?.name} (Cant: ${item.quantity})`}
+                  />
+                ))}
+              </SimpleGrid>
+            </>
+          )}
 
         <Heading size='sm' mt='4' mb='2'>
           Insumos Post Cosecha{' '}
