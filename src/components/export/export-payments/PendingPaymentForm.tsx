@@ -311,11 +311,6 @@ const PendingPaymentForm = ({
         <Form>
           <Flex flexDirection='column' gap={3}>
             <Heading fontSize={'2xl'} p={'12px'}>
-              Liquidación a Productor
-            </Heading>
-            <Divider mb={'16px'} />
-
-            <Heading fontSize={'2xl'} p={'12px'}>
               Productor
             </Heading>
             <Divider mb={'16px'} />

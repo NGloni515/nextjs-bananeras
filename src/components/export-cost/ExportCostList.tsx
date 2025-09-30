@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Box,
   Center,
@@ -5,98 +7,111 @@ import {
   SimpleGrid,
   Text,
   VStack,
+  Badge,
+  useColorModeValue,
 } from '@chakra-ui/react';
-import { AxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
+import { useQueryClient } from 'react-query';
 import ExportCostCard from './ExportCostCard';
 import { useExportSentCostsPending } from '../../hooks/export/export-sent/getExportSentCostsPending';
 import { usePagination } from '../../hooks/usePagination';
 import { ExportSentType } from '../../types/exportSent';
 
+type ApiErrorData = {
+  statusCode?: number;
+  message?: string;
+  error?: string;
+};
+
 const ExportCostList = (): React.JSX.Element => {
   const { paginationParams } = usePagination();
-  const {
-    data = [],
-    isLoading,
-    error,
-  } = useExportSentCostsPending(paginationParams);
+  const { data = [], isLoading, error } = useExportSentCostsPending(paginationParams);
+
   const router = useRouter();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (error && (error as AxiosError).isAxiosError) {
-      const { response } = error as AxiosError<{
-        statusCode: number;
-      }>;
+    queryClient.invalidateQueries('exportSentCostsPending');
+  }, [queryClient, paginationParams]);
 
-      const statusCode = response?.data?.statusCode;
+  const headingColor = useColorModeValue('gray.900', 'gray.100');
+  const textColor = useColorModeValue('gray.700', 'gray.300');
 
-      if (statusCode === 401) {
-        router.push('/api/auth/signout');
-      }
+  useEffect(() => {
+    if (error && isAxiosError<ApiErrorData>(error)) {
+      const statusCode = error.response?.data?.statusCode;
+      if (statusCode === 401) router.push('/api/auth/signout');
     }
   }, [error, router]);
 
   if (isLoading) {
     return (
-      <Box mx={'auto'} my={'200px'}>
-        <Center>
-          <Heading>Cargando...</Heading>
-        </Center>
+      <Box minH="40vh" display="flex" alignItems="center" justifyContent="center">
+        <Heading size="md">Cargando...</Heading>
       </Box>
     );
   }
 
-  if (error && (error as AxiosError).isAxiosError) {
-    const { response } = error as AxiosError<{
-      statusCode: number;
-      message: string;
-      error: string;
-    }>;
-
-    const dataRes = response?.data;
-
-    return (
-      <Box mx={'auto'} my={'200px'}>
-        <Center>
-          <VStack spacing={2} align='center'>
-            <Heading>
-              {dataRes?.statusCode} - {dataRes?.error}
+  if (error) {
+    if (isAxiosError<ApiErrorData>(error)) {
+      const { statusCode, message, error: errorTitle } = error.response?.data ?? {};
+      return (
+        <Box minH="40vh" display="flex" alignItems="center" justifyContent="center">
+          <VStack spacing={2} align="center">
+            <Heading size="md">
+              {statusCode ?? 'Error'}
+              {errorTitle ? ` - ${errorTitle}` : ''}
             </Heading>
-            <Text>{dataRes?.message}</Text>
+            <Text color={textColor}>{message ?? 'Ocurrió un error inesperado'}</Text>
           </VStack>
-        </Center>
+        </Box>
+      );
+    }
+    return (
+      <Box minH="40vh" display="flex" alignItems="center" justifyContent="center">
+        <VStack spacing={2} align="center">
+          <Heading size="md">Error</Heading>
+          <Text color={textColor}>Ocurrió un error inesperado</Text>
+        </VStack>
       </Box>
     );
   }
+
+  const items = data as Partial<ExportSentType>[];
 
   return (
-    <>
-      <VStack spacing={4} alignItems='center' justifyContent='center'>
-        <Heading width='100%' textAlign='center'>
-          Lista de Costos de Exportación Pendientes
+    <VStack spacing={4} align="stretch">
+      <Box display="flex" alignItems="center" gap={3} justifyContent="space-between" w="100%">
+        <Heading size="md" color={headingColor}>
+          Costos de Exportación Pendientes
         </Heading>
-        {data.length === 0 ? (
-          <Center p={6}>
-            <Text>No existen costos de exportación pendientes</Text>
-          </Center>
-        ) : (
-          <SimpleGrid
-            columns={{ base: 1, sm: 1, md: 1, lg: 2, xl: 3 }}
-            spacing={4}
-          >
-            {(data as Partial<ExportSentType>[]).map((item) => (
-              <ExportCostCard
-                key={item.id}
-                exportSentItem={item}
-                pathname={pathname}
-              />
-            ))}
-          </SimpleGrid>
-        )}
-      </VStack>
-    </>
+        <Badge colorScheme="green" variant="subtle" px={3} py={1} borderRadius="full">
+          {items.length} {items.length === 1 ? 'pendiente' : 'pendientes'}
+        </Badge>
+      </Box>
+
+      {items.length === 0 ? (
+        <Center py={10}>
+          <VStack spacing={1}>
+            <Heading size="sm" color={headingColor}>
+              No existen costos de exportación pendientes
+            </Heading>
+            <Text fontSize="sm" color={textColor}>
+              Cuando existan, aparecerán aquí.
+            </Text>
+          </VStack>
+        </Center>
+      ) : (
+        <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={{ base: 4, md: 6 }}>
+          {items.map((item) => (
+            <ExportCostCard key={item?.id} exportSentItem={item} pathname={pathname} />
+          ))}
+        </SimpleGrid>
+      )}
+    </VStack>
   );
 };
 

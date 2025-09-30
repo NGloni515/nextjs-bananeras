@@ -1,15 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import {
   Box,
   Card,
   CardBody,
   CardHeader,
-  Center,
   Heading,
+  HStack,
+  Icon,
+  Text,
+  Divider,
+  useColorModeValue,
 } from '@chakra-ui/react';
+import { AxiosError } from 'axios';
 import { redirect, useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useLayoutEffect } from 'react';
+import { FiDollarSign } from 'react-icons/fi';
 import PendingPaymentForm from '../../../../../components/export/export-payments/PendingPaymentForm';
 import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExportSent } from '../../../../../hooks/export/export-sent/getExportSent';
@@ -25,17 +30,18 @@ function ExportPaymentPage(): React.JSX.Element {
   const router = useRouter();
 
   useEffect(() => {
-    if (!!error) {
-      const { response } = error as any;
-      const { data: dataRes } = response;
-      const { statusCode } = dataRes;
+    if (error && (error as AxiosError).isAxiosError) {
+      const { response } = error as AxiosError<{
+        statusCode: number;
+      }>;
+
+      const statusCode = response?.data?.statusCode;
 
       if (statusCode === 401) {
         router.push('/api/auth/signout');
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error]);
+  }, [error, router]);
 
   useLayoutEffect(() => {
     if (!isLoading) {
@@ -45,40 +51,60 @@ function ExportPaymentPage(): React.JSX.Element {
     }
   }, [isLoading, pendingPayment, pathname]);
 
+  const bgColor = useColorModeValue('gray.50', 'gray.900');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const headingColor = useColorModeValue('gray.900', 'gray.100');
+  const textColor = useColorModeValue('gray.700', 'gray.200');
+  const grayColor = useColorModeValue('green.50', 'green.750');
+
   if (isLoading) {
     return (
-      <Box mx={'auto'} my={'200px'}>
-        <Center>
-          <Heading>Cargando...</Heading>
-        </Center>
+      <Box minH="60vh" display="flex" alignItems="center" justifyContent="center">
+        <Heading>Cargando...</Heading>
       </Box>
     );
   }
 
   return (
-    <Box my={'20px'} mx={'auto'} w={'95%'}>
-      <Center>
+    <Box minH="100vh" bg={bgColor} p={{ base: 4, md: 6, lg: 8 }}>
+      <Box maxW="8xl" mx="auto">
         <Card
-          w={{
-            base: '95%',
-            sm: '95%',
-            md: '90%',
-            lg: '100%',
-            xl: '100%',
-          }}
-          mb={'20px'}
+          bg={cardBg}
+          border="1px solid"
+          borderColor={borderColor}
+          borderRadius="xl"
+          boxShadow="lg"
+          overflow="hidden"
+          borderTopWidth="4px"
+          borderTopColor="green.500"
         >
-          <CardHeader w={'100%'}>
-            <Heading>Pago a Productores</Heading>
+          <CardHeader bg={grayColor} pb={4}>
+            <HStack spacing={3} align="center">
+              <Box p={2} bg="green.100" borderRadius="lg" color="green.600">
+                <Icon as={FiDollarSign} boxSize={5} />
+              </Box>
+              <Box>
+                <Heading size="lg" color={headingColor} fontWeight="bold">
+                  Pago a Productores
+                </Heading>
+                <Text fontSize="sm" color={textColor} mt={1}>
+                  Registra y confirma el pago del envío seleccionado
+                </Text>
+              </Box>
+            </HStack>
           </CardHeader>
-          <CardBody w='100%'>
+
+          <Divider />
+
+          <CardBody>
             <PendingPaymentForm
               paymentSelected={pendingPayment}
               pathname={pathname}
             />
           </CardBody>
         </Card>
-      </Center>
+      </Box>
     </Box>
   );
 }
