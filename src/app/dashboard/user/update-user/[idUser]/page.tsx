@@ -1,13 +1,19 @@
 'use client';
+
 import {
   Box,
   Card,
   CardBody,
   CardHeader,
-  Center,
+  HStack,
   Heading,
+  Icon,
   Text,
+  Center,
+  useColorModeValue,
 } from '@chakra-ui/react';
+import React from 'react';
+import { MdLocationOn } from 'react-icons/md';
 import UpdateExporterForm from '../../../../../components/settings/UpdateExporterForm';
 import IsOnboarding from '../../../../../components/ui/IsOnboarding';
 import { useExporter, UserProfile } from '../../../../../hooks/useUserProfile';
@@ -16,41 +22,59 @@ const UpdateExporterPage = (): JSX.Element => {
   const { user, isLoading } = useExporter();
   const exporter = user as Partial<UserProfile>;
 
+  const bgColor = useColorModeValue('gray.50', 'gray.900');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const headBg = useColorModeValue('gray.50', 'gray.750');
+  const headingColor = useColorModeValue('gray.900', 'gray.100');
+  const textColor = useColorModeValue('gray.700', 'gray.200');
+
   if (isLoading) {
     return (
-      <Box mx={'auto'} my={'200px'}>
+      <Box minH="60vh" display="flex" alignItems="center" justifyContent="center">
         <Center>
-          <Heading>Cargando...</Heading>
+          <Heading size="md">Cargando...</Heading>
         </Center>
       </Box>
     );
   }
 
   return (
-    <Box my={'20px'} mx='auto' w={'95%'}>
-      <Center>
+    <Box minH="100vh" bg={bgColor} p={{ base: 4, md: 6, lg: 8 }}>
+      <Box maxW="7xl" mx="auto">
         <Card
-          w={{
-            base: '95%',
-            sm: '95%',
-            md: '90%',
-            lg: '100%',
-            xl: '100%',
-          }}
-          mb={'20px'}
+          bg={cardBg}
+          borderColor={borderColor}
+          borderRadius="xl"
+          boxShadow="lg"
+          overflow="hidden"
+          border="1px solid"
         >
-          <CardHeader w={'100%'}>
-            <Heading>Edición de la Exportadora</Heading>
+          <CardHeader bg={headBg}>
+            <HStack spacing={3} align="center">
+              <Box p={2} bg="green.100" borderRadius="lg" color="green.600">
+                <Icon as={MdLocationOn} boxSize={5} />
+              </Box>
+              <Box>
+                <Heading size="lg" color={headingColor} fontWeight="bold">
+                  Modificar Ubicación
+                </Heading>
+                <Text fontSize="sm" color={textColor} mt={1}>
+                  Actualiza la información de ubicación y detalles de la exportadora.
+                </Text>
+              </Box>
+            </HStack>
           </CardHeader>
-          <CardBody w={'100%'}>
-            {exporter.exporterDetails ? (
+
+          <CardBody>
+            {exporter?.exporterDetails ? (
               <UpdateExporterForm exporterDetails={exporter.exporterDetails} />
             ) : (
-              <Text>No se encontraron detalles de la exportadora</Text>
+              <Text color={textColor}>No se encontraron detalles de la exportadora.</Text>
             )}
           </CardBody>
         </Card>
-      </Center>
+      </Box>
     </Box>
   );
 };
