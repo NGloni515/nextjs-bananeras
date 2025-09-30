@@ -151,6 +151,59 @@ const ADD_ROUTES: AddMap = {
   },
 };
 
+const SEGMENT_ES: Record<string, string> = {
+  dashboard: 'Dashboard',
+  producer: 'Productores',
+  producers: 'Productores',
+  fincas: 'Fincas',
+  client: 'Clientes',
+  clients: 'Clientes',
+  harbors: 'Puertos',
+  'shipping-companies': 'Navieras',
+  deposits: 'Depósitos',
+  transports: 'Transportes',
+  'box-brands': 'Marcas de Caja',
+  search: 'Buscar',
+  verifiers: 'Verificadoras',
+  'cutting-types': 'Tipos de Corte',
+  'cutting-sheets': 'Hojas de Corte',
+  'upload-logo': 'Agregar Logo',
+  winery: 'Bodega',
+  stock: 'Stock',
+  'stock-movements': 'Trazabilidad de Stock',
+  'adjust-weekly': 'Ajuste Semanal',
+  export: 'Exportaciones',
+  'exports-sent': 'Envíos de Insumos',
+  liquidation: 'Liquidación',
+  'export-costs': 'Costos Validados',
+  'producer-payments': 'Pago Productores',
+  'client-payments': 'Cobro Clientes',
+  'bank-accounts': 'Cuentas Bancarias',
+  settings: 'Configuraciones',
+  user: 'Perfil',
+};
+
+const isNumericOrUUID = (s: string): boolean =>
+  /^\d+$/.test(s) ||
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    s
+  );
+
+const titleCase = (s: string): string =>
+  s.replace(/-/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
+
+function translateSegment(seg: string): string {
+  if (SEGMENT_ES[seg]) return SEGMENT_ES[seg];
+
+  if (seg.startsWith('add-')) {
+    const raw = seg.slice(4);
+    const base = SEGMENT_ES[raw] || titleCase(raw);
+    return `Agregar ${base}`;
+  }
+
+  return titleCase(seg);
+}
+
 export function generateBreadcrumbs(pathname: string): BreadcrumbItem[] {
   const cleanPath = pathname.split('?')[0].split('#')[0];
 
@@ -173,35 +226,52 @@ export function generateBreadcrumbs(pathname: string): BreadcrumbItem[] {
 
   if (ADD_ROUTES[cleanPath]) {
     const { parent, addLabel, parentHref } = ADD_ROUTES[cleanPath];
-
     const parentHrefResolved =
       parentHref ||
       Object.entries(VIEW_ROUTES).find(([, label]) => label === parent)?.[0] ||
       '#';
-
     push(parent, parentHrefResolved, false);
     push(addLabel || 'Agregar', cleanPath, true);
     return crumbs;
   }
 
-  if (cleanPath.startsWith('/dashboard/user/update-user/')) {
-    push('Configuraciones', '/dashboard/settings', false);
-    push('Modificar Ubicación', cleanPath, true);
+  const addBase = Object.keys(ADD_ROUTES).find((base) =>
+    cleanPath.startsWith(base + '/')
+  );
+  if (addBase) {
+    const { parent, addLabel, parentHref } = ADD_ROUTES[addBase];
+    const parentHrefResolved =
+      parentHref ||
+      Object.entries(VIEW_ROUTES).find(([, label]) => label === parent)?.[0] ||
+      '#';
+    push(parent, parentHrefResolved, false);
+    push(addLabel || 'Agregar', cleanPath, true);
+    return crumbs;
+  }
+
+  if (/^\/dashboard\/user\/[^/]+$/.test(cleanPath)) {
+    push('Perfil', cleanPath, true);
     return crumbs;
   }
 
   const segments = cleanPath.split('/').filter(Boolean);
   let acc = '';
-  segments.forEach((seg, idx) => {
-    if (seg === 'dashboard') return;
+  const labelSegments = segments.filter((s) => s !== 'dashboard');
+
+  labelSegments.forEach((seg, idx) => {
     acc += `/${seg}`;
-    const title =
-      seg.replace(/-/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()) || '';
-    crumbs.push({
-      name: title,
-      href: acc,
-      isCurrent: idx === segments.length - 1,
-    });
+    const isLast = idx === labelSegments.length - 1;
+
+    if (isNumericOrUUID(seg)) {
+      const lastLabel = crumbs.length
+        ? crumbs[crumbs.length - 1].name
+        : 'Detalle';
+      if (crumbs.length) crumbs[crumbs.length - 1].isCurrent = false;
+      push(lastLabel || 'Detalle', cleanPath, true);
+    } else {
+      const name = translateSegment(seg);
+      push(name, acc, isLast);
+    }
   });
 
   return crumbs;

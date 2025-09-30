@@ -1,19 +1,31 @@
 'use client';
 
-import { Box, Center, Grid, GridItem, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Center,
+  Grid,
+  GridItem,
+  Heading,
+  Text,
+  useColorModeValue,
+  Card,
+  CardBody,
+} from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import CalendarSummaryContainer from './CalendarSummaryContainer';
 
-interface DashboardProps {
-  windowSize: { width: number | null; height: number | null };
-}
-
-const Dashboard = ({ windowSize }: DashboardProps): JSX.Element => {
+const Dashboard = (): JSX.Element => {
   const { data: session, status } = useSession();
+
+  const pageBg = useColorModeValue('transparent', 'transparent');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const headingColor = useColorModeValue('gray.900', 'gray.100');
+  const textColor = useColorModeValue('gray.700', 'gray.300');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
 
   if (status === 'loading') {
     return (
-      <Center h='100vh'>
+      <Center minH="60vh">
         <Text>Cargando...</Text>
       </Center>
     );
@@ -23,42 +35,68 @@ const Dashboard = ({ windowSize }: DashboardProps): JSX.Element => {
 
   return (
     <Box
-      mx='auto'
-      my='33px'
-      width={{
-        sm: `${Number(windowSize.width) - 20}px`,
-        md: `${Number(windowSize.width) - 340}px`,
-      }}
-      borderRadius='md'
+      bg={pageBg}
+      maxW="8xl"
+      mx="auto"
+      px={{ base: 4, md: 6, lg: 8 }}
+      py={{ base: 6, md: 8 }}
     >
-      <Text fontSize='4xl' fontWeight='bold' mb='4'>
+      <Heading
+        as="h1"
+        size="lg"
+        color={headingColor}
+        fontWeight="bold"
+        mb={4}
+      >
         Bienvenido {session?.user?.name}
-      </Text>
+      </Heading>
+
       {role === 'MASTER' && (
-        <>
+        <Box mb={6}>
           <CalendarSummaryContainer />
-        </>
+        </Box>
       )}
-      <Grid templateColumns={{ base: '1fr', md: '3fr 1fr' }} gap='4' mt={4}>
+
+      <Grid
+        templateColumns={{ base: '1fr', md: '3fr 1fr' }}
+        gap={{ base: 4, md: 6 }}
+      >
         <GridItem>
           {role === 'LOGISTICS' && (
-            <Box bg='white' p='4' borderRadius='md'>
-              Componente para Logística
-            </Box>
+            <Card
+              bg={cardBg}
+              border="1px solid"
+              borderColor={borderColor}
+              borderRadius="xl"
+              boxShadow="md"
+            >
+              <CardBody>
+                <Text color={textColor}>Componente para Logística</Text>
+              </CardBody>
+            </Card>
           )}
 
           {role === 'EXPORT' && (
-            <Box bg='white' p='4' borderRadius='md'>
-              Componente para Exportación
-            </Box>
+            <Card
+              bg={cardBg}
+              border="1px solid"
+              borderColor={borderColor}
+              borderRadius="xl"
+              boxShadow="md"
+            >
+              <CardBody>
+                <Text color={textColor}>Componente para Exportación</Text>
+              </CardBody>
+            </Card>
           )}
 
           {role !== 'MASTER' && role !== 'LOGISTICS' && role !== 'EXPORT' && (
-            <Text>No tienes acceso a contenido del dashboard.</Text>
+            <Text color={textColor}>No tienes acceso a contenido del dashboard.</Text>
           )}
         </GridItem>
 
-        <GridItem></GridItem>
+        <GridItem>
+        </GridItem>
       </Grid>
     </Box>
   );
