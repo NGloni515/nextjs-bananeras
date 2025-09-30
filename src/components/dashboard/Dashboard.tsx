@@ -27,7 +27,7 @@ const Dashboard = ({ windowSize }: DashboardProps): JSX.Element => {
       my='33px'
       width={{
         sm: `${Number(windowSize.width) - 20}px`,
-        md: `${Number(windowSize.width) - 300}px`,
+        md: `${Number(windowSize.width) - 340}px`,
       }}
       borderRadius='md'
     >
