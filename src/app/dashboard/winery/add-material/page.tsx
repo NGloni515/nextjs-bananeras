@@ -5,16 +5,29 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Center,
+  Divider,
+  HStack,
   Heading,
+  Icon,
+  Text,
+  useColorModeValue,
+  Flex,
 } from '@chakra-ui/react';
 import { Formik } from 'formik';
 import React from 'react';
+import { MdInventory2 } from 'react-icons/md';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 import ImportExporterStockDrawer from '../../../../components/winery/ImportExporterStockDrawer';
 import { MaterialList } from '../../../../components/winery/MaterialList';
 
 function AddMaterialPage(): React.JSX.Element {
+  const bgColor = useColorModeValue('gray.50', 'gray.900');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const headingColor = useColorModeValue('gray.900', 'gray.100');
+  const textColor = useColorModeValue('gray.700', 'gray.200');
+  const headBg = useColorModeValue('gray.50', 'gray.750');
+
   return (
     <Formik
       initialValues={{ 'import-exporter-stock': null }}
@@ -23,32 +36,50 @@ function AddMaterialPage(): React.JSX.Element {
       }}
     >
       {() => (
-        <Box my={'20px'} mx={'auto'} w={'95%'}>
-          <Center>
+        <Box minH="100vh" w="100%" bg={bgColor} p={{ base: 4, md: 6, lg: 8 }}>
+          <Box maxW="8xl" mx="auto">
             <Card
-              w={{
-                base: '95%',
-                sm: '95%',
-                md: '90%',
-                lg: '100%',
-                xl: '100%',
-              }}
-              mb={'20px'}
+              bg={cardBg}
+              borderColor={borderColor}
+              borderRadius="xl"
+              boxShadow="lg"
+              overflow="hidden"
+              border="1px solid"
+              borderTopWidth="4px"
+              borderTopColor="green.500"
             >
-              <CardHeader
-                w={'100%'}
-                display='flex'
-                justifyContent='space-between'
-                alignItems='center'
-              >
-                <Heading>Agregar Stock de Materiales</Heading>
-                <ImportExporterStockDrawer />
+              <CardHeader bg={headBg} pb={4}>
+                <Flex
+                  align="center"
+                  justify="space-between"
+                  wrap="wrap"
+                  gap={3}
+                >
+                  <HStack spacing={3} align="center">
+                    <Box p={2} bg="green.100" borderRadius="lg" color="green.600">
+                      <Icon as={MdInventory2} boxSize={5} />
+                    </Box>
+                    <Box>
+                      <Heading size="lg" color={headingColor} fontWeight="bold">
+                        Agregar Stock de Materiales
+                      </Heading>
+                      <Text fontSize="sm" color={textColor} mt={1}>
+                        Completa la carga manual o importa desde archivo
+                      </Text>
+                    </Box>
+                  </HStack>
+
+                  <ImportExporterStockDrawer />
+                </Flex>
               </CardHeader>
-              <CardBody w='100%'>
+
+              <Divider />
+
+              <CardBody>
                 <MaterialList />
               </CardBody>
             </Card>
-          </Center>
+          </Box>
         </Box>
       )}
     </Formik>

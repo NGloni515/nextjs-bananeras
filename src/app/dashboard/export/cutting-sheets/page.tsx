@@ -1,7 +1,24 @@
 'use client';
-import { Box, Button, Center, Flex, Link } from '@chakra-ui/react';
+
+import {
+  Box,
+  Button,
+  Card,
+  CardBody,
+  HStack,
+  Icon,
+  IconButton,
+  Heading,
+  Text,
+  Badge,
+  Flex,
+  useBreakpointValue,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import Link_Next from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { FiPlus } from 'react-icons/fi';
+import { MdAssignment } from 'react-icons/md';
 import TableCuttingSheets from '../../../../components/export/cutting-sheet/table-cutting-sheets/TableCuttingSheets';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
@@ -19,8 +36,8 @@ function SearchCuttingSheetsPage(): React.JSX.Element {
   useEffect(() => {
     function handleResize(): void {
       setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: typeof window !== 'undefined' ? window.innerWidth : null,
+        height: typeof window !== 'undefined' ? window.innerHeight : null,
       });
     }
     window.addEventListener('resize', handleResize);
@@ -28,36 +45,117 @@ function SearchCuttingSheetsPage(): React.JSX.Element {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const bgColor = useColorModeValue('gray.50', 'gray.900');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const textColor = useColorModeValue('gray.700', 'gray.200');
+  const headingColor = useColorModeValue('gray.900', 'gray.100');
+  const headBg = useColorModeValue('gray.50', 'gray.750');
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const buttonSize = useBreakpointValue({ base: 'sm', md: 'md' });
+
+  const tableWidth = {
+    sm: Number(windowSize.width) - 20,
+    md: Number(windowSize.width) - 300,
+  };
+
   return (
-    <Box
-      my={'27px'}
-      mx={'auto'}
-      width={{
-        sm: `${Number(windowSize.width) - 20}px`,
-        md: `${Number(windowSize.width) - 300}px`,
-      }}
-    >
-      <Link
-        as={Link_Next}
-        href={'/dashboard/export/add-cutting-sheet'}
-        _hover={{
-          bg: 'green.600',
-          color: 'white',
-        }}
-      >
-        <Flex justify='flex-end' width='100%'>
-          <Button colorScheme='teal'>Lista de Cortes Pendientes</Button>
+    <Box minH="100vh" bg={bgColor} p={{ base: 4, md: 6, lg: 8 }}>
+      <Box mb={6} maxW="8xl" mx="auto">
+        <Flex
+          direction={{ base: 'column', md: 'row' }}
+          justify="space-between"
+          align={{ base: 'stretch', md: 'center' }}
+          gap={4}
+        >
+          <HStack spacing={3}>
+            <Box p={2} bg="green.100" borderRadius="lg" color="green.600">
+              <Icon as={MdAssignment} boxSize={5} />
+            </Box>
+            <Box>
+              <Heading size="lg" color={headingColor} fontWeight="bold">
+                Hojas de Corte
+              </Heading>
+              <Text fontSize="sm" color={textColor}>
+                Visualiza y administra las hojas de corte registradas
+              </Text>
+            </Box>
+          </HStack>
+
+          <Box>
+            {isMobile ? (
+              <IconButton
+                as={Link_Next}
+                href="/dashboard/export/add-cutting-sheet"
+                aria-label="Agregar Hoja de Corte"
+                icon={<FiPlus />}
+                colorScheme="green"
+                size={buttonSize}
+                borderRadius="lg"
+                boxShadow="md"
+                _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
+                transition="all 0.2s"
+              />
+            ) : (
+              <Button
+                as={Link_Next}
+                href="/dashboard/export/add-cutting-sheet"
+                leftIcon={<FiPlus />}
+                colorScheme="green"
+                size={buttonSize}
+                borderRadius="lg"
+                boxShadow="md"
+                fontWeight="semibold"
+                _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
+                transition="all 0.2s"
+              >
+                Agregar Hoja de Corte
+              </Button>
+            )}
+          </Box>
         </Flex>
-      </Link>
-      <Center mt={'24px'}>
-        <TableCuttingSheets
-          windowSize={windowSize}
-          width={{
-            sm: Number(windowSize.width) - 20,
-            md: Number(windowSize.width) - 300,
-          }}
-        />
-      </Center>
+      </Box>
+
+      <Box maxW="8xl" mx="auto">
+        <Card
+          bg={cardBg}
+          borderColor={borderColor}
+          borderRadius="xl"
+          boxShadow="lg"
+          overflow="hidden"
+          border="1px solid"
+        >
+          <CardBody p={0}>
+            <Box
+              p={6}
+              bg={headBg}
+              borderBottom="1px solid"
+              borderColor={borderColor}
+            >
+              <HStack justify="space-between" align="center">
+                <HStack spacing={3}>
+                  <Text fontSize="lg" fontWeight="semibold" color={headingColor}>
+                    Hojas de Corte
+                  </Text>
+                  <Badge
+                    colorScheme="green"
+                    variant="subtle"
+                    borderRadius="full"
+                    px={3}
+                    py={1}
+                  >
+                    Lista actual
+                  </Badge>
+                </HStack>
+              </HStack>
+            </Box>
+
+            <Box>
+              <TableCuttingSheets windowSize={windowSize} width={tableWidth} />
+            </Box>
+          </CardBody>
+        </Card>
+      </Box>
     </Box>
   );
 }

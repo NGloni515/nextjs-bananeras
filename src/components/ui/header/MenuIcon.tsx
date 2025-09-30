@@ -2,7 +2,6 @@
 import {
   Avatar,
   Box,
-  Flex,
   Heading,
   IconButton,
   Menu,
@@ -13,9 +12,13 @@ import {
   MenuList,
   MenuOptionGroup,
   Icon,
+  useColorModeValue,
+  HStack,
+  Badge,
+  SkeletonCircle,
 } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { IconType } from 'react-icons';
 import { AiOutlineUser } from 'react-icons/ai';
 import { getTopBarItems } from './MenuIconItem';
@@ -27,47 +30,112 @@ export interface MenuItemProps {
 }
 
 export default function MenuIcon(): React.JSX.Element {
+  const [isLoading, setIsLoading] = useState(true);
   const { data: session } = useSession();
   const menuItems = getTopBarItems();
+
+  const borderColor = useColorModeValue('gray.200', 'gray.600');
+  const textColor = useColorModeValue('gray.700', 'gray.200');
+  const hoverBg = useColorModeValue('gray.50', 'gray.700');
+  const shadowColor = useColorModeValue(
+    'rgba(0, 0, 0, 0.1)',
+    'rgba(0, 0, 0, 0.3)'
+  );
+
+  React.useEffect(() => {
+    if (session) {
+      setIsLoading(false);
+    }
+  }, [session]);
+
+  if (isLoading) {
+    return (
+      <SkeletonCircle
+        startColor='teal.500'
+        endColor='teal.800'
+        size='12'
+        mr='8px'
+      />
+    );
+  }
 
   return (
     <Menu>
       <MenuButton
         as={IconButton}
         bg='green.500'
-        h={'auto'}
-        w={'auto'}
+        h='50px'
+        w='50px'
         aria-label='user-pic'
-        rounded={'full'}
-        icon={
-          <Avatar
-            bg='green.500'
-            h={'36px'}
-            w={'36px'}
-            aria-label='user-pic'
-            rounded={'full'}
-            icon={<AiOutlineUser size={'30px'} />}
-          />
-        }
+        rounded='full'
+        icon={<AiOutlineUser size='30px' />}
+        color='white'
+        transition='all 0.2s'
+        _hover={{
+          bg: 'green.600',
+          transform: 'scale(1.05)',
+          boxShadow: `0 4px 12px rgba(34, 197, 94, 0.4)`,
+        }}
+        _active={{
+          bg: 'green.700',
+          transform: 'scale(0.95)',
+        }}
+        border='2px solid'
+        borderColor='green.400'
       />
 
-      <MenuList minWidth='220px'>
-        <Flex p={'12px'} gap='10px'>
-          <Avatar
-            bg='green.500'
-            h={'36px'}
-            w={'36px'}
-            aria-label='user-pic'
-            rounded={'full'}
-            icon={<AiOutlineUser size={'30px'} />}
-          />
-          <Box>
-            <Heading fontSize={'md'}>{session?.user.name}</Heading>
-            <Text fontSize={'xs'}>{session?.user.email}</Text>
-          </Box>
-        </Flex>
+      <MenuList
+        minW='360px'
+        bg={"white"}
+        border='1px solid'
+        borderColor={borderColor}
+        borderRadius='xl'
+        boxShadow={`0 24px 48px ${shadowColor}`}
+        p='0'
+        overflow='hidden'
+      >
+        <Box p={4}>
+          <HStack spacing={3}>
+            <Avatar
+              bg='green.500'
+              h='44px'
+              w='44px'
+              aria-label='user-pic'
+              rounded='full'
+              icon={<AiOutlineUser size='24px' />}
+              color='white'
+              border='2px solid'
+              borderColor='green.400'
+            />
+            <Box flex={1} mr={4}>
+              <Heading
+                fontSize='md'
+                fontWeight='semibold'
+                color={textColor}
+                noOfLines={1}
+              >
+                {session?.user.name}
+              </Heading>
+              <Text
+                fontSize='sm'
+                color={"gray.500"}
+                noOfLines={1}
+              >
+                {session?.user.email}
+              </Text>
+            </Box>
+            <Badge
+              colorScheme='green'
+              variant='subtle'
+              borderRadius='full'
+              px={4}
+            >
+              En línea
+            </Badge>
+          </HStack>
+        </Box>
 
-        <MenuDivider />
+        <MenuDivider borderColor={borderColor} />
 
         <MenuOptionGroup>
           {menuItems.map((item, index) => (
@@ -75,12 +143,25 @@ export default function MenuIcon(): React.JSX.Element {
               key={index}
               as='a'
               href={item.to}
-              px={'12px'}
-              py={'6px'}
-              gap={'10px'}
+              alignItems='flex-start'
+              px='12px'
+              py='10px'
+              mx='6px'
+              borderRadius='lg'
+              transition='all 0.2s ease'
+              _hover={{
+                bg: hoverBg,
+                transform: 'translateX(4px)',
+              }}
             >
-              <Icon as={item.icon} size={'16px'} />
-              {item.label}
+              <HStack spacing={3}>
+                <Box p={2} borderRadius='lg' bg={hoverBg} color={textColor}>
+                  <Icon as={item.icon} boxSize={4} />
+                </Box>
+                <Text fontWeight='medium' color={textColor} fontSize='sm'>
+                  {item.label}
+                </Text>
+              </HStack>
             </MenuItem>
           ))}
         </MenuOptionGroup>

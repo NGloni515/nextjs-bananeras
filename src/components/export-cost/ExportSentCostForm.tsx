@@ -41,9 +41,7 @@ const validationSchema = Yup.object().shape({
     .min(1),
 });
 
-export default function ExportSentCostForm({
-  pathname,
-}: ExportSentCostFormProps): JSX.Element {
+export default function ExportSentCostForm({ }: ExportSentCostFormProps): JSX.Element {
   const toast = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -89,7 +87,7 @@ export default function ExportSentCostForm({
         isClosable: true,
       });
       queryClient.invalidateQueries('exportSentCostsPending');
-      router.push(pathname.replace(/\/\d+$/, ''));
+      router.push('/dashboard/liquidation/export-costs');
     } catch {
       toast({
         title: 'Error al actualizar los costos.',

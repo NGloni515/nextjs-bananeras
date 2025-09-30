@@ -1,4 +1,5 @@
 'use client';
+
 import { FaBoxOpen, FaCashRegister, FaCogs, FaUserTie } from 'react-icons/fa';
 import {
   MdOutlineAgriculture,
@@ -6,16 +7,18 @@ import {
   MdFlightTakeoff,
 } from 'react-icons/md';
 import { PiPackageBold } from 'react-icons/pi';
+
 import {
   PRODUCER_MENU,
   CLIENT_MENU,
   BOX_BRANDS_MENU,
+  WINERY_MENU,
+  getExportMenu,
   getQualityMenu,
   getLiquidationMenu,
   getSettingsMenu,
-  WINERY_MENU,
-  getExportMenu,
 } from './navMenus';
+
 import { SidenavItem } from './sidenav-items';
 
 export interface NavCounts {
@@ -26,18 +29,46 @@ export interface NavCounts {
   exportSentCostsPending: number;
 }
 
+export type Role =
+  | 'MASTER'
+  | 'EXPORT'
+  | 'LOGISTICS'
+  | 'ADMINISTRATIVE'
+  | 'QUALITY'
+  | 'USER';
+
 export interface SessionUser {
-  role?: string;
+  role?: Role | string;
   exporterId?: string;
 }
 
+/** Helper: refleja el count en badge (sin romper compatibilidad con props.count) */
+function withBadgeFromCount<T extends Pick<SidenavItem, 'count'>>(
+  item: T
+): T & SidenavItem {
+  const count = (item.count ?? 0) as number;
+  return {
+    ...item,
+    // mantenemos count para tu lógica previa
+    count,
+    // y sumamos badge para la UI nueva (solo si count > 0)
+    badge: count > 0 ? { count, color: 'red', variant: 'solid' } : undefined,
+  } as T & SidenavItem;
+}
+
+/**
+ * Construcción de ítems de navegación para el contexto de Exportaciones.
+ * - Respeta tus menús (navMenus.ts) y paths.
+ * - Mantiene allowedRoles y el filtro por rol.
+ * - Expone counts en ítems padre y submenús (sin cambiar tu contrato).
+ */
 export function getNavItems(
   counts: NavCounts,
   session: SessionUser | null
 ): SidenavItem[] {
-  const role = session?.role || 'USER';
+  const role = (session?.role as Role) || 'USER';
 
-  const navItems: SidenavItem[] = [
+  const baseItems: SidenavItem[] = [
     {
       icon: MdOutlineAgriculture,
       label: 'Productor',
@@ -62,21 +93,20 @@ export function getNavItems(
       menu: BOX_BRANDS_MENU,
       allowedRoles: ['LOGISTICS', 'EXPORT'],
     },
-    {
+    withBadgeFromCount({
       icon: MdFlightTakeoff,
       label: 'Exportaciones',
       isMenu: true,
       to: '/dashboard/export',
-      menu: getExportMenu({
-        addSupplyShipment: counts.addSupplyShipment,
-      }),
+      menu: getExportMenu({ addSupplyShipment: counts.addSupplyShipment }),
       count: counts.addSupplyShipment,
       allowedRoles: ['EXPORT'],
-    },
-    {
+    }),
+    withBadgeFromCount({
       icon: FaCashRegister,
       label: 'Liquidación',
       isMenu: true,
+      // (se mantiene tu ruta original para el padre)
       to: '/dashboard/box-brands',
       menu: getLiquidationMenu({
         producerPendingPayments: counts.producerPendingPayments,
@@ -88,16 +118,17 @@ export function getNavItems(
         counts.clientPendingPayments +
         counts.exportSentCostsPending,
       allowedRoles: ['ADMINISTRATIVE'],
-    },
-    {
+    }),
+    withBadgeFromCount({
       icon: MdContentCut,
       label: 'Calidad',
       isMenu: true,
+      // (se mantiene tu ruta original para el padre)
       to: '/dashboard/export',
       menu: getQualityMenu({ addCuttingSheet: counts.addCuttingSheet }),
       count: counts.addCuttingSheet,
       allowedRoles: ['QUALITY'],
-    },
+    }),
     {
       icon: PiPackageBold,
       label: 'Bodega',
@@ -116,9 +147,12 @@ export function getNavItems(
     },
   ];
 
+  // Visibilidad por rol (igual a tu comportamiento actual)
   return role === 'MASTER'
-    ? navItems
-    : navItems.filter(
-        (item) => !item.allowedRoles || item.allowedRoles.includes(role)
+    ? baseItems
+    : baseItems.filter(
+        (item) => !item.allowedRoles || item.allowedRoles.includes(role as Role)
       );
 }
+
+export default getNavItems;

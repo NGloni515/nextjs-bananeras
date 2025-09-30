@@ -1,41 +1,66 @@
 'use client';
+
 import {
   Box,
   Card,
   CardBody,
   CardHeader,
-  Center,
   Heading,
+  HStack,
+  Icon,
+  Text,
+  Divider,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import React from 'react';
+import { MdAnchor } from 'react-icons/md';
 import AddHarborForm from '../../../../components/settings/AddHarborForm';
 import IsOnboarding from '../../../../components/ui/IsOnboarding';
 
 function AddHarborPage(): React.JSX.Element {
+  const bgColor = useColorModeValue('gray.50', 'gray.900');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const headingColor = useColorModeValue('gray.900', 'gray.100');
+  const textColor = useColorModeValue('gray.700', 'gray.200');
+
   return (
-    <>
-      <Box my={'20px'} mx={'auto'} w={'95%'}>
-        <Center>
-          <Card
-            w={{
-              base: '95%',
-              sm: '95%',
-              md: '90%',
-              lg: '100%',
-              xl: '100%',
-            }}
-            mb={'20px'}
-          >
-            <CardHeader w={'100%'}>
-              <Heading>Agregar Nuevo Puerto</Heading>
-            </CardHeader>
-            <CardBody w='100%'>
-              <AddHarborForm />
-            </CardBody>
-          </Card>
-        </Center>
+    <Box minH="100vh" w="100%" bg={bgColor} p={{ base: 4, md: 6, lg: 8 }}>
+      <Box maxW="8xl" mx="auto">
+        <Card
+          bg={cardBg}
+          borderColor={borderColor}
+          borderRadius="xl"
+          boxShadow="lg"
+          overflow="hidden"
+          border="1px solid"
+          borderTopWidth="4px"
+          borderTopColor="green.500"
+        >
+          <CardHeader bg={useColorModeValue('gray.50', 'gray.750')} pb={4}>
+            <HStack spacing={3} align="center">
+              <Box p={2} bg="green.100" borderRadius="lg" color="green.600">
+                <Icon as={MdAnchor} boxSize={5} />
+              </Box>
+              <Box>
+                <Heading size="lg" color={headingColor} fontWeight="bold">
+                  Agregar Nuevo Puerto
+                </Heading>
+                <Text fontSize="sm" color={textColor} mt={1}>
+                  Completa el formulario para registrar un puerto
+                </Text>
+              </Box>
+            </HStack>
+          </CardHeader>
+
+          <Divider />
+
+          <CardBody>
+            <AddHarborForm />
+          </CardBody>
+        </Card>
       </Box>
-    </>
+    </Box>
   );
 }
 
